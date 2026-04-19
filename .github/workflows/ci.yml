@@ -1,0 +1,27 @@
+﻿name: Frontend Continuous Integration
+
+on:
+  pull_request:
+    branches: ['develop', 'main']
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código fuente
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js (v22 como en el backend)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Auditoría de Tipos (TypeScript Estricto)
+        run: npx tsc --noEmit
+
+      - name: Ejecutar Pruebas y Cobertura de Código (Mínimo 60%)
+        run: npx jest --coverage --passWithNoTests

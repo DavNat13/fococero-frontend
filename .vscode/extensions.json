@@ -1,1 +1,13 @@
-{ "recommendations": ["expo.vscode-expo-tools"] }
+// c:/Users/David/Desktop/FocoCero/fococero-frontend/.vscode/extensions.json
+
+{
+  "recommendations": [
+    "expo.vscode-expo-tools",
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "yoavbls.pretty-ts-errors",
+    "orta.vscode-jest",
+    "christian-kohler.path-intellisense"
+  ]
+}

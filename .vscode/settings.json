@@ -1,7 +1,47 @@
+// c:/Users/David/Desktop/FocoCero/fococero-frontend/.vscode/settings.json
+
 {
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.organizeImports": "explicit",
-    "source.sortMembers": "explicit"
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.formatOnPaste": false,
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    "tv\\((([^()]*|\\([^()]*\\))*)\\)",
+    "[\"'`]([^\"'`]*).*?[\"'`]"
+  ],
+  "css.lint.unknownAtRules": "ignore",
+
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.tsx": "${capture}.test.tsx, ${capture}.spec.tsx, ${capture}.styles.ts",
+    "*.ts": "${capture}.test.ts, ${capture}.spec.ts",
+    "package.json": "package-lock.json, .npmrc",
+    "tailwind.config.js": "global.css",
+    ".env": ".env.*, env.config.ts, env.d.ts"
+  },
+
+  "files.exclude": {
+    "**/.expo": true,
+    "**/node_modules": true,
+    "**/coverage": true,
+    "**/.eas": true,
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/.expo": true,
+    "**/node_modules": true,
+    "**/coverage": true,
+    "**/dist": true
   }
 }

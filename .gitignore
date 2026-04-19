@@ -1,46 +1,55 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+// .gitignore
 
-# dependencies
+# ==============================================================================
+# FOCOCERO FRONTEND - GITIGNORE CORPORATIVO (ZERO TRUST)
+# ==============================================================================
+
+# 1. Dependencias y Caché
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.*
 
-# Expo
+# 2. Entorno Expo y Metro Bundler
 .expo/
 dist/
 web-build/
 expo-env.d.ts
+.metro-health-check*
 
-# Native
-.kotlin/
-*.orig.*
+# 3. Secretos y Variables de Entorno (Bloqueo Estricto Nivel 1)
+.env
+.env.*
+!.env.example
+*.pem
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
+*.keystore
+google-services.json
+GoogleService-Info.plist
 
-# Metro
-.metro-health-check*
-
-# debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
-
-# macOS
-.DS_Store
-*.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-# generated native folders
+# 4. Compilaciones Nativas y Expo Application Services (EAS)
 /ios
 /android
+.eas/
+*.orig.*
+.kotlin/
 
-# Final security fix
-.env
-.env.development
-.env.production
+# 5. Pruebas Unitarias y Análisis Estático (Jest / SonarQube)
+coverage/
+.nyc_output/
+.scannerwork/
+
+# 6. Sistema Operativo y Editores
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+.vscode/tasks.json
+.vscode/launch.json
