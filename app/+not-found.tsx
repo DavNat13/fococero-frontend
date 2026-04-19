@@ -1,40 +1,30 @@
-import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+//  /app/+not-found.tsx
 
-import { Text, View } from '@/components/Themed';
+import { Link, Stack } from 'expo-router';
+import { View, Text } from 'react-native';
 
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View style={styles.container}>
-        <Text style={styles.title}>This screen doesn't exist.</Text>
+      <Stack.Screen options={{ title: 'Ruta no encontrada' }} />
 
-        <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Go to home screen!</Text>
+      {/* Estructura NativeWind con soporte Dark Mode automático */}
+      <View className="flex-1 items-center justify-center bg-surface p-5 dark:bg-brand-municipalidad">
+        <Text className="text-2xl font-bold text-gray-900 dark:text-surface-muted">
+          404 - Territorio Desconocido
+        </Text>
+
+        <Text className="mt-3 text-center text-base text-gray-600 dark:text-gray-400">
+          Parece que te has desviado de la ruta segura. Esta coordenada no existe en los registros
+          de FocoCero.
+        </Text>
+
+        <Link href="/" className="mt-8 py-4">
+          <Text className="font-bold text-primary dark:text-primary-light">
+            Volver a la base (Inicio)
+          </Text>
         </Link>
       </View>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-  linkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
-});

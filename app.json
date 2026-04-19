@@ -1,36 +1,52 @@
+// c:/Users/David/Desktop/FocoCero/fococero-frontend/app.json
+
 {
   "expo": {
-    "name": "fococero-frontend",
+    "name": "FocoCero",
     "slug": "fococero-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "fococerofrontend",
+    "scheme": "fococero",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#D9480F"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.valledelsol.fococero",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "FocoCero necesita tu ubicación para reportar incendios cercanos.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "FocoCero requiere seguimiento GPS para la seguridad de los brigadistas en terreno.",
+        "NSLocationAlwaysUsageDescription": "Necesitamos acceso permanente para coordinar la respuesta ante incendios.",
+        "UIBackgroundModes": ["location", "fetch", "remote-notification"]
+      }
     },
     "android": {
+      "package": "com.valledelsol.fococero",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#D9480F"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "VIBRATE",
+        "INTERNET"
+      ]
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysPermission": "Permitir que FocoCero rastree tu ubicación para coordinación de brigadas."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

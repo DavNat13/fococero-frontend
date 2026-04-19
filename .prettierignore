@@ -1,0 +1,13 @@
+# c:/Users/David/Desktop/FocoCero/fococero-frontend/.prettierignore
+
+node_modules/
+.expo/
+dist/
+web-build/
+coverage/
+ios/
+android/
+*.env
+*.env.*
+*.pem
+*.key
