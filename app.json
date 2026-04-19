@@ -1,5 +1,3 @@
-// c:/Users/David/Desktop/FocoCero/fococero-frontend/app.json
-
 {
   "expo": {
     "name": "FocoCero",
@@ -21,7 +19,11 @@
         "NSLocationWhenInUseUsageDescription": "FocoCero necesita tu ubicación para reportar incendios cercanos.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "FocoCero requiere seguimiento GPS para la seguridad de los brigadistas en terreno.",
         "NSLocationAlwaysUsageDescription": "Necesitamos acceso permanente para coordinar la respuesta ante incendios.",
-        "UIBackgroundModes": ["location", "fetch", "remote-notification"]
+        "UIBackgroundModes": [
+          "location",
+          "fetch",
+          "remote-notification"
+        ]
       }
     },
     "android": {
@@ -46,7 +48,8 @@
         {
           "locationAlwaysPermission": "Permitir que FocoCero rastree tu ubicación para coordinación de brigadas."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
