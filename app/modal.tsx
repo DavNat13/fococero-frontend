@@ -1,35 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet } from 'react-native';
+// c:/Users/David/Desktop/FocoCero/fococero-frontend/app/modal.tsx
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { StatusBar } from 'expo-status-bar';
+import { Platform, View, Text } from 'react-native';
 
 export default function ModalScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/modal.tsx" />
+    <View className="flex-1 items-center justify-center bg-surface px-6 dark:bg-brand-municipalidad">
+      <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+        Información de Brigada
+      </Text>
 
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
+      {/* Separador estilizado con Tailwind */}
+      <View className="my-6 h-[1px] w-4/5 bg-surface-border dark:bg-gray-700" />
+
+      <Text className="text-center text-base text-gray-600 dark:text-gray-300">
+        Este es el modal global del sistema FocoCero. Úsalo para mostrar reportes rápidos, alertas
+        climáticas o información crítica sin perder el contexto de la navegación actual.
+      </Text>
+
+      {/* Manejo inteligente de la barra de estado superior (batería/hora) en iOS */}
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

@@ -1,17 +1,36 @@
+// c:/Users/David/Desktop/FocoCero/fococero-frontend/tsconfig.json
+
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "ignoreDeprecations": "5.0",
     "paths": {
       "@/*": [
-        "./*"
+        "./src/*"
       ]
-    }
+    },
+    
+    // 4. Tipado y Seguridad
+    "types": [
+      "node"
+    ],
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": true,
+    "jsx": "react-native"
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "src/shared/types/env.d.ts",
+    "global.d.ts",
+    "nativewind-env.d.ts"
   ]
 }

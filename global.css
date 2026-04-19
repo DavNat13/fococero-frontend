@@ -1,0 +1,56 @@
+/* fococero-frontend/global.css */
+
+/* ==========================================================================
+   1. MOTOR PRINCIPAL
+   ========================================================================== */
+/* Sintaxis moderna de Tailwind v4. Reemplaza a las antiguas directivas @tailwind */
+@import 'tailwindcss';
+
+/* ==========================================================================
+   2. CAPA BASE (FUNDAMENTOS DEL SISTEMA OPERATIVO)
+   ========================================================================== */
+@layer base {
+  :root {
+    /* Safe Areas (Zonas Seguras):
+      Capturan las dimensiones del hardware (Notch de iPhone, barras de Android).
+      Esto permite usar clases en Tailwind como: `pt-[var(--safe-area-inset-top)]`
+    */
+    --safe-area-inset-top: env(safe-area-inset-top, 20px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-left: env(safe-area-inset-left, 0px);
+    --safe-area-inset-right: env(safe-area-inset-right, 0px);
+
+    /* Prevención de Flash Blanco (Light Mode por defecto) */
+    --root-background: #ffffff;
+    --root-foreground: #1a1b1e;
+  }
+
+  /* Detector de Tema por Hardware:
+    Si el celular del brigadista está en modo oscuro, el motor nativo 
+    pinta el fondo oscuro milisegundos antes de que React arranque.
+  */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --root-background: #1a1b1e; /* Color brand.municipalidad */
+      --root-foreground: #f8f9fa; /* Color surface.muted */
+    }
+  }
+
+  /* Inyección estricta al lienzo nativo de la aplicación */
+  body,
+  html,
+  #root {
+    background-color: var(--root-background);
+    color: var(--root-foreground);
+  }
+}
+
+/* ==========================================================================
+   3. CAPA DE UTILIDADES DEL DOMINIO (FOCOCERO)
+   ========================================================================== */
+@layer utilities {
+  /* Reservado para utilidades híbridas (ej. sombras nativas de iOS/Android 
+    que Tailwind no maneja perfectamente por defecto).
+    Por ahora, lo mantenemos limpio.
+  */
+}
