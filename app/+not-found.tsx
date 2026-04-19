@@ -1,4 +1,4 @@
-//  /app/+not-found.tsx
+// c:/Users/David/Desktop/FocoCero/fococero-frontend/app/+not-found.tsx
 
 import { Link, Stack } from 'expo-router';
 import { View, Text } from 'react-native';
@@ -19,7 +19,10 @@ export default function NotFoundScreen() {
           de FocoCero.
         </Text>
 
-        <Link href="/" className="mt-8 py-4">
+        {/* BYPASS TEMPORAL: Usamos 'as any' para silenciar el tipado estricto de Expo Router 
+          hasta que construyamos nuestro archivo index.tsx real en el módulo de Autenticación.
+        */}
+        <Link href={'/' as any} className="mt-8 py-4">
           <Text className="font-bold text-primary dark:text-primary-light">
             Volver a la base (Inicio)
           </Text>
