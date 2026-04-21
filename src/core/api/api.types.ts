@@ -49,7 +49,8 @@ export type AppErrorCode =
   | 'INTERNAL_SERVER_ERROR'
   | 'NETWORK_ERROR'
   | 'TIMEOUT'
-  | 'OFFLINE_SYNC_PENDING';
+  | 'OFFLINE_SYNC_PENDING'
+  | 'CONTRACT_BREACH';
 
 export interface ApiErrorDetail {
   code: AppErrorCode;
