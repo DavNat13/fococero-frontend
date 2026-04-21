@@ -8,15 +8,17 @@
     "module": "esnext",
     "ignoreDeprecations": "5.0",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@core/*": ["./src/core/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@entities/*": ["./src/entities/*"],
+      "@features/*": ["./src/features/*"],
+      "@widgets/*": ["./src/widgets/*"],
+      "@assets/*": ["./assets/*"]
     },
-    
-    // 4. Tipado y Seguridad
-    "types": [
-      "node"
-    ],
+
+    // Tipado y Seguridad
+    "types": ["node"],
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
