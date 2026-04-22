@@ -3,7 +3,12 @@
 // ==========================================
 // ENUMS EXACTOS DEL BACKEND (ms-alertas)
 // ==========================================
-export type TipoAlerta = 'INCENDIO' | 'MICROBASURAL' | 'VEGETACION_SECA' | 'ALUMBRADO_DEFECTUOSO' | 'OTRO';
+export type TipoAlerta =
+  | 'INCENDIO'
+  | 'MICROBASURAL'
+  | 'VEGETACION_SECA'
+  | 'ALUMBRADO_DEFECTUOSO'
+  | 'OTRO';
 export type GravedadAlerta = 'BAJA' | 'MEDIA' | 'ALTA' | 'CRITICA';
 export type EstadoAlerta = 'REPORTADA' | 'EN_REVISION' | 'DERIVADA' | 'RESUELTA' | 'DESCARTADA';
 

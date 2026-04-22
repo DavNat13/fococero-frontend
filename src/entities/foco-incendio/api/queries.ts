@@ -1,11 +1,6 @@
 // src/entities/foco-incendio/api/queries.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-    actualizarEstadoFoco,
-    crearFoco,
-    eliminarFoco,
-    getFocos
-} from './service';
+import { actualizarEstadoFoco, crearFoco, eliminarFoco, getFocos } from './service';
 
 export const useGetFocos = () => {
   return useQuery({
