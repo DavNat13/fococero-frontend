@@ -1,10 +1,6 @@
 // src/entities/foco-incendio/utils/helpers.ts
 
-import type {
-    EstadoAlerta,
-    GeoPoint,
-    GravedadAlerta
-} from '../model/types'; // Ajusta la ruta a tu archivo de tipos
+import type { EstadoAlerta, GeoPoint, GravedadAlerta } from '../model/types'; // Ajusta la ruta a tu archivo de tipos
 
 /**
  * 1. MAPEO DE COLORES POR ESTADO
@@ -12,11 +8,11 @@ import type {
  */
 export const getColorPorEstado = (estado: EstadoAlerta): string => {
   const mapaColores: Record<EstadoAlerta, string> = {
-    REPORTADA: 'bg-blue-500',      // Azul (Ingresada, esperando acción)
-    EN_REVISION: 'bg-yellow-500',  // Amarillo (Brigada yendo a verificar)
-    DERIVADA: 'bg-purple-500',     // Morado (Enviada a bomberos/conaf)
-    RESUELTA: 'bg-green-500',      // Verde (Fuego extinguido)
-    DESCARTADA: 'bg-gray-400',     // Gris (Falsa alarma o duplicado)
+    REPORTADA: 'bg-blue-500', // Azul (Ingresada, esperando acción)
+    EN_REVISION: 'bg-yellow-500', // Amarillo (Brigada yendo a verificar)
+    DERIVADA: 'bg-purple-500', // Morado (Enviada a bomberos/conaf)
+    RESUELTA: 'bg-green-500', // Verde (Fuego extinguido)
+    DESCARTADA: 'bg-gray-400', // Gris (Falsa alarma o duplicado)
   };
 
   return mapaColores[estado] || 'bg-gray-200';

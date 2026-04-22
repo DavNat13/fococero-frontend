@@ -1,10 +1,6 @@
 // src/entities/foco-incendio/api/service.ts
 import { apiClient } from '@/core/api/api.client';
-import type {
-    AlertaIncendio,
-    CambiarEstadoAlertaDTO,
-    CrearAlertaDTO
-} from '../model/types';
+import type { AlertaIncendio, CambiarEstadoAlertaDTO, CrearAlertaDTO } from '../model/types';
 
 const BASE_URL = '/api/alertas';
 
@@ -33,7 +29,7 @@ export const crearFoco = async (data: CrearAlertaDTO): Promise<AlertaIncendio> =
  */
 export const actualizarEstadoFoco = async (
   id: string,
-  data: CambiarEstadoAlertaDTO
+  data: CambiarEstadoAlertaDTO,
 ): Promise<AlertaIncendio> => {
   const response = await apiClient.patch<AlertaIncendio>(`${BASE_URL}/${id}/estado`, data);
   if (!response.success) throw new Error(response.error.message);
