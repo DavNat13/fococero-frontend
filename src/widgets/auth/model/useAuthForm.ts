@@ -14,7 +14,7 @@ const loginSchema = z.object({
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const useAuthForm = () => {
-  const { isLoading, loginAsGuest } = useLogin();
+  const { isLoading } = useLogin();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -29,9 +29,7 @@ export const useAuthForm = () => {
     Keyboard.dismiss();
     try {
       console.log('Intentando hacer login con:', data.rut);
-
-      // await login(data); <-- Aquí irá tu función real en el futuro
-    } catch (_) {
+    } catch {
       form.setValue('password', '');
     }
   };
@@ -39,6 +37,6 @@ export const useAuthForm = () => {
   return {
     form,
     onSubmit: form.handleSubmit(onSubmit),
-    isLoggingIn: isLoading, // Lo mapeamos al nombre que espera nuestra UI
+    isLoggingIn: isLoading,
   };
 };
