@@ -4,8 +4,8 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { authApi } from '../api/auth.api';
 import { useAuthActions } from '../model/auth.selectors';
 import { RegisterFormData } from '../model/auth.schemas';
-import { ApiErrorDetail } from '../../../core/api/api.types';
 import { authOfflineStrategy } from '../offline-strategy';
+import { ApiErrorDetail } from '@core/api/api.types';
 
 type LoginStatus = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -13,18 +13,15 @@ export const useLogin = () => {
   const [status, setStatus] = useState<LoginStatus>('idle');
   const [error, setError] = useState<string | null>(null);
 
-  // Guardamos la referencia del controlador para poder abortar la petición
   const abortControllerRef = useRef<AbortController | null>(null);
   const { setAuthData } = useAuthActions();
 
-  // Limpieza automática al desmontar para evitar fugas de memoria
   useEffect(() => {
     return () => abortControllerRef.current?.abort();
   }, []);
 
   const loginAsGuest = useCallback(
     async (data: RegisterFormData): Promise<boolean> => {
-      // 1. Idempotencia: Bloqueamos múltiples clicks rápidos
       if (status === 'submitting') return false;
 
       abortControllerRef.current?.abort();
@@ -44,14 +41,13 @@ export const useLogin = () => {
       if (response.error?.code === 'NETWORK_ERROR') {
         console.info('[useLogin] Activando protocolo offline: Creando identidad optimista.');
 
-        // Creamos un usuario temporal (ID negativo)
         const optimisticUser = authOfflineStrategy.createOptimisticUser(data);
 
         setAuthData(optimisticUser);
 
         await authOfflineStrategy.queueRegister(data);
 
-        setStatus('success'); // Engañamos a la UI positivamente
+        setStatus('success');
         return true;
       }
 

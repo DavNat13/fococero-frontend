@@ -1,47 +1,94 @@
-// c:/Users/David/Desktop/FocoCero/fococero-frontend/.vscode/settings.json
-
 {
+  /* ============================================================================
+     1. EDITOR & FORMATTING
+     ============================================================================ */
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.tabSize": 2,
+  "editor.renderWhitespace": "selection",
+  "editor.minimap.enabled": false,
+  "editor.stickyScroll.enabled": true,
+  "editor.inlineSuggest.enabled": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "explicit"
   },
-  "editor.formatOnPaste": false,
-  "files.insertFinalNewline": true,
-  "files.trimTrailingWhitespace": true,
+
+  /* ============================================================================
+     2. NATIVEWIND / TAILWIND (FocoCero High-Contrast)
+     ============================================================================ */
+  "css.lint.unknownAtRules": "ignore",
+  "css.lint.unknownProperties": "ignore",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
 
   "tailwindCSS.includeLanguages": {
     "typescript": "javascript",
     "typescriptreact": "javascript"
   },
   "tailwindCSS.experimental.classRegex": [
-    "tv\\((([^()]*|\\([^()]*\\))*)\\)",
-    "[\"'`]([^\"'`]*).*?[\"'`]"
+    ["tv\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    "clsx\\(([^)]*)\\)"
   ],
-  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.validate": true,
 
+  /* ============================================================================
+     3. JAVASCRIPT & TYPESCRIPT (Refinado 2026)
+     ============================================================================ */
+
+  /* ============================================================================
+     3. JAVASCRIPT & TYPESCRIPT (Refinado 2026)
+     ============================================================================ */
+
+  // Refactorización: Actualizar rutas al mover archivos
+  "javascript.preferences.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.updateImportsOnFileMove.enabled": "always",
+
+  /* ============================================================================
+     4. EXPLORADOR & NESTING (Arquitectura FSD)
+     ============================================================================ */
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
-    "*.tsx": "${capture}.test.tsx, ${capture}.spec.tsx, ${capture}.styles.ts",
-    "*.ts": "${capture}.test.ts, ${capture}.spec.ts",
-    "package.json": "package-lock.json, .npmrc",
-    "tailwind.config.js": "global.css",
-    ".env": ".env.*, env.config.ts, env.d.ts"
+    "*.tsx": "${capture}.test.tsx, ${capture}.spec.tsx, ${capture}.styles.ts, ${capture}.stories.tsx",
+    "*.ts": "${capture}.test.ts, ${capture}.api.ts, ${capture}.dto.ts, ${capture}.schemas.ts, ${capture}.types.ts",
+    "index.ts": "index.d.ts",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, .npmrc",
+    "tailwind.config.js": "tailwind.config.ts, global.css, postcss.config.js",
+    "app.json": "app.config.ts, app.config.js, eas.json, babel.config.js, metro.config.js",
+    ".env": ".env.*, env.config.ts, env.d.ts",
+    "tsconfig.json": "tsconfig.*.json"
   },
 
+  /* ============================================================================
+     5. TERMINAL & UI (Corrección de Tipos)
+     ============================================================================ */
+  "terminal.integrated.fontSize": 13,
+
+  // SOLUCIÓN: Número puro (Integer) para el peso de la fuente
+  "terminal.integrated.fontWeight": 500,
+
+  "terminal.integrated.cursorBlinking": true,
+  "workbench.editor.enablePreview": false,
+  "workbench.tree.indent": 16,
+  "workbench.tree.renderIndentGuides": "always",
+
+  /* ============================================================================
+     6. SEARCH & EXCLUSIONES
+     ============================================================================ */
   "files.exclude": {
     "**/.expo": true,
     "**/node_modules": true,
-    "**/coverage": true,
-    "**/.eas": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/.git": true
   },
   "search.exclude": {
-    "**/.expo": true,
     "**/node_modules": true,
-    "**/coverage": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/.expo": true
   }
 }

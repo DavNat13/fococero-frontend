@@ -3,14 +3,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { secureZustandAdapter, wipeAllStorage } from '@core/offline';
+import { Usuario, UserRole } from '@entities/usuario';
+
 import { tokenUtils } from '../utils/token.utils';
-import { AuthState, Usuario, UserRole } from './auth.types';
+import { AuthState } from './auth.types';
 
 type AuthStore = AuthState & {
   setAuthData: (user: Usuario, firebaseToken?: string) => void;
   checkSession: () => void;
-  logout: () => void;
-  setHydrated: () => void;
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -25,6 +25,7 @@ export const useAuthStore = create<AuthStore>()(
 
       setAuthData: (user: Usuario, firebaseToken?: string) => {
         const isGuest = user.rol === UserRole.INVITADO;
+
         set({
           status: isGuest ? 'guest' : 'authenticated',
           user,
@@ -58,9 +59,11 @@ export const useAuthStore = create<AuthStore>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+
         if (state.firebaseToken && !tokenUtils.isValid(state.firebaseToken)) {
           state.logout();
         }
+
         state.setHydrated();
       },
     },
