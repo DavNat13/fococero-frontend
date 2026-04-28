@@ -1,7 +1,7 @@
-// c:/Users/David/Desktop/FocoCero/fococero-frontend/babel.config.js
-
+// babel.config.js
 module.exports = function (api) {
   api.cache(true);
+
   return {
     presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }], 'nativewind/babel'],
     plugins: [

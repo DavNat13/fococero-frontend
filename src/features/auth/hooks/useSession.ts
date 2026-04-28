@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../model/auth.store';
-import { authApi } from '../api/auth.api';
 import { tokenUtils } from '../utils/token.utils';
 
+import { usuarioApi } from '@entities/usuario';
+
 export const useSession = () => {
-  // El store ya maneja la hidratación internamente
   const isHydrated = useAuthStore((s) => s.isHydrated);
   const status = useAuthStore((s) => s.status);
   const firebaseToken = useAuthStore((s) => s.firebaseToken);
@@ -15,11 +15,9 @@ export const useSession = () => {
     logout: s.logout,
   }));
 
-  // Estado local para saber si el chequeo de red (opcional) terminó
   const [isVerifying, setIsVerifying] = useState(true);
 
   useEffect(() => {
-    // Si no ha terminado de leer MMKV, no podemos decidir nada
     if (!isHydrated) return;
 
     const syncSession = async () => {
@@ -30,12 +28,11 @@ export const useSession = () => {
         }
 
         if (status === 'authenticated') {
-          const response = await authApi.getProfile();
+          const response = await usuarioApi.getMe();
 
           if (response.success) {
             setAuthData(response.data);
           } else if (response.error?.code === 'UNAUTHORIZED') {
-            // El servidor dice que el token ya no vale (revocado)
             logout();
           }
         }
@@ -51,6 +48,6 @@ export const useSession = () => {
     isReady: isHydrated,
     isAuthenticated: status === 'authenticated' || status === 'guest',
     isGuest: status === 'guest',
-    isVerifying, // Útil si queremos mostrar un spinner sutil de "sincronizando..."
+    isVerifying,
   };
 };
