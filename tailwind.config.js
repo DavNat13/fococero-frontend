@@ -1,45 +1,39 @@
 // tailwind.config.js
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // 1. Escaneo exhaustivo siguiendo la arquitectura FSD
   content: ['./app/**/*.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
+  darkMode: 'class',
   theme: {
     extend: {
-      // 2. Tokens de diseño para FocoCero (Valle del Sol)
       colors: {
-        primary: {
-          DEFAULT: '#D9480F', // Naranja Incendio
-          light: '#F76707',
-          dark: '#AD390B',
-          foreground: '#FFFFFF',
-        },
-        secondary: {
-          DEFAULT: '#2B8A3E', // Verde Prevención
-          light: '#40C057',
-          dark: '#1B6B2E',
-          foreground: '#FFFFFF',
-        },
-        destructive: {
-          DEFAULT: '#E03131', // Rojo Alerta Crítica
-          foreground: '#FFFFFF',
+        brand: {
+          primary: 'rgb(var(--brand-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--brand-secondary) / <alpha-value>)',
+          accent: 'rgb(var(--brand-accent) / <alpha-value>)',
         },
         surface: {
-          DEFAULT: '#FFFFFF',
-          muted: '#F8F9FA',
-          border: '#E9ECEF',
+          background: 'rgb(var(--surface-background) / <alpha-value>)',
+          card: 'rgb(var(--surface-card) / <alpha-value>)',
+          elevated: 'rgb(var(--surface-elevated) / <alpha-value>)',
         },
-        brand: {
-          municipalidad: '#1A1B1E', // Color institucional
+        content: {
+          primary: 'rgb(var(--content-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--content-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--content-tertiary) / <alpha-value>)',
+        },
+        feedback: {
+          danger: 'rgb(var(--feedback-danger) / <alpha-value>)',
+          warning: 'rgb(var(--feedback-warning) / <alpha-value>)',
+          success: 'rgb(var(--feedback-success) / <alpha-value>)',
         },
       },
       fontFamily: {
-        mono: ['SpaceMono'],
+        inter: ['Inter_400Regular', 'Inter_700Bold'],
+        roboto: ['Roboto_400Regular', 'Roboto_500Medium'],
       },
-      spacing: {
-        'safe-top': 'var(--safe-area-inset-top)',
-        'safe-bottom': 'var(--safe-area-inset-bottom)',
+      boxShadow: {
+        fuego: '0 4px 8px rgba(234, 88, 12, 0.3)',
       },
     },
   },

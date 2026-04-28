@@ -1,55 +1,12 @@
 // src/features/auth/model/auth.types.ts
+import { Usuario, Rut } from '@entities/usuario';
 
-// ============================================================================
-// 1. BRANDED TYPES (Tipos Nominales)
-// ============================================================================
-// Evita que pasemos un string de "telefono" a una función que pide un "Rut".
-// En tiempo de ejecución son solo strings, pero el compilador los trata como tipos únicos.
-
-export type Rut = string & { readonly __brand: 'Rut' };
+// 1. BRANDED TYPES (Tipos Nominales exclusivos de Auth)
 export type FirebaseUid = string & { readonly __brand: 'FirebaseUid' };
 
-// ============================================================================
-// 2. ENUMERADORES DE DOMINIO (Sincronizados con ms-auth)
-// ============================================================================
+// 2. CONTRATOS DE ESTADO FINITO (DISCRIMINATED UNIONS)
 
-export enum UserRole {
-  INVITADO = 'invitado',
-  USUARIO = 'usuario',
-  BRIGADISTA = 'brigadista',
-  ADMIN = 'admin',
-}
-
-export enum UserStatus {
-  ACTIVO = 'activo',
-  BLOQUEADO = 'bloqueado',
-  SUSPENDIDO = 'suspendido',
-}
-
-// ============================================================================
-// 3. ENTIDADES PRINCIPALES
-// ============================================================================
-
-export interface Usuario {
-  id: number;
-  rut: Rut;
-  nombre: string;
-  apellido: string;
-  telefono: string;
-  email: string | null;
-  rol: UserRole;
-  estado: UserStatus;
-  fcmToken: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// ============================================================================
-// 4. CONTRATOS DE ESTADO FINITO (DISCRIMINATED UNIONS)
-// ============================================================================
-// Esto hace MATEMÁTICAMENTE IMPOSIBLE tener un usuario logueado pero sin datos.
-
-type AuthStatus = 'loading' | 'unauthenticated' | 'guest' | 'authenticated';
+export type AuthStatus = 'loading' | 'unauthenticated' | 'guest' | 'authenticated';
 
 export interface BaseAuthState {
   status: AuthStatus;
@@ -68,19 +25,16 @@ export interface UnauthenticatedState extends BaseAuthState {
 // Si es invitado o autenticado, TypeScript GARANTIZA que 'user' existe
 export interface AuthenticatedState extends BaseAuthState {
   status: 'guest' | 'authenticated';
-  user: Usuario;
-  firebaseToken: string | null; // El invitado no tiene token de firebase
+  user: Usuario; // ✨ Consumiendo la Entidad
+  firebaseToken: string | null; 
 }
 
-// La unión que usará Zustand
 export type AuthState = UnauthenticatedState | AuthenticatedState;
 
-// ============================================================================
-// 5. CONTRATOS DE RED (Payloads para la API)
-// ============================================================================
+// 3. CONTRATOS DE RED (Payloads para la API)
 
 export interface RegisterGuestPayload {
-  rut: Rut; // Garantiza matemáticamente que el RUT está limpio y validado
+  rut: Rut; 
   nombre: string;
   apellido: string;
   telefono: string;

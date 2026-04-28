@@ -1,8 +1,8 @@
 // src/features/auth/offline-strategy/auth.offline.ts
 
-import { offlineSync } from '../../../core/offline';
+import { offlineSync } from '@core/offline';
 import { RegisterFormData } from '../model/auth.schemas';
-import { Usuario, UserRole, UserStatus, Rut } from '../model/auth.types';
+import { Usuario, UserRole, UserStatus, Rut } from '@entities/usuario';
 
 export const authOfflineStrategy = {
   createOptimisticUser: (data: RegisterFormData): Usuario => {
@@ -13,12 +13,11 @@ export const authOfflineStrategy = {
       nombre: data.nombre,
       apellido: data.apellido,
       telefono: data.telefono,
-      email: null,
+
       rol: UserRole.INVITADO,
       estado: UserStatus.ACTIVO,
-      fcmToken: null,
-      createdAt: now,
-      updatedAt: now,
+      creado_en: now,
+      actualizado_en: now,
     };
   },
 
