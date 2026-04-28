@@ -1,9 +1,9 @@
 // src/widgets/auth/ui/AuthFormWidget.tsx
-import React, { useState } from 'react';
-import { View, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Typography } from '@/shared/ui/atoms/Typography';
 import { Button } from '@/shared/ui/atoms/Button';
 import { Input } from '@/shared/ui/atoms/Input';
+import { Typography } from '@/shared/ui/atoms/Typography';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View } from 'react-native';
 
 interface AuthFormWidgetProps {
   initialMode?: 'login' | 'register';
@@ -50,11 +50,9 @@ export const AuthFormWidget = ({
         <View className="w-full gap-4">
           {mode === 'register' && <Input placeholder="Nombre Completo" />}
 
-          <Input placeholder="RUT (Ej: 12.345.678-9)" keyboardType="default" isTechnicalData />
+          <Input placeholder="RUT (Ej: 12.345.678-9)" keyboardType="default" />
 
-          {mode === 'register' && (
-            <Input placeholder="Teléfono Móvil" keyboardType="phone-pad" isTechnicalData />
-          )}
+          {mode === 'register' && <Input placeholder="Teléfono Móvil" keyboardType="phone-pad" />}
 
           <Input placeholder="Contraseña" secureTextEntry />
 

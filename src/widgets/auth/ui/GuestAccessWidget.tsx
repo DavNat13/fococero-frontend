@@ -1,9 +1,9 @@
 // src/widgets/auth/ui/GuestAccessWidget.tsx
+import { Button } from '@/shared/ui/atoms/Button';
+import { Input } from '@/shared/ui/atoms/Input';
+import { Typography } from '@/shared/ui/atoms/Typography';
 import React from 'react';
 import { View } from 'react-native';
-import { Typography } from '@/shared/ui/atoms/Typography';
-import { Input } from '@/shared/ui/atoms/Input';
-import { Button } from '@/shared/ui/atoms/Button';
 
 interface GuestAccessWidgetProps {
   onGuestSubmit: (rut: string, phone: string) => void;
@@ -24,9 +24,9 @@ export const GuestAccessWidget = ({ onGuestSubmit, isLoading = false }: GuestAcc
       </View>
 
       <View className="w-full gap-4">
-        <Input placeholder="RUT" isTechnicalData />
+        <Input placeholder="RUT" />
 
-        <Input placeholder="Teléfono" keyboardType="phone-pad" isTechnicalData />
+        <Input placeholder="Teléfono" keyboardType="phone-pad" />
 
         <Button
           label="Entrar al Mapa"
