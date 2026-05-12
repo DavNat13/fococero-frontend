@@ -13,7 +13,7 @@ import { ApiError } from './api.errors';
 
 // 1. EL MOTOR BASE (INSTANCIA SINGLETON DE AXIOS)
 const axiosInstance = axios.create({
-  baseURL: ENV.EXPO_PUBLIC_API_URL,
+  baseURL: ENV.EXPO_PUBLIC_API_GATEWAY_URL,
   timeout: ENV.EXPO_PUBLIC_API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',

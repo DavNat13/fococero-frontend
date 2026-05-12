@@ -65,8 +65,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "247babcd-3833-4157-89d9-16523e76c921"
+        "projectId": "9708082d-fe91-478f-b439-84d8e028cddf"
       }
-    }
+    },
+    "owner": "ignaciochacon"
   }
 }

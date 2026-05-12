@@ -3,18 +3,14 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
+  // API Gateway (BFF)
+  EXPO_PUBLIC_API_GATEWAY_URL: z.string().url(),
+
   // Core
-  EXPO_PUBLIC_API_URL: z.string().url(),
-  EXPO_PUBLIC_SOCKET_URL: z.string().url(),
   EXPO_PUBLIC_ENVIRONMENT: z.enum(['development', 'staging', 'production']),
 
-  // Seguridad
-  EXPO_PUBLIC_JWT_ALGORITHM: z.string().default('HS256'),
-  EXPO_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().min(10),
-
-  // Resiliencia (Transformamos a número para uso directo en código)
+  // Resiliencia
   EXPO_PUBLIC_API_TIMEOUT: z.string().default('15000').transform(Number),
-  EXPO_PUBLIC_MAX_RETRIES: z.string().default('3').transform(Number),
   EXPO_PUBLIC_OFFLINE_SYNC_INTERVAL: z.string().default('30000').transform(Number),
 
   // Observabilidad

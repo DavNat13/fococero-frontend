@@ -5,8 +5,13 @@
   },
   "build": {
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+      "ios": {
+        "developmentClient": true,
+        "distribution": "internal"
+      },
+      "android": {
+        "distribution": "internal"
+      }
     },
     "preview": {
       "distribution": "internal"
