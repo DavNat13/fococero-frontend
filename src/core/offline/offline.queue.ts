@@ -47,9 +47,17 @@ class OfflineQueueManager {
   ): Promise<OutboxTask> {
     const queue = await this.getQueue();
 
+    const generateUUID = () => {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    };
+
     const newTask: OutboxTask = {
       ...task,
-      id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+      id: generateUUID(),
       timestamp: Date.now(),
       retries: 0,
     };

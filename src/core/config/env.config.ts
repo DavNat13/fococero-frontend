@@ -6,6 +6,14 @@ const envSchema = z.object({
   // API Gateway (BFF)
   EXPO_PUBLIC_API_GATEWAY_URL: z.string().url(),
 
+  // Firebase Web Config
+  EXPO_PUBLIC_FIREBASE_API_KEY: z.string().min(1),
+  EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN: z.string(),
+  EXPO_PUBLIC_FIREBASE_PROJECT_ID: z.string(),
+  EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET: z.string(),
+  EXPO_PUBLIC_FIREBASE_APP_ID: z.string(),
+  EXPO_PUBLIC_FIREBASE_CLIENT_ID: z.string().optional(),
+
   // Core
   EXPO_PUBLIC_ENVIRONMENT: z.enum(['development', 'staging', 'production']),
 

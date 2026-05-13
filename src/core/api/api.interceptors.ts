@@ -16,9 +16,14 @@ export const requestInterceptor = (config: CustomAxiosRequestConfig) => {
   config._requestStartTime = Date.now();
 
   if (!config.headers['X-Request-ID']) {
-    config.headers['X-Request-ID'] = crypto.randomUUID
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const generateUUID = () => {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    };
+    config.headers['X-Request-ID'] = generateUUID();
   }
 
   const firebaseToken = useAuthStore.getState().firebaseToken;

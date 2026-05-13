@@ -1,6 +1,8 @@
 // src/shared/ui/molecules/StatCard.tsx
 import { ColorTheme } from '@shared/types';
-import { Icon, Icons, ScalePress, Typography } from '@shared/ui';
+import { Icon, Icons } from '../icons';
+import { ScalePress } from '../animations/ScalePress';
+import { Typography } from '../atoms/Typography';
 import React from 'react';
 import { View } from 'react-native';
 

@@ -28,25 +28,44 @@ export const globalStorage = {
 };
 
 // 2. PARTICIÓN SEGURA (Tokens JWT, Perfiles) - Encriptada por el Hardware del Teléfono
+const sanitizeKey = (key: string): string => key.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+
 export const secureStorage = {
   setItem: async (key: string, value: string) => {
-    // SecureStore en web no funciona nativamente, hacemos un fallback seguro para desarrollo
+    if (!key || typeof key !== 'string') return;
+    const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
     if (Platform.OS === 'web') {
-      return await AsyncStorage.setItem(`${PREFIX}secure_${key}`, value);
+      return await AsyncStorage.setItem(fullKey, value);
     }
-    await SecureStore.setItemAsync(`${PREFIX}secure_${key}`, value);
+    try {
+      await SecureStore.setItemAsync(fullKey, value);
+    } catch (error) {
+      await AsyncStorage.setItem(fullKey, value);
+    }
   },
   getItem: async (key: string) => {
+    if (!key || typeof key !== 'string') return null;
+    const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
     if (Platform.OS === 'web') {
-      return await AsyncStorage.getItem(`${PREFIX}secure_${key}`);
+      return await AsyncStorage.getItem(fullKey);
     }
-    return await SecureStore.getItemAsync(`${PREFIX}secure_${key}`);
+    try {
+      return await SecureStore.getItemAsync(fullKey);
+    } catch (error) {
+      return await AsyncStorage.getItem(fullKey);
+    }
   },
   removeItem: async (key: string) => {
+    if (!key || typeof key !== 'string') return;
+    const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
     if (Platform.OS === 'web') {
-      return await AsyncStorage.removeItem(`${PREFIX}secure_${key}`);
+      return await AsyncStorage.removeItem(fullKey);
     }
-    await SecureStore.deleteItemAsync(`${PREFIX}secure_${key}`);
+    try {
+      await SecureStore.deleteItemAsync(fullKey);
+    } catch (error) {
+      await AsyncStorage.removeItem(fullKey);
+    }
   },
 };
 

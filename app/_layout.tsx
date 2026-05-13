@@ -43,6 +43,8 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="index" />
+        <Stack.Screen name="(brigadista)" />
+        <Stack.Screen name="(ciudadano)" />
         <Stack.Screen
           name="(auth)"
           options={{
