@@ -35,13 +35,29 @@ export const useAuthStore = create<AuthStore>()(
       setAuthData: (user: Usuario, firebaseToken?: string) => {
         const isGuest = user.rol === UserRole.INVITADO;
 
-        set({
-          status: isGuest ? 'guest' : 'authenticated',
-          user,
-          firebaseToken: firebaseToken ?? null,
-          isLoading: false,
-          error: null,
-        } as AuthState);
+        if (isGuest) {
+          set({
+            status: 'guest' as const,
+            user,
+            firebaseToken: firebaseToken ?? null,
+            isLoading: false,
+            error: null,
+            isHydrated: true,
+            setHydrated: get().setHydrated,
+            logout: get().logout,
+          });
+        } else {
+          set({
+            status: 'authenticated' as const,
+            user,
+            firebaseToken: firebaseToken ?? null,
+            isLoading: false,
+            error: null,
+            isHydrated: true,
+            setHydrated: get().setHydrated,
+            logout: get().logout,
+          });
+        }
       },
 
       clearError: () => set({ error: null }),
@@ -58,13 +74,13 @@ export const useAuthStore = create<AuthStore>()(
 
         const response = await authApi.login(credentials);
 
-        if (response.success && response.data) {
+        if (response.success) {
           get().setAuthData(response.data, undefined);
           return true;
-        } else {
-          set({ isLoading: false, error: response.error?.message ?? 'Error al iniciar sesión' });
-          return false;
         }
+        
+        set({ isLoading: false, error: 'Error al iniciar sesión' });
+        return false;
       },
 
       register: async (data: RegisterFullPayload) => {
@@ -72,23 +88,23 @@ export const useAuthStore = create<AuthStore>()(
 
         const response = await authApi.registerFull(data);
 
-        if (response.success && response.data) {
+        if (response.success) {
           get().setAuthData(response.data, data.token);
           return true;
-        } else {
-          set({ isLoading: false, error: response.error?.message ?? 'Error al registrarse' });
-          return false;
         }
+        
+        set({ isLoading: false, error: 'Error al registrarse' });
+        return false;
       },
 
       logout: () => {
         set({
-          status: 'unauthenticated',
+          status: 'unauthenticated' as const,
           user: null,
           firebaseToken: null,
           isLoading: false,
           error: null,
-        } as AuthState);
+        });
         wipeAllStorage();
       },
     }),

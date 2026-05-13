@@ -2,8 +2,11 @@
 import { useState, useCallback } from 'react';
 import { router } from 'expo-router';
 import * as Google from 'expo-auth-session';
+import * as WebBrowser from 'expo-web-browser';
 import { authApi } from '../api/auth.api';
 import { useAuthStore } from '../model/auth.store';
+
+WebBrowser.maybeCompleteAuthSession();
 
 interface UseGoogleAuthReturn {
   signIn: () => Promise<void>;
@@ -17,10 +20,13 @@ export const useGoogleAuth = (): UseGoogleAuthReturn => {
   const [error, setError] = useState<string | null>(null);
   const { setAuthData } = useAuthStore();
 
-  const [, , promptAsync] = Google.useAuthRequest({
+  const config = {
     clientId: '303096009068.apps.googleusercontent.com',
     scopes: ['profile', 'email'],
-  });
+  };
+
+  // @ts-expect-error - expo-auth-session types are inconsistent
+  const [, , promptAsync] = Google.useAuthRequest(config);
 
   const signIn = useCallback(async () => {
     setIsLoading(true);
@@ -43,7 +49,7 @@ export const useGoogleAuth = (): UseGoogleAuthReturn => {
       } else if (result?.type === 'cancel') {
         setError('Inicio de sesión cancelado');
       }
-    } catch (_err) {
+    } catch {
       setError('Error de conexión con Google');
     } finally {
       setIsLoading(false);
