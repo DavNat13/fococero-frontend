@@ -25,8 +25,8 @@
 - [x] **5.1:** Crear `emergencias.api.ts` (Solo Brigadistas).
 - [ ] **5.2:** UI de tracking y coordinación de despachos.
 
-## Fase 6: Analítica y Dashboard (⏳)
-- [ ] **6.1:** Crear `analitica.api.ts`.
+## Fase 6: Analítica y Dashboard (Completado ✅)
+- [x] **6.1:** Crear `analitica.api.ts`.
 - [ ] **6.2:** UI de métricas, heatmaps y gráficas operativas.
 
 ## Fase 7: Multimedia (⏳)
