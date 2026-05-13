@@ -11,3 +11,4 @@ export default function WelcomePage() {
 
   return <WelcomeWidget onCreateAccountPress={handleRegister} onHaveAccountPress={handleLogin} />;
 }
+

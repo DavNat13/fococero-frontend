@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { router } from 'expo-router';
 import { AuthFormWidget } from '@/widgets/auth';
 import { useAuthStore } from '@/features/auth';
 
@@ -16,17 +15,13 @@ export default function RegisterScreen() {
     const [nombre, ...apellidoArr] = data.fullName.split(' ');
     const apellido = apellidoArr.join(' ');
 
-    const success = await register({
+    await register({
       rut: data.rut as any,
       nombre,
       apellido,
       telefono: data.phone,
-      token: data.password, // Firebase token would go here in real scenario
+      token: data.password,
     });
-
-    if (success) {
-      router.replace('/(brigadista)');
-    }
   }, [register, clearError]);
 
   return (
@@ -38,3 +33,4 @@ export default function RegisterScreen() {
     />
   );
 }
+

@@ -1,6 +1,6 @@
 // src/shared/ui/atoms/Switch.tsx
 import { ANIMATION_CONFIGS } from '@shared/constants';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Pressable } from 'react-native';
 import Animated, {
   interpolateColor,
@@ -17,8 +17,9 @@ interface SwitchProps {
 }
 
 export const Switch = ({ value, onValueChange, disabled = false, className = '' }: SwitchProps) => {
-  // 0 = apagado, 1 = encendido
-  const progress = useSharedValue(value ? 1 : 0);
+  // Usar memo para evitar recrear el valor en cada render
+  const initialProgress = useMemo(() => value ? 1 : 0, []);
+  const progress = useSharedValue(initialProgress);
 
   useEffect(() => {
     progress.value = withSpring(value ? 1 : 0, ANIMATION_CONFIGS.spring.stiff);
@@ -28,14 +29,16 @@ export const Switch = ({ value, onValueChange, disabled = false, className = '' 
     const backgroundColor = interpolateColor(
       progress.value,
       [0, 1],
-      ['#334155', '#EA580C'], // De gris oscuro a Naranja FocoCero
+      ['#334155', '#EA580C'],
     );
     return { backgroundColor };
   });
 
   const thumbAnimatedStyle = useAnimatedStyle(() => {
+    // Usar progress.value en lugar de la prop value directamente
+    const targetPosition = progress.value === 1 ? 24 : 2;
     return {
-      transform: [{ translateX: withSpring(value ? 24 : 2, ANIMATION_CONFIGS.spring.stiff) }],
+      transform: [{ translateX: withSpring(targetPosition, ANIMATION_CONFIGS.spring.stiff) }],
     };
   });
 

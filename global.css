@@ -1,55 +1,58 @@
-/* global.css */
+/* global.css - FocoCero Theme */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   /* =========================================================
-     MODO CLARO (Interfaz Diurna - Tonos Arena y Tierra)
+     MODO OSCURO (Default para FocoCero - Interfaz Táctica Nocturna)
      ========================================================= */
   :root {
+    /* Por defecto modo oscuro para app de emergencias */
+    color-scheme: dark;
+    
     /* Brand FocoCero - Fuego y Tierra */
-    --brand-primary: 234 88 12; /* #EA580C (Mantenemos tu naranja táctico) */
-    --brand-secondary: 87 83 78; /* #57534E (Stone 600 - Gris terroso) */
-    --brand-accent: 220 38 38; /* #DC2626 (Rojo Emergencia) */
+    --brand-primary: 234 88 12;   /* #EA580C Naranja Fuego */
+    --brand-secondary: 87 83 78; /* #57534E Stone 600 */
+    --brand-accent: 220 38 38;    /* #DC2626 Rojo Emergencia */
 
-    /* Superficies Light - Adiós al blanco puro. Hola a la arena/humo cálido */
-    --surface-background: 250 245 240; /* #FAF5F0 (Beige/Arena muy sutil y cálido) */
-    --surface-card: 255 255 255; /* #FFFFFF (Blanco solo para destacar tarjetas) */
-    --surface-elevated: 245 235 224; /* #F5EBE0 (Arena un poco más oscura para bordes) */
-
-    /* Contenido Light */
-    --content-primary: 28 25 23; /* #1C1917 (Stone 900 - Casi negro, pero cálido) */
-    --content-secondary: 87 83 78; /* #57534E (Stone 600 - Ceniza) */
-    --content-tertiary: 168 162 158; /* #A8A29E (Stone 400 - Humo) */
-
-    /* Feedback */
-    --feedback-danger: 220 38 38;
-    --feedback-warning: 217 119 6;
-    --feedback-success: 5 150 105;
-  }
-
-  /* =========================================================
-     MODO OSCURO (Interfaz Nocturna - Tonos Carbón)
-     ========================================================= */
-  .dark {
-    /* Superficies Dark - Carbón profundo, sin tonos azules */
-    --surface-background: 28 25 23; /* #1C1917 (Carbón profundo táctico) */
-    --surface-card: 41 37 36; /* #292524 (Stone 800 - Elevación base) */
-    --surface-elevated: 68 64 60; /* #44403C (Stone 700 - Elevación alta) */
+    /* Superficies Dark - Carbón profundo */
+    --surface-background: 12 15 23;  /* #0C0F17 Carbón profundo táctico */
+    --surface-card: 23 27 38;     /* #171B26 Elevación base */
+    --surface-elevated: 31 41 56; /* #1F2938 Elevación alta */
 
     /* Contenido Dark */
-    --content-primary: 250 245 240; /* #FAF5F0 (Texto arena clara, más suave a la vista que el blanco puro) */
-    --content-secondary: 168 162 158; /* #A8A29E (Stone 400) */
-    --content-tertiary: 120 113 108; /* #78716C (Stone 500) */
+    --content-primary: 243 244 246; /* #F3F4F6 Texto blanco humo */
+    --content-secondary: 156 163 175; /* #9CA3AF Gris claro */
+    --content-tertiary: 107 114 128; /* #6B7280 Gris medio */
+
+    /* Feedback */
+    --feedback-danger: 239 68 68;    /* #EF4444 Rojo */
+    --feedback-warning: 245 158 11; /* #F59E0B Amarillo */
+    --feedback-success: 16 185 129; /* #10B981 Verde */
+  }
+
+  /* Clase dark para compatibilidad */
+  .dark {
+    --surface-background: 12 15 23;
+    --surface-card: 23 27 38;
+    --surface-elevated: 31 41 56;
+    --content-primary: 243 244 246;
+    --content-secondary: 156 163 175;
+    --content-tertiary: 107 114 128;
   }
 }
 
-/* Sombras */
+/* Sombras personalizadas */
 .shadow-fuego {
   shadow-color: #ea580c;
   shadow-opacity: 0.3;
   shadow-radius: 8;
   elevation: 5;
   shadow-offset: 0px 4px;
+}
+
+/* Animaciones suaves */
+* {
+  -webkit-tap-highlight-color: transparent;
 }

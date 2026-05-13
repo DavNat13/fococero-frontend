@@ -7,7 +7,7 @@
 - **Navegación:** Expo Router (file-based routing)
 
 ## UI & Estilos
-- **Estilos:** NativeWind (Tailwind CSS para React Native)
+- **Estilos:** NativeWind (Tailwind CSS para React Native), Tailwind
 - **Componentes UI:** Librería propia en `src/shared/ui/`
 - **Tipografía:** Inter (regular, bold) + Roboto (medium)
 - **Iconos:** @expo/vector-icons (MaterialCommunityIcons)

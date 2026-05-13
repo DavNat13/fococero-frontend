@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { router } from 'expo-router';
 import { AuthFormWidget } from '@/widgets/auth';
 import { useAuthStore } from '@/features/auth';
 
@@ -8,10 +7,7 @@ export default function LoginScreen() {
 
   const handleLoginSubmit = useCallback(async (data: { rut: string; password: string }) => {
     clearError();
-    const success = await login(data);
-    if (success) {
-      router.replace('/(brigadista)');
-    }
+    await login(data);
   }, [login, clearError]);
 
   return (
@@ -23,3 +19,4 @@ export default function LoginScreen() {
     />
   );
 }
+
