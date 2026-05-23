@@ -50,6 +50,13 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+*.pem
+
+# local env files
+.env
+.env*.local
+.env.development
+.env.production
 
 .vscode/tasks.json
 .vscode/launch.json
