@@ -2,7 +2,7 @@
 
 import { apiClient } from '@core/api';
 import type { ApiResponse } from '@core/api';
-import type { RegisterGuestPayload, RegisterFullPayload } from '../model/auth.types';
+import type { RegisterGuestPayload } from '../model/auth.types';
 import { Usuario } from '@entities/usuario';
 
 export interface LoginCredentials {
@@ -10,24 +10,22 @@ export interface LoginCredentials {
   password: string;
 }
 
-export interface RegisterGooglePayload {
-  googleToken: string;
-}
-
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<ApiResponse<Usuario>> => {
-    return apiClient.post<Usuario>('/api/auth/login', credentials);
+    return apiClient.postPublic<Usuario>('/api/auth/login', credentials);
   },
 
   registerGuest: async (payload: RegisterGuestPayload): Promise<ApiResponse<Usuario>> => {
-    return apiClient.post<Usuario>('/api/auth/register-guest', payload);
+    return apiClient.postPublic<Usuario>('/api/auth/register-guest', payload);
   },
 
-  registerFull: async (payload: RegisterFullPayload): Promise<ApiResponse<Usuario>> => {
-    return apiClient.post<Usuario>('/api/auth/register-full', payload);
+  // register-full requiere token de Firebase real, por ahora usamos register-guest
+  registerFull: async (payload: RegisterGuestPayload): Promise<ApiResponse<Usuario>> => {
+    return apiClient.postPublic<Usuario>('/api/auth/register-guest', payload);
   },
 
-  registerGoogle: async (payload: RegisterGooglePayload): Promise<ApiResponse<Usuario>> => {
-    return apiClient.post<Usuario>('/api/auth/register-google', payload);
+  // Placeholder para Google Auth - implementar después
+  registerGoogle: async (_payload: { googleToken: string }): Promise<ApiResponse<Usuario>> => {
+    return { success: false, error: { message: 'Google Auth no disponible aún', code: 'INTERNAL_SERVER_ERROR' } };
   },
 };

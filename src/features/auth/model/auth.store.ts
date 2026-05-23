@@ -3,9 +3,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { secureZustandAdapter, wipeAllStorage } from '@core/offline';
-import { Usuario, UserRole } from '@entities/usuario';
+import { Usuario } from '@entities/usuario';
 import { authApi, LoginCredentials } from '../api/auth.api';
-import type { RegisterFullPayload } from '../model/auth.types';
+import type { RegisterGuestPayload } from '../model/auth.types';
 
 import { tokenUtils } from '../utils/token.utils';
 import { AuthState } from './auth.types';
@@ -16,7 +16,7 @@ type AuthStore = AuthState & {
   setAuthData: (user: Usuario, firebaseToken?: string) => void;
   checkSession: () => void;
   login: (credentials: LoginCredentials) => Promise<boolean>;
-  register: (data: RegisterFullPayload) => Promise<boolean>;
+  register: (data: RegisterGuestPayload) => Promise<boolean>;
   clearError: () => void;
 };
 
@@ -33,31 +33,16 @@ export const useAuthStore = create<AuthStore>()(
       setHydrated: () => set({ isHydrated: true }),
 
       setAuthData: (user: Usuario, firebaseToken?: string) => {
-        const isGuest = user.rol === UserRole.INVITADO;
-
-        if (isGuest) {
-          set({
-            status: 'guest' as const,
-            user,
-            firebaseToken: firebaseToken ?? null,
-            isLoading: false,
-            error: null,
-            isHydrated: true,
-            setHydrated: get().setHydrated,
-            logout: get().logout,
-          });
-        } else {
-          set({
-            status: 'authenticated' as const,
-            user,
-            firebaseToken: firebaseToken ?? null,
-            isLoading: false,
-            error: null,
-            isHydrated: true,
-            setHydrated: get().setHydrated,
-            logout: get().logout,
-          });
-        }
+        set({
+          status: 'authenticated' as const,
+          user,
+          firebaseToken: firebaseToken ?? null,
+          isLoading: false,
+          error: null,
+          isHydrated: true,
+          setHydrated: get().setHydrated,
+          logout: get().logout,
+        });
       },
 
       clearError: () => set({ error: null }),
@@ -83,17 +68,19 @@ export const useAuthStore = create<AuthStore>()(
         return false;
       },
 
-      register: async (data: RegisterFullPayload) => {
+      register: async (data: RegisterGuestPayload) => {
         set({ isLoading: true, error: null });
 
-        const response = await authApi.registerFull(data);
+        const response = await authApi.registerGuest(data);
 
         if (response.success) {
-          get().setAuthData(response.data, data.token);
+          get().setAuthData(response.data, undefined);
           return true;
         }
         
-        set({ isLoading: false, error: 'Error al registrarse' });
+        // Mostrar el error específico del backend
+        const errorMessage = response.error?.message || 'Error al registrarse';
+        set({ isLoading: false, error: errorMessage });
         return false;
       },
 

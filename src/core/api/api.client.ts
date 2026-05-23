@@ -1,6 +1,6 @@
 // src/core/api/api.client.ts
 
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import { ENV } from '../config/env.config';
 import {
   requestInterceptor,
@@ -28,24 +28,26 @@ axiosInstance.interceptors.response.use(responseInterceptor, (error) =>
 );
 
 // 3. EL ENVOLTORIO SEGURO (RESULT PATTERN WRAPPER)
-// Este wrapper atrapa las excepciones de red y las convierte en valores de retorno
-// predecibles, eliminando la necesidad de usar try/catch en la UI.
-
 async function executeRequest<T>(request: Promise<any>): Promise<ApiResponse<T>> {
   try {
     const response = await request;
 
-    // Si Axios resolvió la promesa, mapeamos al contrato ApiSuccess<T>
+    console.log('[API] Raw response:', JSON.stringify(response.data, null, 2));
+
     const successResult: ApiSuccess<T> = {
       success: true,
-      data: response.data?.data || response.data, // Soporta si el backend ya envuelve en 'data'
+      data: response.data?.usuario || response.data?.data || response.data,
     };
 
     return successResult;
   } catch (error) {
-    // Si Axios o los interceptores rechazaron, mapeamos al contrato ApiFailure
-    // Como el interceptor ya pasó esto por ApiError.from(), estamos seguros del tipo.
     const appError = error instanceof ApiError ? error : ApiError.from(error);
+
+    console.error('[API] Request failed:', {
+      code: appError.code,
+      message: appError.message,
+      status: (error as AxiosError)?.response?.status,
+    });
 
     const failureResult: ApiFailure = {
       success: false,
@@ -75,4 +77,37 @@ export const apiClient = {
 
   delete: <T>(url: string, config?: AxiosRequestConfig) =>
     executeRequest<T>(axiosInstance.delete(url, config)),
+
+  // Versión pública que no ejecuta logout en caso de 401 (para auth endpoints)
+  postPublic: <T>(url: string, data?: unknown, config?: AxiosRequestConfig) =>
+    executeRequestPublic<T>(axiosInstance.post(url, data, config)),
 };
+
+// Versión pública que no maneja errores de auth
+async function executeRequestPublic<T>(request: Promise<any>): Promise<ApiResponse<T>> {
+  try {
+    const response = await request;
+
+    console.log('[API Public] Raw response:', JSON.stringify(response.data, null, 2));
+
+    const successResult: ApiSuccess<T> = {
+      success: true,
+      data: response.data?.usuario || response.data?.data || response.data,
+    };
+    return successResult;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    console.error('[API Public] Request failed:', {
+      code: axiosError?.response?.status,
+      message: axiosError?.message,
+      url: axiosError?.config?.url,
+    });
+
+    const appError = error instanceof ApiError ? error : ApiError.from(error);
+    const failureResult: ApiFailure = {
+      success: false,
+      error: appError.toUIFormat(),
+    };
+    return failureResult;
+  }
+}

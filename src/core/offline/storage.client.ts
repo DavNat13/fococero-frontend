@@ -91,8 +91,15 @@ export const wipeAllStorage = async () => {
 
     // Limpiamos explícitamente tokens seguros si estamos en móvil
     if (Platform.OS !== 'web') {
-      await SecureStore.deleteItemAsync(`${PREFIX}secure_access_token`);
-      await SecureStore.deleteItemAsync(`${PREFIX}secure_refresh_token`);
+      try {
+        await SecureStore.deleteItemAsync(`${PREFIX}secure_access_token`);
+      } catch (e) { /* ignore */ }
+      try {
+        await SecureStore.deleteItemAsync(`${PREFIX}secure_refresh_token`);
+      } catch (e) { /* ignore */ }
+      try {
+        await SecureStore.deleteItemAsync(`${PREFIX}secure_fococero-auth-session`);
+      } catch (e) { /* ignore */ }
     }
   } catch (error) {
     console.error('[Storage] Error ejecutando Kill Switch:', error);

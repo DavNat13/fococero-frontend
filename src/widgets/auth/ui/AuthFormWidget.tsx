@@ -107,7 +107,7 @@ export const AuthFormWidget = ({
           )}
 
           <Button
-            label={mode === 'login' ? 'Ingresar a Terreno' : 'Registrar Brigadista'}
+            label={mode === 'login' ? 'Ingresar a Terreno' : 'Registrar Usuario'}
             variant="solid"
             className="mt-4"
             isLoading={isLoading}

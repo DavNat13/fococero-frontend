@@ -18,7 +18,7 @@ const envSchema = z.object({
   EXPO_PUBLIC_ENVIRONMENT: z.enum(['development', 'staging', 'production']),
 
   // Resiliencia
-  EXPO_PUBLIC_API_TIMEOUT: z.string().default('15000').transform(Number),
+  EXPO_PUBLIC_API_TIMEOUT: z.string().default('30000').transform(Number),
   EXPO_PUBLIC_OFFLINE_SYNC_INTERVAL: z.string().default('30000').transform(Number),
 
   // Observabilidad

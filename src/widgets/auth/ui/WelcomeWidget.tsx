@@ -35,8 +35,12 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
   };
 
   const handleGoogleSignIn = async () => {
-    await signInWithGoogle();
-    router.replace('/(brigadista)');
+    try {
+      await signInWithGoogle();
+      router.replace('/');
+    } catch (error) {
+      console.error('Error en Google Sign In:', error);
+    }
   };
 
   return (

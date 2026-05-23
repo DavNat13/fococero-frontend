@@ -32,17 +32,20 @@ FocoCero es una aplicación **offline-first** desarrollada en React Native/Expo 
 
 | Categoría | Tecnología |
 |-----------|------------|
-| **Framework** | React Native 0.74+ / Expo SDK 51+ |
-| **Lenguaje** | TypeScript (strict mode) |
-| **Estado Global** | Zustand |
-| **Estado Servidor** | TanStack Query (React Query) |
-| **Navegación** | Expo Router |
-| **HTTP Client** | Axios con interceptores |
-| **UI** | NativeWind (Tailwind CSS) + UI propia |
+| **Framework** | React Native 0.81.5 / Expo SDK 54 |
+| **Lenguaje** | TypeScript 5.9 (strict mode) |
+| **Estado Global** | Zustand 5 con persist middleware |
+| **Estado Servidor** | TanStack React Query 5 |
+| **Navegación** | Expo Router 6 (file-based routing) |
+| **HTTP Client** | Axios con interceptores (Result pattern) |
+| **UI** | NativeWind 4 (Tailwind CSS) + tailwind-merge + tailwind-variants |
 | **Mapas** | react-native-maps + expo-location |
-| **Offline** | AsyncStorage / MMKV |
-| **Auth** | Firebase Web SDK |
-| **Validación** | Zod |
+| **Offline** | AsyncStorage + SecureStore + Outbox Pattern |
+| **Auth** | Firebase Web SDK + expo-auth-session |
+| **Validación** | Zod 4 |
+| **Formularios** | react-hook-form + @hookform/resolvers |
+| **Animaciones** | react-native-reanimated 4 |
+| **Testing** | Jest + @testing-library/react-native |
 
 ---
 
@@ -52,12 +55,16 @@ FocoCero es una aplicación **offline-first** desarrollada en React Native/Expo 
 
 ```
 src/
-├── app/                 # Expo Router - Controladores de vistas
+├── app/                 # Expo Router - Rutas y layouts por rol
+│   ├── (auth)/          # Login, Register, Guest
+│   ├── (ciudadano)/     # Inicio, Reportar, Alertas, Perfil
+│   ├── (brigadista)/    # Dashboard, Mapa, Reportes, Emerg., Perfil
+│   └── (admin)/         # Dashboard, Mapa, Usuarios, Config, Perfil
 ├── widgets/            # Componentes orquestadores UI
 ├── features/           # Hooks, Stores, APIs específicas de dominio
 ├── entities/           # Modelos, DTOs, tipos mapeados del backend
-├── shared/             # UI genérica, utilitarias
-└── core/               # Configuraciones maestras (Firebase, API, etc.)
+├── shared/             # UI atómica, molecular, layouts, animaciones, formularios
+└── core/               # Configuraciones maestras (Firebase, API, offline)
 ```
 
 ### API Gateway (BFF)
@@ -83,31 +90,32 @@ fococero-frontend/
 │   ├── ARCHITECTURE.md
 │   └── CONVENTIONS.md
 ├── app/                       # Expo Router - Rutas de navegación
-│   ├── (auth)/                # Login, Register
-│   ├── (brigadista)/          # Panel brigadista
-│   └── (admin)/               # Panel administrador
+│   ├── (auth)/                # Login, Register, Guest
+│   ├── (ciudadano)/           # Inicio, Reportar, Alertas, Perfil
+│   ├── (brigadista)/          # Dashboard, Mapa, Reportes, Emerg., Perfil
+│   └── (admin)/               # Dashboard, Mapa, Usuarios, Config, Perfil
 ├── src/
 │   ├── core/                  # Configuración central
-│   │   ├── api/               # Axios client + interceptors
-│   │   │   ├── api.client.ts
-│   │   │   ├── api.interceptors.ts
-│   │   │   ├── api.errors.ts
-│   │   │   └── api.types.ts
-│   │   └── config/
-│   │       └── env.config.ts
+│   │   ├── api/               # Axios client + interceptors (Result pattern)
+│   │   ├── config/            # Env (Zod) + Firebase config
+│   │   ├── navigation/        # Utilidades de navegación
+│   │   └── offline/           # Storage, outbox queue, sync orchestrator
 │   ├── entities/              # Modelos y APIs por dominio
 │   │   ├── alerta/            # Gestión de alertas
 │   │   ├── reporte/           # Reportes ciudadanos
 │   │   ├── geo/               # Geo-espacial (focos)
+│   │   ├── emergencia/        # Despacho de emergencias
+│   │   ├── analitica/         # Dashboard y métricas
+│   │   ├── multimedia/        # Evidencia multimedia
 │   │   ├── usuario/           # Perfil de usuario
-│   │   ├── foco-incendio/     # Focos de incendio (legacy)
-│   │   ├── brigadista/
-│   │   └── reporte/
+│   │   └── foco-incendio/     # Focos de incendio (legacy)
 │   ├── features/              # Lógica de negocio
-│   │   ├── auth/              # Auth (store, hooks, API)
-│   │   └── foco-incendio/
+│   │   ├── auth/              # Auth (store, hooks, API, offline-strategy)
+│   │   ├── foco-incendio/     # Legacy fire feature
+│   │   ├── reportes/          # Placeholder
+│   │   └── emergencias/       # Placeholder
 │   ├── shared/                # UI compartida
-│   │   └── ui/                # Componentes UI
+│   │   └── ui/                # Atoms, molecules, layouts, animations, forms, icons, illustrations
 │   └── widgets/               # Componentes orquestadores
 ├── .env                       # Variables de entorno
 ├── package.json
@@ -247,90 +255,129 @@ npm run web
 
 ---
 
+## Componentes UI Compartidos
+
+### Atoms
+`Avatar`, `Badge`, `Button`, `Card`, `Checkbox`, `Divider`, `IconButton`, `Input`, `ProgressBar`, `Spinner`, `Switch`, `Typography`
+
+### Molecules
+`ActionCard`, `AlertBanner`, `BottomSheet`, `EmptyState`, `InfoListItem`, `InputGroup`, `ModalDialog`, `SearchBar`, `SectionHeader`, `StatCard`, `StepIndicator`, `Toast`
+
+### Layouts
+`SafeAreaLayout`, `FocusAwareStatusBar`, `KeyboardScrollLayout`, `ScreenHeader`
+
+### Animations
+`FadeIn`, `ScalePress`, `SlideUpCard`, `ShakeError`, `PulseAlert`, `SkeletonShimmer`, `KeyboardShift`
+
+### Formularios Controlados
+`ControlledInput`, `ControlledCheckbox`, `ControlledSwitch`, `ControlledRadioGroup`, `ControlledSegmentedControl`, `ControlledSlider`, `ControlledImagePicker`
+
+### Illustrations SVG
+`EmptyRadar`, `OfflineSatellite`, `CloudSyncSuccess`
+
+---
+
 ## Estado del Roadmap
 
-### ✅ Fase 1: Fundamentos Críticos
-- [x] Corrección de rutas auth (eliminado `/v1/`)
-- [x] Interceptor de Firebase Token
-- [x] Validación E2E con Gateway
+### ✅ APIs Integradas (Parte 1)
+- [x] Alertas API + React Query + Zustand + Facade hook
+- [x] Reportes API + React Query + Zustand + Facade hook
+- [x] Geo API + React Query + Zustand + Facade hook
+- [x] Emergencias API + React Query + Zustand + Facade hook
+- [x] Analítica API + React Query + Zustand + Facade hook
+- [x] Multimedia API + React Query + Zustand + Facade hook
+- [x] Usuario API + Auth API (actualizados para Gateway)
 
-### ✅ Fase 2: Core Operativo (Alertas)
-- [x] `alertas.api.ts` con todos los endpoints
-- [x] React Query hooks
-- [x] Zustand store
-- [x] Hook facade `useAlertaFeature`
+### ✅ Fase UI-1: Core Visual + Navegación por Rol 🎨
+- [x] Tema oscuro táctico con paleta de fuego
+- [x] Sistema de componentes atómicos (12 componentes)
+- [x] Sistema de componentes moleculares (12 componentes)
+- [x] Layouts reutilizables (SafeArea, KeyboardScroll, ScreenHeader)
+- [x] Animaciones Reanimated 4 (FadeIn, ScalePress, SlideUp, Shake, Pulse, Skeleton)
+- [x] Ilustraciones SVG (EmptyRadar, OfflineSatellite, CloudSyncSuccess)
+- [x] Navegación Tab Bar por rol (Admin, Brigadista, Ciudadano)
 
-### ✅ Fase 3: Reportes Ciudadanos
-- [x] `reportes.api.ts` con todos los endpoints
-- [x] React Query hooks
-- [x] Zustand store
-- [x] Hook facade `useReporteFeature`
+### ✅ Fase UI-2: Auth + Perfil + Config 👤
+- [x] WelcomeWidget con animaciones y Google Auth
+- [x] AuthFormWidget (Login/Register con toggle)
+- [x] Pantallas de perfil por rol (Admin, Brigadista, Ciudadano)
+- [x] Pantalla de Configuración (Admin)
+- [x] Guest Access Widget
 
-### ✅ Fase 4: Geo-Espacial
-- [x] `geo.api.ts` con todos los endpoints
-- [x] React Query hooks
-- [x] Zustand store (incluye centroMapa, zoomMapa)
-- [x] Hook facade `useGeoFeature`
-- [ ] Integración con `react-native-maps`
-- [ ] Renderizado de focos en mapa
+### ⏳ Fase UI-3: Alertas + Reportes
+- [ ] Lista de alertas con filtros
+- [ ] Formulario crear alerta con mapa
+- [ ] Detalle de alerta con timeline
+- [ ] Formulario crear reporte con categorías
+- [ ] Lista de reportes con filtros
 
-### ⏳ Fase 5: Despacho de Emergencias
-- [ ] `emergencias.api.ts`
-- [ ] UI de tracking y coordinación
+### ⏳ Fase UI-4: Mapa Interactivo
+- [ ] Integración react-native-maps
+- [ ] Modos: estándar, satelital, 3D
+- [ ] Heatmap y marcadores personalizados
+- [ ] Tracking de ubicación
 
-### ⏳ Fase 6: Analítica y Dashboard
-- [ ] `analitica.api.ts`
-- [ ] UI de métricas y heatmaps
+### ⏳ Fase UI-5: Despachos
+- [ ] Formulario crear despacho
+- [ ] Tracking en tiempo real
+- [ ] Notificaciones de cambio de estado
 
-### ⏳ Fase 7: Multimedia
-- [ ] Gestión de evidencias fotográficas
+### ⏳ Fase UI-6: Analítica + Exportar
+- [ ] Dashboard con KPIs visuales
+- [ ] Gráficos (líneas, barras)
+- [ ] Exportar PDF / Excel
+
+### ⏳ Fase UI-7: Multimedia + Extras
+- [ ] Upload de fotos/videos
+- [ ] Galería de evidencias
+- [ ] Alertas push por región
 
 ---
 
 ## Integraciones Creadas
 
-### Entities Creadas/Actualizadas
+### Entities
 
 | Entity | API | Queries | Store | Hooks |
 |--------|-----|---------|-------|-------|
-| **alerta** | ✅ `alerta.api.ts` | ✅ `queries.ts` | ✅ `store.ts` | ✅ `useAlertaFeature.ts` |
-| **reporte** | ✅ `reporte.api.ts` | ✅ `queries.ts` | ✅ `store.ts` | ✅ `useReporteFeature.ts` |
-| **geo** | ✅ `geo.api.ts` | ✅ `queries.ts` | ✅ `store.ts` | ✅ `useGeoFeature.ts` |
-| **usuario** | ✅ `usuario.api.ts` (actualizado) | - | - | - |
-| **auth** | ✅ `auth.api.ts` (actualizado) | - | - | - |
+| **alerta** | ✅ | ✅ | ✅ | ✅ `useAlertaFeature` |
+| **reporte** | ✅ | ✅ | ✅ | ✅ `useReporteFeature` |
+| **geo** | ✅ | ✅ | ✅ | ✅ `useGeoFeature` |
+| **emergencia** | ✅ | ✅ | ✅ | ✅ `useEmergenciaFeature` |
+| **analitica** | ✅ | ✅ | ✅ | ✅ `useAnaliticaFeature` |
+| **multimedia** | ✅ | ✅ | ✅ | ✅ `useMultimediaFeature` |
+| **usuario** | ✅ | - | - | - |
+| **auth** | ✅ | - | ✅ auth.store | - |
+
+### Offline-First
+
+| Componente | Descripción |
+|------------|-------------|
+| `storage.client.ts` | 3 particiones: global (AsyncStorage), secure (SecureStore), outbox (AsyncStorage) |
+| `storage.adapter.ts` | Adaptador Zustand con caché L1 (RAM) + L2 (disco) |
+| `offline.queue.ts` | Gestor de cola Outbox (enqueue, dequeue, retry) |
+| `offline.sync.ts` | Orquestador de sincronización con NetInfo + reintentos (max 3) |
+| `auth/offline-strategy/` | Creación optimista de usuario + cola de registro + resolución de conflictos |
 
 ### Endpoints Integrados
 
 #### Alertas (`/api/alertas`)
-- `POST /` - Crear alerta
-- `GET /mis-alertas` - Mis alertas
-- `GET /cercanas` - Alertas cercanas
-- `GET /:id` - Por ID
-- `GET /` - Todas (ADMIN/BRIGADISTA)
-- `POST /:id/verificar` - Verificar
-- `PATCH /:id/estado` - Cambiar estado
-- `DELETE /:id` - Eliminar (ADMIN)
+`POST /` | `GET /mis-alertas` | `GET /cercanas` | `GET /:id` | `GET /` | `POST /:id/verificar` | `PATCH /:id/estado` | `DELETE /:id`
 
 #### Reportes (`/api/reportes`)
-- `GET /categorias` - Listar categorías
-- `POST /` - Crear reporte
-- `GET /` - Listar todos
-- `GET /me` - Mis reportes
-- `GET /:id` - Por ID
-- `PATCH /:id` - Actualizar
-- `DELETE /:id` - Eliminar
-- `GET /:id/historial` - Historial (ADMIN/BRIGADISTA)
-- `PATCH /:id/estado` - Cambiar estado (ADMIN/BRIGADISTA)
+`GET /categorias` | `POST /` | `GET /` | `GET /me` | `GET /:id` | `PATCH /:id` | `DELETE /:id` | `GET /:id/historial` | `PATCH /:id/estado`
 
 #### Geo (`/api/geo`)
-- `POST /` - Reportar foco
-- `GET /` - Obtener todos
-- `GET /cercanos` - Focos cercanos
-- `GET /:id` - Por ID
-- `PATCH /:id/estado` - Cambiar estado
-- `PATCH /:id/perimetro` - Actualizar perímetro
-- `PUT /:id` - Actualizar completo
-- `DELETE /:id` - Eliminar
+`POST /` | `GET /` | `GET /cercanos` | `GET /:id` | `PATCH /:id/estado` | `PATCH /:id/perimetro` | `PUT /:id` | `DELETE /:id`
+
+#### Emergencias (`/api/emergencias`)
+`POST /` | `GET /` | `GET /:id` | `PATCH /:id/estado`
+
+#### Analítica (`/api/analitica`)
+`GET /dashboard` | `GET /predictivo`
+
+#### Multimedia (`/api/multimedia`)
+`POST /upload` | `DELETE /:id`
 
 ---
 
@@ -373,10 +420,15 @@ La IP `192.168.x.xxx` está hardcodeada en `.env`. Para desarrollo en red local,
 
 ### Offline-First
 
-El proyecto implementa estrategia offline en `features/auth/offline-strategy/`. Para扩展 a otras entidades (alertas, reportes), seguir el mismo patrón usando AsyncStorage.
+El proyecto implementa una arquitectura offline robusta:
+- **Outbox Pattern**: Mutaciones offline encoladas en AsyncStorage, sincronizadas al recuperar conexión
+- **Particionamiento de almacenamiento**: global, seguro (SecureStore + fallback AsyncStorage), outbox
+- **Caché L1/L2**: RAM + disco para máxima resiliencia
+- **Sync Orchestrator**: Escucha cambios de red con `NetInfo`, procesa cola con reintentos (max 3)
+- **Claves de idempotencia**: Previene procesamiento duplicado en sincronización
 
 ---
 
 ## Licencia
 
-MIT © 2024 FocoCero
+MIT © 2026 FocoCero

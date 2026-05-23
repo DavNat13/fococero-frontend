@@ -6,9 +6,23 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useFonts, Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_500Medium } from '@expo-google-fonts/roboto';
 import { useAuthStore } from '@/features/auth';
+import { UserRole } from '@entities/usuario';
 import '../global.css';
 
 SplashScreen.preventAutoHideAsync();
+
+function getRouteByRole(rol?: UserRole): string {
+  switch (rol) {
+    case UserRole.ADMIN:
+      return '/(admin)';
+    case UserRole.BRIGADISTA:
+      return '/(brigadista)';
+    case UserRole.INVITADO:
+    case UserRole.USUARIO:
+    default:
+      return '/(ciudadano)';
+  }
+}
 
 function AuthRedirect() {
   const router = useRouter();
@@ -16,22 +30,20 @@ function AuthRedirect() {
   const isNavigating = useRef(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Solo empezar a escuchar después de que el componente esté montado
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
   useEffect(() => {
-    // Solo navegar después de montar Y cuando esté autenticado
     if (!isMounted || isNavigating.current) return;
     
-    if (status === 'authenticated' && user) {
+    if ((status === 'authenticated' || status === 'guest') && user) {
       isNavigating.current = true;
       
-      // Usar setImmediate para ejecutar en el siguiente ciclo de eventos
-      // Esto garantiza que el contexto de navegación esté disponible
+      const route = getRouteByRole(user.rol);
+      
       const timeout = setTimeout(() => {
-        router.replace('/(brigadista)');
+        router.replace(route as any);
       }, 300);
 
       return () => clearTimeout(timeout);
