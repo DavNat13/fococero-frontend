@@ -10,15 +10,15 @@
   :root {
     /* Por defecto modo oscuro para app de emergencias */
     color-scheme: dark;
-    
+
     /* Brand FocoCero - Fuego y Tierra */
-    --brand-primary: 234 88 12;   /* #EA580C Naranja Fuego */
+    --brand-primary: 234 88 12; /* #EA580C Naranja Fuego */
     --brand-secondary: 87 83 78; /* #57534E Stone 600 */
-    --brand-accent: 220 38 38;    /* #DC2626 Rojo Emergencia */
+    --brand-accent: 220 38 38; /* #DC2626 Rojo Emergencia */
 
     /* Superficies Dark - Carbón profundo */
-    --surface-background: 12 15 23;  /* #0C0F17 Carbón profundo táctico */
-    --surface-card: 23 27 38;     /* #171B26 Elevación base */
+    --surface-background: 12 15 23; /* #0C0F17 Carbón profundo táctico */
+    --surface-card: 23 27 38; /* #171B26 Elevación base */
     --surface-elevated: 31 41 56; /* #1F2938 Elevación alta */
 
     /* Contenido Dark */
@@ -27,7 +27,7 @@
     --content-tertiary: 107 114 128; /* #6B7280 Gris medio */
 
     /* Feedback */
-    --feedback-danger: 239 68 68;    /* #EF4444 Rojo */
+    --feedback-danger: 239 68 68; /* #EF4444 Rojo */
     --feedback-warning: 245 158 11; /* #F59E0B Amarillo */
     --feedback-success: 16 185 129; /* #10B981 Verde */
   }

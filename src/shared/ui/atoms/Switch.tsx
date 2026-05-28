@@ -18,7 +18,7 @@ interface SwitchProps {
 
 export const Switch = ({ value, onValueChange, disabled = false, className = '' }: SwitchProps) => {
   // Usar memo para evitar recrear el valor en cada render
-  const initialProgress = useMemo(() => value ? 1 : 0, []);
+  const initialProgress = useMemo(() => (value ? 1 : 0), [value]);
   const progress = useSharedValue(initialProgress);
 
   useEffect(() => {
@@ -26,11 +26,7 @@ export const Switch = ({ value, onValueChange, disabled = false, className = '' 
   }, [value, progress]);
 
   const trackAnimatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(
-      progress.value,
-      [0, 1],
-      ['#334155', '#EA580C'],
-    );
+    const backgroundColor = interpolateColor(progress.value, [0, 1], ['#334155', '#EA580C']);
     return { backgroundColor };
   });
 

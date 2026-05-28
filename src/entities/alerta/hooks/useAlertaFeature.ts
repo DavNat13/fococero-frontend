@@ -13,8 +13,13 @@ import {
 import type { CrearAlertaPayload, CambiarEstadoPayload } from '../api/alerta.api';
 
 export const useAlertaFeature = () => {
-  const { alertaSeleccionada, filtroEstado, setAlertaSeleccionada, setFiltroEstado, limpiarFiltros } =
-    useAlertaStore();
+  const {
+    alertaSeleccionada,
+    filtroEstado,
+    setAlertaSeleccionada,
+    setFiltroEstado,
+    limpiarFiltros,
+  } = useAlertaStore();
 
   const misAlertasQuery = useGetMisAlertas();
   const todasAlertasQuery = useGetTodasAlertas();
@@ -28,7 +33,10 @@ export const useAlertaFeature = () => {
       await createMutation.mutateAsync(payload);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -37,7 +45,10 @@ export const useAlertaFeature = () => {
       await verificarMutation.mutateAsync(id);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -46,7 +57,10 @@ export const useAlertaFeature = () => {
       await estadoMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -55,7 +69,10 @@ export const useAlertaFeature = () => {
       await eliminarMutation.mutateAsync(id);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 

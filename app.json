@@ -19,14 +19,9 @@
         "NSLocationWhenInUseUsageDescription": "FocoCero necesita tu ubicación para reportar incendios cercanos.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "FocoCero requiere seguimiento GPS para la seguridad de los brigadistas en terreno.",
         "NSLocationAlwaysUsageDescription": "Necesitamos acceso permanente para coordinar la respuesta ante incendios.",
-        "UIBackgroundModes": [
-          "location",
-          "fetch",
-          "remote-notification",
-          "location",
-          "fetch",
-          "remote-notification"
-        ],
+        "UIBackgroundModes": ["location", "fetch", "remote-notification"],
+        "NSCameraUsageDescription": "FocoCero necesita la cámara para capturar evidencia de incendios.",
+        "NSPhotoLibraryUsageDescription": "FocoCero necesita acceso a tu galería para adjuntar fotos de reportes.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },

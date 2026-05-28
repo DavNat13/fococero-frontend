@@ -5,6 +5,10 @@
   },
   "build": {
     "development": {
+      "channel": "development",
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "development"
+      },
       "ios": {
         "developmentClient": true,
         "distribution": "internal"
@@ -14,10 +18,18 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "channel": "preview",
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "staging"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "channel": "production",
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_ENVIRONMENT": "production"
+      }
     }
   },
   "submit": {

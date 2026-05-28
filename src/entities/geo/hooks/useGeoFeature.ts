@@ -10,7 +10,12 @@ import {
   useUpdateFoco,
   useDeleteFoco,
 } from '../api/queries';
-import type { CrearFocoPayload, CambiarEstadoPayload, ActualizarFocoPayload, FocosCercanosParams } from '../api/geo.api';
+import type {
+  CrearFocoPayload,
+  CambiarEstadoPayload,
+  ActualizarFocoPayload,
+  FocosCercanosParams,
+} from '../api/geo.api';
 
 export const useGeoFeature = () => {
   const {
@@ -37,7 +42,10 @@ export const useGeoFeature = () => {
       await createMutation.mutateAsync(payload);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -46,7 +54,10 @@ export const useGeoFeature = () => {
       await estadoMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -55,7 +66,10 @@ export const useGeoFeature = () => {
       await perimetroMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -64,7 +78,10 @@ export const useGeoFeature = () => {
       await updateMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -73,7 +90,10 @@ export const useGeoFeature = () => {
       await deleteMutation.mutateAsync(id);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 

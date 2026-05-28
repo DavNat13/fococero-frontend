@@ -30,40 +30,70 @@ export const globalStorage = {
 // 2. PARTICIÓN SEGURA (Tokens JWT, Perfiles) - Encriptada por el Hardware del Teléfono
 const sanitizeKey = (key: string): string => key.replace(/[^a-zA-Z0-9.\-_]/g, '_');
 
+const isAuthToken = (key: string): boolean =>
+  key.includes('access_token') || key.includes('refresh_token') || key.includes('auth');
+
+let secureStoreAvailable: boolean | null = null;
+
+const isSecureStoreAvailable = async (): Promise<boolean> => {
+  if (secureStoreAvailable !== null) return secureStoreAvailable;
+  try {
+    secureStoreAvailable = await SecureStore.isAvailableAsync();
+  } catch {
+    secureStoreAvailable = false;
+  }
+  return secureStoreAvailable;
+};
+
+const handleSecureStoreError = (key: string, error: unknown) => {
+  if (isAuthToken(key)) {
+    if (__DEV__) {
+      console.warn(`[SecureStore] Fallback para ${key} en dev:`, error);
+    } else {
+      throw error;
+    }
+  } else if (__DEV__) {
+    console.warn(`[SecureStore] Fallback silencioso para ${key} en dev:`, error);
+  }
+};
+
 export const secureStorage = {
   setItem: async (key: string, value: string) => {
     if (!key || typeof key !== 'string') return;
     const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || !(await isSecureStoreAvailable())) {
       return await AsyncStorage.setItem(fullKey, value);
     }
     try {
       await SecureStore.setItemAsync(fullKey, value);
     } catch (error) {
+      handleSecureStoreError(key, error);
       await AsyncStorage.setItem(fullKey, value);
     }
   },
   getItem: async (key: string) => {
     if (!key || typeof key !== 'string') return null;
     const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || !(await isSecureStoreAvailable())) {
       return await AsyncStorage.getItem(fullKey);
     }
     try {
       return await SecureStore.getItemAsync(fullKey);
     } catch (error) {
+      handleSecureStoreError(key, error);
       return await AsyncStorage.getItem(fullKey);
     }
   },
   removeItem: async (key: string) => {
     if (!key || typeof key !== 'string') return;
     const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' || !(await isSecureStoreAvailable())) {
       return await AsyncStorage.removeItem(fullKey);
     }
     try {
       await SecureStore.deleteItemAsync(fullKey);
     } catch (error) {
+      handleSecureStoreError(key, error);
       await AsyncStorage.removeItem(fullKey);
     }
   },
@@ -89,19 +119,28 @@ export const wipeAllStorage = async () => {
     const appKeys = keys.filter((k) => k.startsWith(PREFIX));
     await AsyncStorage.multiRemove(appKeys);
 
-    // Limpiamos explícitamente tokens seguros si estamos en móvil
     if (Platform.OS !== 'web') {
       try {
-        await SecureStore.deleteItemAsync(`${PREFIX}secure_access_token`);
-      } catch (e) { /* ignore */ }
-      try {
-        await SecureStore.deleteItemAsync(`${PREFIX}secure_refresh_token`);
-      } catch (e) { /* ignore */ }
-      try {
-        await SecureStore.deleteItemAsync(`${PREFIX}secure_fococero-auth-session`);
-      } catch (e) { /* ignore */ }
+        const secureKeys = [
+          'access_token',
+          'refresh_token',
+          'fococero-auth-session',
+          'firebase_token',
+          'user_profile',
+        ];
+        for (const key of secureKeys) {
+          try {
+            await SecureStore.deleteItemAsync(`${PREFIX}secure_${key}`);
+          } catch {
+            /* key may not exist */
+          }
+        }
+      } catch (error) {
+        if (__DEV__) console.warn('[Storage] Error limpiando SecureStore:', error);
+      }
     }
   } catch (error) {
-    console.error('[Storage] Error ejecutando Kill Switch:', error);
+    if (__DEV__) console.warn('[Storage] Error ejecutando Kill Switch:', error);
+    else console.error('[Storage] Error ejecutando Kill Switch:', error);
   }
 };

@@ -26,7 +26,7 @@ export interface UnauthenticatedState extends BaseAuthState {
 export interface AuthenticatedState extends BaseAuthState {
   status: 'guest' | 'authenticated';
   user: Usuario; // ✨ Consumiendo la Entidad
-  firebaseToken: string | null; 
+  firebaseToken: string | null;
 }
 
 export type AuthState = UnauthenticatedState | AuthenticatedState;
@@ -34,7 +34,7 @@ export type AuthState = UnauthenticatedState | AuthenticatedState;
 // 3. CONTRATOS DE RED (Payloads para la API)
 
 export interface RegisterGuestPayload {
-  rut: string; 
+  rut: string;
   nombre: string;
   apellido: string;
   telefono: string;

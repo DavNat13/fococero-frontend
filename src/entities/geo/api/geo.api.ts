@@ -84,15 +84,24 @@ export const geoApi = {
   },
 
   // Zona operativa (ADMIN/BRIGADISTA)
-  cambiarEstado: async (id: string, payload: CambiarEstadoPayload): Promise<ApiResponse<GeoFoco>> => {
+  cambiarEstado: async (
+    id: string,
+    payload: CambiarEstadoPayload,
+  ): Promise<ApiResponse<GeoFoco>> => {
     return apiClient.patch<GeoFoco>(`/api/geo/${id}/estado`, payload);
   },
 
-  actualizarPerimetro: async (id: string, payload: ActualizarPerimetroPayload): Promise<ApiResponse<GeoFoco>> => {
+  actualizarPerimetro: async (
+    id: string,
+    payload: ActualizarPerimetroPayload,
+  ): Promise<ApiResponse<GeoFoco>> => {
     return apiClient.patch<GeoFoco>(`/api/geo/${id}/perimetro`, payload);
   },
 
-  actualizarCompleto: async (id: string, payload: ActualizarFocoPayload): Promise<ApiResponse<GeoFoco>> => {
+  actualizarCompleto: async (
+    id: string,
+    payload: ActualizarFocoPayload,
+  ): Promise<ApiResponse<GeoFoco>> => {
     return apiClient.put<GeoFoco>(`/api/geo/${id}`, payload);
   },
 

@@ -13,6 +13,7 @@ const envSchema = z.object({
   EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET: z.string(),
   EXPO_PUBLIC_FIREBASE_APP_ID: z.string(),
   EXPO_PUBLIC_FIREBASE_CLIENT_ID: z.string().optional(),
+  EXPO_PUBLIC_GOOGLE_CLIENT_ID: z.string().optional(),
 
   // Core
   EXPO_PUBLIC_ENVIRONMENT: z.enum(['development', 'staging', 'production']),
@@ -24,6 +25,9 @@ const envSchema = z.object({
   // Observabilidad
   EXPO_PUBLIC_SENTRY_DSN: z.string().url().optional().or(z.string().length(0)),
   EXPO_PUBLIC_LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('debug'),
+
+  // Seguridad Zero-Trust
+  EXPO_PUBLIC_INTERNAL_TOKEN: z.string().optional(),
 });
 
 export const validateEnv = () => {

@@ -16,7 +16,13 @@ export interface Despacho {
   updatedAt?: string;
 }
 
-export type DespachoEstado = 'PENDIENTE' | 'ENVIADO' | 'ACEPTADO' | 'RECHAZADO' | 'CANCELADO' | 'COMPLETADO';
+export type DespachoEstado =
+  | 'PENDIENTE'
+  | 'ENVIADO'
+  | 'ACEPTADO'
+  | 'RECHAZADO'
+  | 'CANCELADO'
+  | 'COMPLETADO';
 
 export interface Organismo {
   id: string;
@@ -52,7 +58,10 @@ export const emergenciaApi = {
     return apiClient.get<Despacho>(`/api/emergencias/despachos/${correlationId}`);
   },
 
-  actualizarEstadoDespacho: async (id: string, payload: ActualizarEstadoPayload): Promise<ApiResponse<Despacho>> => {
+  actualizarEstadoDespacho: async (
+    id: string,
+    payload: ActualizarEstadoPayload,
+  ): Promise<ApiResponse<Despacho>> => {
     return apiClient.patch<Despacho>(`/api/emergencias/despachos/${id}/estado`, payload);
   },
 

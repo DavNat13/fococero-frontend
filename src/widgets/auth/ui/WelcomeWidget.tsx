@@ -81,21 +81,15 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
           entering={FadeInUp.delay(WELCOME_CHOREOGRAPHY.BUTTONS).springify().damping(15)}
           className="gap-4"
         >
-          <Button
-            label="Crear cuenta"
-            variant="solid"
-            onPress={handleCreateAccountPress}
-          />
+          <Button label="Crear cuenta" variant="solid" onPress={handleCreateAccountPress} />
 
-          <Button
-            label="Iniciar Sesión"
-            variant="outline"
-            onPress={handleLoginPress}
-          />
+          <Button label="Iniciar Sesión" variant="outline" onPress={handleLoginPress} />
 
           <View className="flex-row items-center gap-3">
             <View className="h-px flex-1 bg-surface-elevated" />
-            <Typography variant="caption" color="secondary">o</Typography>
+            <Typography variant="caption" color="secondary">
+              o
+            </Typography>
             <View className="h-px flex-1 bg-surface-elevated" />
           </View>
 
@@ -104,7 +98,7 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
             variant="outline"
             onPress={handleGoogleSignIn}
             isLoading={isGoogleLoading}
-            className="bg-surface-card border-surface-elevated"
+            className="border-surface-elevated bg-surface-card"
           />
         </Animated.View>
 

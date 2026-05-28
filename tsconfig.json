@@ -1,12 +1,9 @@
-// c:/Users/David/Desktop/FocoCero/fococero-frontend/tsconfig.json
-
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
     "moduleResolution": "bundler",
     "module": "esnext",
-    "ignoreDeprecations": "5.0",
     "paths": {
       "@/*": ["./src/*"],
       "@core/*": ["./src/core/*"],
@@ -18,7 +15,7 @@
     },
 
     // Tipado y Seguridad
-    "types": ["node"],
+    "types": ["node", "jest"],
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,

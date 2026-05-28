@@ -28,15 +28,24 @@ axiosInstance.interceptors.response.use(responseInterceptor, (error) =>
 );
 
 // 3. EL ENVOLTORIO SEGURO (RESULT PATTERN WRAPPER)
-async function executeRequest<T>(request: Promise<any>): Promise<ApiResponse<T>> {
+const log = __DEV__ ? console.log : () => {};
+
+const defaultTransform = <T>(data: unknown): T =>
+  (data as any)?.usuario || (data as any)?.data || (data as T);
+
+async function executeRequest<T>(
+  request: Promise<any>,
+  transform?: (data: unknown) => T,
+): Promise<ApiResponse<T>> {
   try {
     const response = await request;
 
-    console.log('[API] Raw response:', JSON.stringify(response.data, null, 2));
+    log('[API] Raw response:', JSON.stringify(response.data, null, 2));
 
+    const extract = transform || defaultTransform<T>;
     const successResult: ApiSuccess<T> = {
       success: true,
-      data: response.data?.usuario || response.data?.data || response.data,
+      data: extract(response.data),
     };
 
     return successResult;
@@ -84,15 +93,19 @@ export const apiClient = {
 };
 
 // Versión pública que no maneja errores de auth
-async function executeRequestPublic<T>(request: Promise<any>): Promise<ApiResponse<T>> {
+async function executeRequestPublic<T>(
+  request: Promise<any>,
+  transform?: (data: unknown) => T,
+): Promise<ApiResponse<T>> {
   try {
     const response = await request;
 
-    console.log('[API Public] Raw response:', JSON.stringify(response.data, null, 2));
+    log('[API Public] Raw response:', JSON.stringify(response.data, null, 2));
 
+    const extract = transform || defaultTransform<T>;
     const successResult: ApiSuccess<T> = {
       success: true,
-      data: response.data?.usuario || response.data?.data || response.data,
+      data: extract(response.data),
     };
     return successResult;
   } catch (error) {

@@ -62,7 +62,7 @@ export interface ApiErrorDetail {
 // 5. PAGINACIÓN INMUTABLE
 export interface PaginatedData<T> {
   // ReadonlyArray evita que alguien haga un .push() mutando la caché global por accidente
-  readonly items: ReadonlyArray<T>;
+  readonly items: readonly T[];
   readonly pagination: {
     readonly totalItems: number;
     readonly currentPage: number;

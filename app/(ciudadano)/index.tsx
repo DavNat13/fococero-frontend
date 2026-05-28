@@ -1,12 +1,22 @@
 // app/(ciudadano)/index.tsx - Pantalla de inicio ciudadano
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaLayout } from '@/shared/ui/layouts/SafeAreaLayout';
 import { Typography } from '@/shared/ui/atoms/Typography';
 import { useAuthStore } from '@/features/auth';
+import { useReporteFeature } from '@/entities/reporte';
+import { useAlertaFeature } from '@/entities/alerta';
+import { LoadingSkeleton } from '@/shared/ui/molecules/LoadingSkeleton';
+import { ErrorBanner } from '@/shared/ui/molecules/ErrorBanner';
+import { router } from 'expo-router';
 
 export default function CiudadanoHome() {
   const { user } = useAuthStore();
+  const { misReportes, isLoading: loadingReportes, error: errorReportes } = useReporteFeature();
+  const { misAlertas, isLoading: loadingAlertas, error: errorAlertas } = useAlertaFeature();
+
+  const isLoading = loadingReportes || loadingAlertas;
+  const error = errorReportes || errorAlertas;
 
   return (
     <SafeAreaLayout variant="background">
@@ -14,66 +24,94 @@ export default function CiudadanoHome() {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
+        {error && (
+          <View style={styles.errorContainer}>
+            <ErrorBanner message={error} onRetry={() => {}} />
+          </View>
+        )}
+
         {/* Header de bienvenida */}
         <View style={styles.header}>
           <Typography variant="h1" className="text-white">
             Hola, {user?.nombre || 'Ciudadano'}
           </Typography>
-          <Typography variant="body" className="text-gray-400 mt-2">
+          <Typography variant="body" className="mt-2 text-gray-400">
             Bienvenido a FocoCero
           </Typography>
         </View>
 
         {/* Stats básicos */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <Typography variant="h2" className="text-red-500">0</Typography>
-            <Typography variant="caption" className="text-gray-400">
-              Reportes activos
-            </Typography>
+        {isLoading ? (
+          <View style={styles.statsContainer}>
+            <LoadingSkeleton lines={3} lineHeight={60} />
           </View>
-          <View style={styles.statCard}>
-            <Typography variant="h2" className="text-orange-500">0</Typography>
-            <Typography variant="caption" className="text-gray-400">
-              Alertas cercanas
-            </Typography>
+        ) : (
+          <View style={styles.statsContainer}>
+            <View style={styles.statCard}>
+              <Typography variant="h2" className="text-red-500">
+                {misReportes.length}
+              </Typography>
+              <Typography variant="caption" className="text-gray-400">
+                Mis reportes
+              </Typography>
+            </View>
+            <View style={styles.statCard}>
+              <Typography variant="h2" className="text-orange-500">
+                {misAlertas.length}
+              </Typography>
+              <Typography variant="caption" className="text-gray-400">
+                Alertas cercanas
+              </Typography>
+            </View>
+            <View style={styles.statCard}>
+              <Typography variant="h2" className="text-green-500">
+                0
+              </Typography>
+              <Typography variant="caption" className="text-gray-400">
+                Zonas seguras
+              </Typography>
+            </View>
           </View>
-          <View style={styles.statCard}>
-            <Typography variant="h2" className="text-green-500">0</Typography>
-            <Typography variant="caption" className="text-gray-400">
-              Zonas seguras
-            </Typography>
-          </View>
-        </View>
+        )}
 
         {/* Acciones rápidas */}
         <View style={styles.section}>
-          <Typography variant="h3" className="text-white mb-4">
+          <Typography variant="h3" className="mb-4 text-white">
             Acciones rápidas
           </Typography>
           <View style={styles.actionsGrid}>
-            <View style={[styles.actionCard, styles.actionCardPrimary]}>
-              <Typography variant="body" className="text-white font-semibold">
+            <TouchableOpacity
+              style={[styles.actionCard, styles.actionCardPrimary]}
+              onPress={() => router.push('/(ciudadano)/crear-reporte')}
+              accessibilityLabel="Reportar incendio"
+              accessibilityRole="button"
+            >
+              <Typography variant="body" className="font-semibold text-white">
                 Reportar incendio
               </Typography>
-              <Typography variant="caption" className="text-white/70 mt-1">
+              <Typography variant="caption" className="mt-1 text-white/70">
                 Notifica un nuevo foco
               </Typography>
-            </View>
-            <View style={[styles.actionCard, styles.actionCardSecondary]}>
-              <Typography variant="body" className="text-white font-semibold">
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionCard, styles.actionCardSecondary]}
+              onPress={() => router.push('/(ciudadano)/alertas')}
+              accessibilityLabel="Ver alertas"
+              accessibilityRole="button"
+            >
+              <Typography variant="body" className="font-semibold text-white">
                 Ver alertas
               </Typography>
-              <Typography variant="caption" className="text-white/70 mt-1">
+              <Typography variant="caption" className="mt-1 text-white/70">
                 Alertas en tu zona
               </Typography>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
         {/* Información de estado */}
         <View style={styles.statusCard}>
-          <Typography variant="body" className="text-white font-semibold">
+          <Typography variant="body" className="font-semibold text-white">
             Estado de alerta actual
           </Typography>
           <View style={styles.statusRow}>
@@ -92,6 +130,9 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
     paddingBottom: 32,
+  },
+  errorContainer: {
+    marginBottom: 16,
   },
   header: {
     marginBottom: 24,

@@ -2,7 +2,9 @@
 
 import { InternalAxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance } from 'axios';
 import { ApiError } from './api.errors';
+import { ENV } from '../config/env.config';
 import { useAuthStore } from '@features/auth/model/auth.store';
+import { generateUUID } from '@shared/utils/uuid';
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _requestStartTime?: number;
@@ -16,19 +18,19 @@ export const requestInterceptor = (config: CustomAxiosRequestConfig) => {
   config._requestStartTime = Date.now();
 
   if (!config.headers['X-Request-ID']) {
-    const generateUUID = () => {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      });
-    };
     config.headers['X-Request-ID'] = generateUUID();
   }
 
   const firebaseToken = useAuthStore.getState().firebaseToken;
   if (firebaseToken) {
     config.headers.Authorization = `Bearer ${firebaseToken}`;
+  }
+
+  const internalToken = ENV.EXPO_PUBLIC_INTERNAL_TOKEN;
+  if (internalToken) {
+    config.headers['x-internal-token'] = internalToken;
+  } else if (__DEV__) {
+    console.warn('[API] x-internal-token no configurado — solicitudes sin identificación interna');
   }
 
   config.headers.Accept = 'application/json';

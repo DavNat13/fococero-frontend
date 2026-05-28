@@ -93,11 +93,19 @@ export const analiticaApi = {
   },
 
   getDetalleCuadrante: async (cuadranteId: string): Promise<ApiResponse<CuadranteDetalle>> => {
-    return apiClient.get<CuadranteDetalle>(`/api/analitica/espacial/detalle?cuadranteId=${cuadranteId}`);
+    return apiClient.get<CuadranteDetalle>(
+      `/api/analitica/espacial/detalle?cuadranteId=${cuadranteId}`,
+    );
   },
 
-  getPorRadio: async (lat: number, lng: number, radio: number): Promise<ApiResponse<HeatmapCell[]>> => {
-    return apiClient.get<HeatmapCell[]>('/api/analitica/espacial/radio', { params: { lat, lng, radio } });
+  getPorRadio: async (
+    lat: number,
+    lng: number,
+    radio: number,
+  ): Promise<ApiResponse<HeatmapCell[]>> => {
+    return apiClient.get<HeatmapCell[]>('/api/analitica/espacial/radio', {
+      params: { lat, lng, radio },
+    });
   },
 
   // Predictiva - Predicciones
@@ -106,7 +114,10 @@ export const analiticaApi = {
   },
 
   // Exportar
-  exportarReporte: async (formato: 'pdf' | 'csv' | 'excel', filtros?: FiltrosAnalitica): Promise<ApiResponse<Blob>> => {
+  exportarReporte: async (
+    formato: 'pdf' | 'csv' | 'excel',
+    filtros?: FiltrosAnalitica,
+  ): Promise<ApiResponse<Blob>> => {
     return apiClient.post<Blob>('/api/analitica/exportar', { formato, filtros });
   },
 };

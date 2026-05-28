@@ -63,7 +63,10 @@ export const alertaApi = {
     return apiClient.post<Alerta>(`/api/alertas/${id}/verificar`);
   },
 
-  cambiarEstado: async (id: string, payload: CambiarEstadoPayload): Promise<ApiResponse<Alerta>> => {
+  cambiarEstado: async (
+    id: string,
+    payload: CambiarEstadoPayload,
+  ): Promise<ApiResponse<Alerta>> => {
     return apiClient.patch<Alerta>(`/api/alertas/${id}/estado`, payload);
   },
 

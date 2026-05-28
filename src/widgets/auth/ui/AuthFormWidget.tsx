@@ -99,7 +99,7 @@ export const AuthFormWidget = ({
           />
 
           {error && (
-            <View className="rounded-lg bg-danger-primary/10 p-3">
+            <View className="bg-danger-primary/10 rounded-lg p-3">
               <Typography variant="body" color="danger">
                 {error}
               </Typography>

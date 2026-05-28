@@ -63,7 +63,7 @@ export const useAuthStore = create<AuthStore>()(
           get().setAuthData(response.data, undefined);
           return true;
         }
-        
+
         set({ isLoading: false, error: 'Error al iniciar sesión' });
         return false;
       },
@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthStore>()(
           get().setAuthData(response.data, undefined);
           return true;
         }
-        
+
         // Mostrar el error específico del backend
         const errorMessage = response.error?.message || 'Error al registrarse';
         set({ isLoading: false, error: errorMessage });

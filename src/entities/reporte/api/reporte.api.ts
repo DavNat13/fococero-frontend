@@ -88,7 +88,10 @@ export const reporteApi = {
     return apiClient.get<Reporte>(`/api/reportes/${id}`);
   },
 
-  actualizar: async (id: string, payload: ActualizarReportePayload): Promise<ApiResponse<Reporte>> => {
+  actualizar: async (
+    id: string,
+    payload: ActualizarReportePayload,
+  ): Promise<ApiResponse<Reporte>> => {
     return apiClient.patch<Reporte>(`/api/reportes/${id}`, payload);
   },
 
@@ -101,7 +104,10 @@ export const reporteApi = {
     return apiClient.get<HistorialEntry[]>(`/api/reportes/${id}/historial`);
   },
 
-  cambiarEstado: async (id: string, payload: CambiarEstadoPayload): Promise<ApiResponse<Reporte>> => {
+  cambiarEstado: async (
+    id: string,
+    payload: CambiarEstadoPayload,
+  ): Promise<ApiResponse<Reporte>> => {
     return apiClient.patch<Reporte>(`/api/reportes/${id}/estado`, payload);
   },
 };

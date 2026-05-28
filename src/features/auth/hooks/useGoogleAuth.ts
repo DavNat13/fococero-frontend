@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import { router } from 'expo-router';
 import * as Google from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
+import { ENV } from '@core/config/env.config';
 import { authApi } from '../api/auth.api';
 import { useAuthStore } from '../model/auth.store';
 
@@ -20,8 +21,9 @@ export const useGoogleAuth = (): UseGoogleAuthReturn => {
   const [error, setError] = useState<string | null>(null);
   const { setAuthData } = useAuthStore();
 
+  const clientId = ENV.EXPO_PUBLIC_FIREBASE_CLIENT_ID || ENV.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '';
   const config = {
-    clientId: '303096009068.apps.googleusercontent.com',
+    clientId,
     scopes: ['profile', 'email'],
   };
 

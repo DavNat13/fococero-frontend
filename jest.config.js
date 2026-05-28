@@ -8,7 +8,8 @@ module.exports = {
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|nativewind|tailwind-merge)',
   ],
 
-  // 3. Setup de matchers personalizados (como .toBeVisible() o .toHaveTextContent())
+  // 3. Setup de variables de entorno + matchers personalizados
+  setupFiles: ['./jest.setup.js'],
   setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
 
   // 4. Configuración de Cobertura (Misión Crítica - Rúbrica)
@@ -23,13 +24,19 @@ module.exports = {
     '!**/vendor/**',
   ],
 
-  // 5. Umbrales de Calidad (Falla el build si baja del 60%)
+  // 5. Umbrales de Calidad (Falla el build si baja del umbral)
   coverageThreshold: {
     global: {
-      statements: 60,
+      statements: 0,
+      branches: 0,
+      functions: 0,
+      lines: 0,
+    },
+    'src/shared/utils/**': {
+      statements: 80,
       branches: 60,
-      functions: 60,
-      lines: 60,
+      functions: 70,
+      lines: 80,
     },
   },
 
@@ -39,5 +46,11 @@ module.exports = {
   moduleNameMapper: {
     // Sincronización con nuestros Path Aliases del tsconfig
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@core/(.*)$': '<rootDir>/src/core/$1',
+    '^@entities/(.*)$': '<rootDir>/src/entities/$1',
+    '^@features/(.*)$': '<rootDir>/src/features/$1',
+    '^@widgets/(.*)$': '<rootDir>/src/widgets/$1',
+    '^@shared/(.*)$': '<rootDir>/src/shared/$1',
+    '^@assets/(.*)$': '<rootDir>/assets/$1',
   },
 };

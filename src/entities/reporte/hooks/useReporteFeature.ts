@@ -11,7 +11,11 @@ import {
   useDeleteReporte,
   useCambiarEstadoReporte,
 } from '../api/queries';
-import type { CrearReportePayload, ActualizarReportePayload, CambiarEstadoPayload } from '../api/reporte.api';
+import type {
+  CrearReportePayload,
+  ActualizarReportePayload,
+  CambiarEstadoPayload,
+} from '../api/reporte.api';
 
 export const useReporteFeature = () => {
   const {
@@ -37,7 +41,10 @@ export const useReporteFeature = () => {
       await createMutation.mutateAsync(payload);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -46,7 +53,10 @@ export const useReporteFeature = () => {
       await updateMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -55,7 +65,10 @@ export const useReporteFeature = () => {
       await deleteMutation.mutateAsync(id);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -64,7 +77,10 @@ export const useReporteFeature = () => {
       await estadoMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 

@@ -15,8 +15,8 @@ export {
   useFirebaseToken,
 } from './model/auth.selectors';
 
-export { registerFormSchema } from './model/auth.schemas';
-export type { RegisterFormData } from './model/auth.schemas';
+export { registerFormSchema, loginSchema } from './model/auth.schemas';
+export type { RegisterFormData, LoginFormData } from './model/auth.schemas';
 
 export { RequireAuth } from './ui/guards/RequireAuth';
 export { LogoutButton } from './ui/components/LogoutButton';
