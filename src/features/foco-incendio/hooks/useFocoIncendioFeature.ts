@@ -32,7 +32,7 @@ export const useFocoIncendioFeature = () => {
     try {
       await createMutation.mutateAsync(data);
       return { success: true, offline: false };
-    } catch (error) {
+    } catch {
       // Fallback: Si el servidor falla repentinamente, encolamos
       await encolarAlertaOffline(data);
       return { success: true, offline: true, retry: true };

@@ -11,11 +11,29 @@ export const AUTH_TEXTS = {
     HAVE_ACCOUNT_BTN: 'Tengo una Cuenta',
 
     // Legal y Modal
-    LEGAL_LINK: 'Política de Privacidad - Términos y Condiciones',
-    MODAL_TITLE: 'Términos y Condiciones',
+    LEGAL_LINK: 'Términos y Condiciones — Política de Privacidad',
+    MODAL_TITLE: 'Términos y Política de Privacidad',
     MODAL_CONTENT:
-      '1. Uso del Sistema\nEl Sistema Táctico FocoCero es de uso exclusivo para personal autorizado y brigadistas. Toda información registrada es confidencial.\n\n2. Privacidad de Datos\nSu ubicación y reportes serán procesados únicamente para la gestión de emergencias y coordinación táctica en terreno.\n\n3. Responsabilidad\nEl usuario se compromete a emitir reportes veraces y a mantener la seguridad de sus credenciales de acceso.',
-    MODAL_CLOSE_BTN: 'Entendido y Cerrar',
+      'Al continuar, Ud. acepta las siguientes condiciones:\n\n' +
+      '1. TRATAMIENTO DE DATOS PERSONALES (Ley N° 19.628)\n' +
+      'FocoCero recopila y trata sus datos personales (nombre completo, RUT, teléfono, ubicación georreferenciada y credenciales de acceso) conforme a la Ley N° 19.628 sobre Protección de la Vida Privada. Los datos serán utilizados exclusivamente para:\n' +
+      '• Gestión de emergencias y coordinación táctica en incendios.\n' +
+      '• Verificación de identidad y control de acceso al sistema.\n' +
+      '• Comunicaciones oficiales del Sistema Nacional de Prevención y Respuesta ante Desastres.\n\n' +
+      '2. DERECHOS DEL TITULAR (Ley N° 19.628, Arts. 12 y 15)\n' +
+      'Ud. podrá ejercer los derechos de información, modificación, cancelación y oposición (IMCO) respecto de sus datos personales, dirigiéndose a contacto@fococero.cl. FocoCero responderá dentro del plazo legal de 15 días hábiles.\n\n' +
+      '3. UBICACIÓN Y GEOLOCALIZACIÓN (Ley N° 20.000 y Código Sanitario)\n' +
+      'La aplicación accede a su ubicación en tiempo real mientras esté activa. Estos datos se registran para la coordinación en emergencias y se conservan por un plazo máximo de 2 años, salvo requerimiento legal de autoridad competente.\n\n' +
+      '4. SEGURIDAD DE LA INFORMACIÓN (Ley N° 19.223)\n' +
+      'FocoCero implementa medidas técnicas y organizativas para proteger sus datos contra acceso no autorizado, pérdida o destrucción, conforme a la Ley N° 19.223 sobre Delitos Informáticos. El usuario es responsable de mantener la confidencialidad de su contraseña.\n\n' +
+      '5. USO DEL SISTEMA\n' +
+      '• El acceso está restringido a brigadistas, personal autorizado y ciudadanos que reporten emergencias.\n' +
+      '• Todo reporte debe ser veraz. El envío intencional de información falsa podrá ser denunciado ante la autoridad.\n' +
+      '• FocoCero no se hace responsable por daños derivados del mal uso del sistema por parte del usuario.\n\n' +
+      '6. VIGENCIA Y JURISDICCIÓN\n' +
+      'Estos términos se rigen por la legislación chilena. Cualquier controversia será sometida a los tribunales ordinarios de la comuna de Santiago, Región Metropolitana.\n\n' +
+      'Al presionar "Aceptar y Continuar" Ud. declara haber leído, comprendido y aceptado la totalidad de los términos y condiciones aquí expuestos.',
+    MODAL_CLOSE_BTN: 'Aceptar y Continuar',
 
     VERSION: 'v2.4.0-build.88 (Stable)',
   },

@@ -1,7 +1,7 @@
 // src/shared/ui/layouts/ScreenHeader.tsx
 import React from 'react';
 import { View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import { Typography, IconButton } from '@shared/ui/atoms';
 import { Icons, Icon } from '@shared/ui/icons';
 
@@ -24,13 +24,11 @@ export const ScreenHeader = ({
   transparent = false,
   className = '',
 }: ScreenHeaderProps) => {
-  const navigation = useNavigation();
-
   const handleBack = () => {
     if (onBackPress) {
       onBackPress();
-    } else if (navigation.canGoBack()) {
-      navigation.goBack();
+    } else {
+      router.back();
     }
   };
 

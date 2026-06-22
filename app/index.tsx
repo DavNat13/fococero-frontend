@@ -1,13 +1,33 @@
-// app/index.tsx
-import { WelcomeWidget } from '@/widgets/auth';
-import { useRouter } from 'expo-router';
 import React from 'react';
+import { useAuthStore } from '@/features/auth';
+import { UserRole } from '@/entities/usuario';
+import { Redirect } from 'expo-router';
+import { WelcomeWidget } from '@/widgets/auth';
 
-export default function WelcomePage() {
-  const router = useRouter();
+function getRouteByRole(rol?: UserRole): string {
+  switch (rol) {
+    case UserRole.ADMIN:
+      return '/(admin)';
+    case UserRole.BRIGADISTA:
+      return '/(brigadista)';
+    case UserRole.INVITADO:
+      return '/(invitado)';
+    case UserRole.USUARIO:
+    default:
+      return '/(ciudadano)';
+  }
+}
 
-  const handleLogin = () => router.push('./(auth)/login');
-  const handleRegister = () => router.push('./(auth)/register');
+export default function IndexPage() {
+  const { status, user, isHydrated } = useAuthStore();
 
-  return <WelcomeWidget onCreateAccountPress={handleRegister} onHaveAccountPress={handleLogin} />;
+  console.log('[IndexPage] Store state:', { status, user: !!user, isHydrated });
+
+  if (!isHydrated) return null;
+
+  if ((status === 'authenticated' || status === 'guest') && user) {
+    return <Redirect href={getRouteByRole(user.rol) as any} />;
+  }
+
+  return <WelcomeWidget />;
 }

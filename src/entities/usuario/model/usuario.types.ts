@@ -39,8 +39,8 @@ export interface Usuario {
   estado: UserStatus;
   reputacion?: number;
   verificado?: boolean;
-  creado_en?: string; // Fechas serializadas a ISO 8601 en el frontend
-  actualizado_en?: string;
+  created_at?: string; // Fechas serializadas a ISO 8601 en el frontend
+  updated_at?: string;
 }
 
 /**
@@ -49,3 +49,26 @@ export interface Usuario {
  * están estrictamente prohibidos en este payload.
  */
 export type UpdateProfileDTO = Partial<Pick<Usuario, 'nombre' | 'apellido' | 'telefono' | 'rut'>>;
+
+export interface PerfilBrigadista {
+  id: number;
+  usuario_id: number;
+  organismo: string;
+  rango: string;
+  zona_asignada: string;
+  numero_placa: string;
+  fecha_ingreso?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface Certificacion {
+  id: number;
+  brigadista_id: number;
+  tipo: string;
+  organismo_emisor: string;
+  fecha_obtencion: string;
+  fecha_vencimiento?: string;
+  archivo_url?: string;
+  created_at?: string;
+}
