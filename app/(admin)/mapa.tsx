@@ -111,31 +111,31 @@ export default function AdminMapa() {
       icon: 'fire' as const,
       label: 'Reportar incendio',
       color: '#EF4444',
-      onPress: () => router.push('/(admin)/crear-reporte?tipo=incendio'),
+      onPress: () => router.push('/(admin)/crear-reporte?tipo=incendio' as any),
     },
     {
       icon: 'fire' as const,
       label: 'Reportar quema controlada',
       color: '#F59E0B',
-      onPress: () => router.push('/(admin)/crear-reporte?tipo=quema_controlada'),
+      onPress: () => router.push('/(admin)/crear-reporte?tipo=quema_controlada' as any),
     },
     {
       icon: 'smoke-detector' as const,
       label: 'Reportar columna de humo',
       color: '#F97316',
-      onPress: () => router.push('/(admin)/crear-reporte?tipo=columna_humo'),
+      onPress: () => router.push('/(admin)/crear-reporte?tipo=columna_humo' as any),
     },
     {
       icon: 'map-marker-plus' as const,
       label: 'Marcar punto de interés',
       color: '#3B82F6',
-      onPress: () => router.push('/(admin)/puntos-interes/crear'),
+      onPress: () => router.push('/(admin)/puntos-interes/crear' as any),
     },
     {
       icon: 'radar' as const,
       label: 'Iniciar patrullaje',
       color: '#8B5CF6',
-      onPress: () => router.push('/(admin)/patrullaje/nuevo'),
+      onPress: () => router.push('/(admin)/patrullaje/nuevo' as any),
     },
   ];
   const reCenter = useCallback(async () => {

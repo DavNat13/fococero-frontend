@@ -23,7 +23,6 @@ describe('tokenUtils (utilidades de JWT)', () => {
     });
 
     it('retorna null para token con payload malformado', () => {
-      const token = 'header.esto-no-es-json.signature';
       expect(tokenUtils.decodePayload('header.invalidpayload.signature')).toBeNull();
     });
 

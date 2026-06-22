@@ -7,7 +7,6 @@ import {
   useIsHydrated,
   useIsAuthenticated,
   useIsGuest,
-  useAuthActions,
 } from '../auth.selectors';
 import { useAuthStore } from '../auth.store';
 

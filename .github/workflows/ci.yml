@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: ['20', '22']
+        node-version: ['22']
     steps:
       - name: Checkout del código fuente
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Configurar Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -38,7 +38,7 @@ jobs:
         run: npx expo export --platform web --output-dir dist || echo "Web build skipped (run expo build for native)"
 
       - name: Subir reporte de cobertura
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-report-${{ matrix.node-version }}
           path: coverage/

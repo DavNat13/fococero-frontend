@@ -1,6 +1,6 @@
 // src/features/auth/hooks/__tests__/useLogin.test.ts
 
-import { renderHook, act, waitFor } from '@testing-library/react-native';
+import { renderHook, act } from '@testing-library/react-native';
 
 import { useLogin } from '../useLogin';
 
@@ -24,10 +24,10 @@ jest.mock('../../offline-strategy', () => ({
 }));
 
 const fakeFormData = {
-  name: 'Test',
-  email: 'test@test.cl',
-  rut: '11.111.111-1',
-  phone: '+56911111111',
+  nombre: 'Test',
+  apellido: 'Apellido',
+  rut: '11.111.111-1' as any,
+  telefono: '+56911111111',
 };
 
 describe('useLogin', () => {
@@ -76,11 +76,8 @@ describe('useLogin', () => {
     const { result } = renderHook(() => useLogin());
 
     // Iniciamos la primera llamada (sin await para que quede colgada)
-    let firstResult: boolean | undefined;
     act(() => {
-      result.current.loginAsGuest(fakeFormData).then((r) => {
-        firstResult = r;
-      });
+      result.current.loginAsGuest(fakeFormData);
     });
 
     // La segunda llamada debe retornar false inmediatamente (status === 'submitting')

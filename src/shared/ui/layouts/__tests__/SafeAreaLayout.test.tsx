@@ -1,7 +1,7 @@
 // src/shared/ui/layouts/__tests__/SafeAreaLayout.test.tsx
 
 // Use string mocks to avoid CSS interop issues with RN requires inside jest.mock
-import React from 'react';
+import React, { ComponentType } from 'react';
 import { Text } from 'react-native';
 import { render } from '@testing-library/react-native';
 import { SafeAreaLayout } from '../SafeAreaLayout';
@@ -31,7 +31,7 @@ describe('SafeAreaLayout', () => {
         <Text>Test</Text>
       </SafeAreaLayout>,
     );
-    expect(UNSAFE_getByType('SafeAreaView')).toBeDefined();
+    expect(UNSAFE_getByType('SafeAreaView' as unknown as ComponentType)).toBeDefined();
   });
 
   it('renderiza con variante card', () => {
@@ -58,6 +58,6 @@ describe('SafeAreaLayout', () => {
         <Text>Test</Text>
       </SafeAreaLayout>,
     );
-    expect(UNSAFE_getByType('FocusAwareStatusBar')).toBeDefined();
+    expect(UNSAFE_getByType('FocusAwareStatusBar' as unknown as ComponentType)).toBeDefined();
   });
 });

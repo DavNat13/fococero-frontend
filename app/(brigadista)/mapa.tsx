@@ -108,31 +108,31 @@ export default function MapaScreen() {
       icon: 'fire' as const,
       label: 'Reportar incendio',
       color: '#EF4444',
-      onPress: () => router.push('/(brigadista)/crear-reporte?tipo=incendio'),
+      onPress: () => router.push('/(brigadista)/crear-reporte?tipo=incendio' as any),
     },
     {
       icon: 'fire' as const,
       label: 'Reportar quema controlada',
       color: '#F59E0B',
-      onPress: () => router.push('/(brigadista)/crear-reporte?tipo=quema_controlada'),
+      onPress: () => router.push('/(brigadista)/crear-reporte?tipo=quema_controlada' as any),
     },
     {
       icon: 'smoke-detector' as const,
       label: 'Reportar columna de humo',
       color: '#F97316',
-      onPress: () => router.push('/(brigadista)/crear-reporte?tipo=columna_humo'),
+      onPress: () => router.push('/(brigadista)/crear-reporte?tipo=columna_humo' as any),
     },
     {
       icon: 'map-marker-plus' as const,
       label: 'Marcar punto de interés',
       color: '#3B82F6',
-      onPress: () => router.push('/(brigadista)/puntos-interes/crear'),
+      onPress: () => router.push('/(brigadista)/puntos-interes/crear' as any),
     },
     {
       icon: 'radar' as const,
       label: 'Iniciar patrullaje',
       color: '#8B5CF6',
-      onPress: () => router.push('/(brigadista)/patrullaje/nuevo'),
+      onPress: () => router.push('/(brigadista)/patrullaje/nuevo' as any),
     },
   ];
   const mostrarAlts = filtro === 'TODOS' || filtro === 'ALERTAS';

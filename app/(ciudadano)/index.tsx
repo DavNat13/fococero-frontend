@@ -113,13 +113,29 @@ export default function CiudadanoHome() {
     {
       icon: 'fire',
       label: 'Reportar incendio',
-      route: '/(ciudadano)/crear-reporte',
+      route: '/(ciudadano)/crear-reporte' as const,
       col: '#EF4444',
     },
-    { icon: 'map', label: 'Ver mapa', route: '/(ciudadano)/mapa', col: '#3B82F6' },
-    { icon: 'bell', label: 'Mis alertas', route: '/(ciudadano)/alertas', col: '#F97316' },
-    { icon: 'account-circle', label: 'Perfil', route: '/(ciudadano)/perfil', col: '#8B5CF6' },
-  ];
+    {
+      icon: 'map' as const,
+      label: 'Ver mapa',
+      route: '/(ciudadano)/mapa' as const,
+      col: '#3B82F6',
+    },
+    {
+      icon: 'bell' as const,
+      label: 'Mis alertas',
+      route: '/(ciudadano)/alertas' as const,
+      col: '#F97316',
+    },
+    {
+      icon: 'account-circle' as const,
+      label: 'Perfil',
+      route: '/(ciudadano)/perfil' as const,
+      col: '#8B5CF6',
+    },
+  ] as const;
+>>>>>>> c294de6 (fix: corregir 46 errores de TypeScript en tests y componentes de navegacion)
   const [showToast, setShowToast] = useState(false);
   useEffect(() => {
     if (!errorMsg) {

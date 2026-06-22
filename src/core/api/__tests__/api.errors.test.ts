@@ -2,13 +2,6 @@
 import { ApiError } from '../api.errors';
 
 jest.mock('axios', () => {
-  const mockAxiosError = (isAxios: boolean) => {
-    const err: any = new Error('Axios error');
-    err.isAxiosError = isAxios;
-    err.config = { url: '/api/test', method: 'get' };
-    return err;
-  };
-
   return {
     __esModule: true,
     default: {
