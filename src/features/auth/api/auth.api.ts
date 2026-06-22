@@ -2,30 +2,46 @@
 
 import { apiClient } from '@core/api';
 import type { ApiResponse } from '@core/api';
-import type { RegisterGuestPayload } from '../model/auth.types';
+import type { RegisterGuestPayload, RegisterFullPayload } from '../model/auth.types';
 import { Usuario } from '@entities/usuario';
+import { AuthResponseDTOSchema, mapUsuarioDtoToDomain } from './auth.dto';
 
-export interface LoginCredentials {
-  rut: string;
-  password: string;
-}
+const processAuthResponse = (rawData: unknown): ApiResponse<Usuario> => {
+  const parseResult = AuthResponseDTOSchema.safeParse(rawData);
+
+  if (!parseResult.success) {
+    console.error(
+      '[API_CONTRACT_BREACH] El backend envió datos malformados:',
+      parseResult.error.format(),
+    );
+
+    return {
+      success: false,
+      error: {
+        code: 'CONTRACT_BREACH',
+        message: 'Respuesta inválida del servidor. Contacte a soporte.',
+      },
+    };
+  }
+
+  return {
+    success: true,
+    data: mapUsuarioDtoToDomain(parseResult.data.usuario),
+  };
+};
 
 export const authApi = {
-  login: async (credentials: LoginCredentials): Promise<ApiResponse<Usuario>> => {
-    return apiClient.postPublic<Usuario>('/api/auth/login', credentials);
-  },
-
   registerGuest: async (payload: RegisterGuestPayload): Promise<ApiResponse<Usuario>> => {
-    return apiClient.postPublic<Usuario>('/api/auth/register-guest', payload);
+    const response = await apiClient.post<unknown>('/auth/register-guest', payload);
+
+    if (!response.success) return response;
+    return processAuthResponse(response.data);
   },
 
-  // register-full requiere token de Firebase real, por ahora usamos register-guest
-  registerFull: async (payload: RegisterGuestPayload): Promise<ApiResponse<Usuario>> => {
-    return apiClient.postPublic<Usuario>('/api/auth/register-guest', payload);
-  },
+  registerFull: async (payload: RegisterFullPayload): Promise<ApiResponse<Usuario>> => {
+    const response = await apiClient.post<unknown>('/auth/register-full', payload);
 
-  // Placeholder para Google Auth - implementar después
-  registerGoogle: async (_payload: { googleToken: string }): Promise<ApiResponse<Usuario>> => {
-    return { success: false, error: { message: 'Google Auth no disponible aún', code: 'INTERNAL_SERVER_ERROR' } };
+    if (!response.success) return response;
+    return processAuthResponse(response.data);
   },
 };

@@ -8,20 +8,20 @@ export const usuarioApi = {
    * Obtiene la información del usuario actual (basado en el token)
    */
   getMe: async () => {
-    return await apiClient.get<Usuario>('/api/auth/me');
+    return await apiClient.get<Usuario>('/auth/me');
   },
 
   /**
    * Actualiza datos básicos del perfil
    */
   updateProfile: async (data: UpdateProfileDTO) => {
-    return await apiClient.patch<Usuario>('/api/auth/me', data);
+    return await apiClient.patch<Usuario>('/auth/me', data);
   },
 
   /**
    * Sincroniza el token de notificaciones Push
    */
   updateFcmToken: async (fcmToken: string) => {
-    return await apiClient.patch('/api/auth/me/fcm-token', { fcmToken });
+    return await apiClient.patch('/auth/me/fcm-token', { fcmToken });
   },
 };

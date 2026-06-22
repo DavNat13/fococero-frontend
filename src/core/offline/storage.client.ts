@@ -28,44 +28,25 @@ export const globalStorage = {
 };
 
 // 2. PARTICIÓN SEGURA (Tokens JWT, Perfiles) - Encriptada por el Hardware del Teléfono
-const sanitizeKey = (key: string): string => key.replace(/[^a-zA-Z0-9.\-_]/g, '_');
-
 export const secureStorage = {
   setItem: async (key: string, value: string) => {
-    if (!key || typeof key !== 'string') return;
-    const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
+    // SecureStore en web no funciona nativamente, hacemos un fallback seguro para desarrollo
     if (Platform.OS === 'web') {
-      return await AsyncStorage.setItem(fullKey, value);
+      return await AsyncStorage.setItem(`${PREFIX}secure_${key}`, value);
     }
-    try {
-      await SecureStore.setItemAsync(fullKey, value);
-    } catch (error) {
-      await AsyncStorage.setItem(fullKey, value);
-    }
+    await SecureStore.setItemAsync(`${PREFIX}secure_${key}`, value);
   },
   getItem: async (key: string) => {
-    if (!key || typeof key !== 'string') return null;
-    const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
     if (Platform.OS === 'web') {
-      return await AsyncStorage.getItem(fullKey);
+      return await AsyncStorage.getItem(`${PREFIX}secure_${key}`);
     }
-    try {
-      return await SecureStore.getItemAsync(fullKey);
-    } catch (error) {
-      return await AsyncStorage.getItem(fullKey);
-    }
+    return await SecureStore.getItemAsync(`${PREFIX}secure_${key}`);
   },
   removeItem: async (key: string) => {
-    if (!key || typeof key !== 'string') return;
-    const fullKey = `${PREFIX}secure_${sanitizeKey(key)}`;
     if (Platform.OS === 'web') {
-      return await AsyncStorage.removeItem(fullKey);
+      return await AsyncStorage.removeItem(`${PREFIX}secure_${key}`);
     }
-    try {
-      await SecureStore.deleteItemAsync(fullKey);
-    } catch (error) {
-      await AsyncStorage.removeItem(fullKey);
-    }
+    await SecureStore.deleteItemAsync(`${PREFIX}secure_${key}`);
   },
 };
 
@@ -91,15 +72,8 @@ export const wipeAllStorage = async () => {
 
     // Limpiamos explícitamente tokens seguros si estamos en móvil
     if (Platform.OS !== 'web') {
-      try {
-        await SecureStore.deleteItemAsync(`${PREFIX}secure_access_token`);
-      } catch (e) { /* ignore */ }
-      try {
-        await SecureStore.deleteItemAsync(`${PREFIX}secure_refresh_token`);
-      } catch (e) { /* ignore */ }
-      try {
-        await SecureStore.deleteItemAsync(`${PREFIX}secure_fococero-auth-session`);
-      } catch (e) { /* ignore */ }
+      await SecureStore.deleteItemAsync(`${PREFIX}secure_access_token`);
+      await SecureStore.deleteItemAsync(`${PREFIX}secure_refresh_token`);
     }
   } catch (error) {
     console.error('[Storage] Error ejecutando Kill Switch:', error);

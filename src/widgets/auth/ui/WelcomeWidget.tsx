@@ -2,46 +2,18 @@
 import React, { useState } from 'react';
 import { Modal, ScrollView, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { router } from 'expo-router';
 
 import { Button, Icon, Icons, SafeAreaLayout, Typography } from '@shared/ui';
-import { useGoogleAuth } from '@/features/auth/hooks/useGoogleAuth';
 import { AUTH_TEXTS } from '../constants';
 import { WELCOME_CHOREOGRAPHY } from '../lib';
 
 interface WelcomeWidgetProps {
-  onCreateAccountPress?: () => void;
-  onHaveAccountPress?: () => void;
+  onCreateAccountPress: () => void;
+  onHaveAccountPress: () => void;
 }
 
 export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: WelcomeWidgetProps) => {
   const [isLegalModalVisible, setLegalModalVisible] = useState(false);
-  const { signIn: signInWithGoogle, isLoading: isGoogleLoading } = useGoogleAuth();
-
-  const handleLoginPress = () => {
-    if (onHaveAccountPress) {
-      onHaveAccountPress();
-    } else {
-      router.push('/login');
-    }
-  };
-
-  const handleCreateAccountPress = () => {
-    if (onCreateAccountPress) {
-      onCreateAccountPress();
-    } else {
-      router.push('/register');
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-      router.replace('/');
-    } catch (error) {
-      console.error('Error en Google Sign In:', error);
-    }
-  };
 
   return (
     <SafeAreaLayout className="flex-1 justify-between bg-surface-background">
@@ -82,29 +54,15 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
           className="gap-4"
         >
           <Button
-            label="Crear cuenta"
+            label={AUTH_TEXTS.WELCOME.CREATE_ACCOUNT_BTN}
             variant="solid"
-            onPress={handleCreateAccountPress}
+            onPress={onCreateAccountPress}
           />
 
           <Button
-            label="Iniciar Sesión"
+            label={AUTH_TEXTS.WELCOME.HAVE_ACCOUNT_BTN}
             variant="outline"
-            onPress={handleLoginPress}
-          />
-
-          <View className="flex-row items-center gap-3">
-            <View className="h-px flex-1 bg-surface-elevated" />
-            <Typography variant="caption" color="secondary">o</Typography>
-            <View className="h-px flex-1 bg-surface-elevated" />
-          </View>
-
-          <Button
-            label="Continuar con Google"
-            variant="outline"
-            onPress={handleGoogleSignIn}
-            isLoading={isGoogleLoading}
-            className="bg-surface-card border-surface-elevated"
+            onPress={onHaveAccountPress}
           />
         </Animated.View>
 

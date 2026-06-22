@@ -8,4 +8,3 @@ export default function GuestScreen() {
 
   return <GuestAccessWidget onGuestSubmit={handleGuestSubmit} />;
 }
-
