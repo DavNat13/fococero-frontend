@@ -24,6 +24,40 @@ export const useGetKPIs = () => {
   });
 };
 
+export const useGetKpisCiudadano = () => {
+  return useQuery({
+    queryKey: ['analitica', 'kpis-ciudadano'],
+    queryFn: async () => {
+      const response = await analiticaApi.getKpisCiudadano();
+      if (!response.success) throw new Error(response.error.message);
+      return response.data;
+    },
+    staleTime: 30000,
+  });
+};
+
+export const useGetKpisBrigadista = () => {
+  return useQuery({
+    queryKey: ['analitica', 'kpis-brigadista'],
+    queryFn: async () => {
+      const response = await analiticaApi.getKpisBrigadista();
+      if (!response.success) throw new Error(response.error.message);
+      return response.data;
+    },
+  });
+};
+
+export const useGetKpisAdmin = () => {
+  return useQuery({
+    queryKey: ['analitica', 'kpis-admin'],
+    queryFn: async () => {
+      const response = await analiticaApi.getKpisAdmin();
+      if (!response.success) throw new Error(response.error.message);
+      return response.data;
+    },
+  });
+};
+
 export const useGetTendencias = (filtros?: FiltrosAnalitica) => {
   return useQuery({
     queryKey: ['analitica', 'tendencias', filtros],
@@ -68,15 +102,15 @@ export const useGetHeatmap = (filtros?: FiltrosAnalitica) => {
   });
 };
 
-export const useGetDetalleCuadrante = (cuadranteId: string) => {
+export const useGetDetalleCuadrante = (geohash: string) => {
   return useQuery({
-    queryKey: ['analitica', 'cuadrante', cuadranteId],
+    queryKey: ['analitica', 'cuadrante', geohash],
     queryFn: async () => {
-      const response = await analiticaApi.getDetalleCuadrante(cuadranteId);
+      const response = await analiticaApi.getDetalleCuadrante(geohash);
       if (!response.success) throw new Error(response.error.message);
       return response.data;
     },
-    enabled: !!cuadranteId,
+    enabled: !!geohash,
   });
 };
 

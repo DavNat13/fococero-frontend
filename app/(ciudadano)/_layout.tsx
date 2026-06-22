@@ -24,6 +24,15 @@ export default function CiudadanoLayout() {
         }}
       />
       <Tabs.Screen
+        name="mapa"
+        options={{
+          tabBarLabel: 'Mapa',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="map" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="crear-reporte"
         options={{
           tabBarLabel: 'Reportar',

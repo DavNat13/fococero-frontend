@@ -1,6 +1,20 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleSheet, Platform } from 'react-native';
+import { Platform } from 'react-native';
+
+const tabBarStyle = {
+  height: Platform.OS === 'ios' ? 88 : 64,
+  paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+  paddingTop: 8,
+  backgroundColor: '#0C0F17',
+  borderTopWidth: 1,
+  borderTopColor: '#1F2938',
+};
+
+const tabBarLabelStyle = {
+  fontSize: 12,
+  fontWeight: '500' as const,
+};
 
 export default function BrigadistaLayout() {
   return (
@@ -8,10 +22,10 @@ export default function BrigadistaLayout() {
       screenOptions={{
         headerShown: false,
         animation: 'shift',
-        tabBarStyle: styles.tabBar,
+        tabBarStyle,
         tabBarActiveTintColor: '#EF4444',
         tabBarInactiveTintColor: '#9CA3AF',
-        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarLabelStyle,
       }}
     >
       <Tabs.Screen
@@ -62,18 +76,3 @@ export default function BrigadistaLayout() {
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBar: {
-    height: Platform.OS === 'ios' ? 88 : 64,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 8,
-    paddingTop: 8,
-    backgroundColor: '#0C0F17',
-    borderTopWidth: 1,
-    borderTopColor: '#1F2938',
-  },
-  tabBarLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-});

@@ -9,13 +9,8 @@ import {
 import type { CrearDespachoPayload, ActualizarEstadoPayload } from '../api/emergencia.api';
 
 export const useEmergenciaFeature = () => {
-  const {
-    despachoActual,
-    filtroEstado,
-    setDespachoActual,
-    setFiltroEstado,
-    limpiarFiltros,
-  } = useEmergenciaStore();
+  const { despachoActual, filtroEstado, setDespachoActual, setFiltroEstado, limpiarFiltros } =
+    useEmergenciaStore();
 
   const createMutation = useCreateDespacho();
   const estadoMutation = useActualizarEstadoDespacho();
@@ -24,12 +19,12 @@ export const useEmergenciaFeature = () => {
   const crearDespacho = async (payload: CrearDespachoPayload) => {
     try {
       const result = await createMutation.mutateAsync(payload);
-      if (result.success) {
-        return { success: true, correlationId: result.data?.correlationId };
-      }
-      return { success: false, error: result.error?.message || 'Error desconocido' };
+      return { success: true, correlationId: result.correlation_id };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -38,7 +33,10 @@ export const useEmergenciaFeature = () => {
       await estadoMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -47,7 +45,10 @@ export const useEmergenciaFeature = () => {
       await retryMutation.mutateAsync({ despachoId });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -55,7 +56,11 @@ export const useEmergenciaFeature = () => {
     despachoActual,
     filtroEstado,
     isLoading: createMutation.isPending || estadoMutation.isPending || retryMutation.isPending,
-    error: createMutation.error?.message || estadoMutation.error?.message || retryMutation.error?.message || null,
+    error:
+      createMutation.error?.message ||
+      estadoMutation.error?.message ||
+      retryMutation.error?.message ||
+      null,
 
     setDespachoActual,
     setFiltroEstado,

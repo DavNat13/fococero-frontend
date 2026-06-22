@@ -107,6 +107,7 @@ import {
 export * from './AnimatedIcon';
 export * from './Icon';
 export * from './StatusIcon';
+export * from './GoogleIcon';
 
 // 3. AGRUPAMOS Y EXPORTAMOS EL DICCIONARIO
 // Esto nos permite importar así: import { Icons } from '@shared/ui/icons'

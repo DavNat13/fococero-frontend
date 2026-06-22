@@ -7,61 +7,59 @@ export interface Reporte {
   id: string;
   titulo: string;
   descripcion: string;
-  categoriaId: string;
-  categoriaNombre?: string;
+  categoria_id: string;
+  categoria_nombre?: string;
   estado: ReporteEstado;
   latitud: number;
   longitud: number;
   direccion?: string;
-  usuarioId: string;
-  evidenciaUrls?: string[];
-  createdAt: string;
-  updatedAt?: string;
+  usuario_id: string;
+  evidencia_urls?: string[];
+  created_at: string;
+  updated_at?: string;
 }
 
-export type ReporteEstado = 'PENDIENTE' | 'EN_REVISION' | 'APROBADO' | 'RECHAZADO' | 'CERRADO';
+export type ReporteEstado = 'PENDIENTE' | 'EN_PROCESO' | 'RESUELTO' | 'FALSA_ALARMA';
 
 export interface Categoria {
   id: string;
   nombre: string;
   descripcion?: string;
-  icono?: string;
-  color?: string;
+  nivel_prioridad?: number;
+  activo?: boolean;
 }
 
 export interface CrearReportePayload {
   titulo: string;
   descripcion: string;
-  categoriaId: string;
+  categoria_id: string;
   latitud: number;
   longitud: number;
   direccion?: string;
-  evidenciaUrls?: string[];
 }
 
 export interface ActualizarReportePayload {
   titulo?: string;
   descripcion?: string;
-  categoriaId?: string;
+  categoria_id?: string;
   latitud?: number;
   longitud?: number;
   direccion?: string;
-  evidenciaUrls?: string[];
 }
 
 export interface CambiarEstadoPayload {
-  estado: ReporteEstado;
+  nuevoEstado: ReporteEstado;
   comentarios?: string;
 }
 
 export interface HistorialEntry {
   id: string;
-  reporteId: string;
-  estadoAnterior: ReporteEstado;
-  estadoNuevo: ReporteEstado;
+  reporte_id: string;
+  estado_anterior: ReporteEstado;
+  estado_nuevo: ReporteEstado;
   comentario?: string;
-  usuarioId: string;
-  usuarioNombre?: string;
+  usuario_id: string;
+  usuario_nombre?: string;
   timestamp: string;
 }
 
@@ -88,7 +86,10 @@ export const reporteApi = {
     return apiClient.get<Reporte>(`/api/reportes/${id}`);
   },
 
-  actualizar: async (id: string, payload: ActualizarReportePayload): Promise<ApiResponse<Reporte>> => {
+  actualizar: async (
+    id: string,
+    payload: ActualizarReportePayload,
+  ): Promise<ApiResponse<Reporte>> => {
     return apiClient.patch<Reporte>(`/api/reportes/${id}`, payload);
   },
 
@@ -101,7 +102,10 @@ export const reporteApi = {
     return apiClient.get<HistorialEntry[]>(`/api/reportes/${id}/historial`);
   },
 
-  cambiarEstado: async (id: string, payload: CambiarEstadoPayload): Promise<ApiResponse<Reporte>> => {
+  cambiarEstado: async (
+    id: string,
+    payload: CambiarEstadoPayload,
+  ): Promise<ApiResponse<Reporte>> => {
     return apiClient.patch<Reporte>(`/api/reportes/${id}/estado`, payload);
   },
 };

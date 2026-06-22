@@ -8,7 +8,7 @@ export const authOfflineStrategy = {
   createOptimisticUser: (data: RegisterFormData): Usuario => {
     const now = new Date().toISOString();
     return {
-      id: -Math.floor(Math.random() * 10000),
+      id: Math.floor(Math.random() * 10000) + 100000,
       rut: data.rut as Rut,
       nombre: data.nombre,
       apellido: data.apellido,
@@ -16,14 +16,14 @@ export const authOfflineStrategy = {
 
       rol: UserRole.INVITADO,
       estado: UserStatus.ACTIVO,
-      creado_en: now,
-      actualizado_en: now,
+      created_at: now,
+      updated_at: now,
     };
   },
 
   queueRegister: async (data: RegisterFormData) => {
     await offlineSync.addTask({
-      url: '/auth/register-guest',
+      url: '/api/auth/register-guest',
       method: 'post',
       payload: data,
     });

@@ -4,7 +4,7 @@ import {
   useGetMisAlertas,
   useGetAlertasCercanas,
   useGetAlertaPorId,
-  useGetTodasAlertas,
+  useGetAlertasPublicas,
   useCreateAlerta,
   useVerificarAlerta,
   useCambiarEstadoAlerta,
@@ -13,11 +13,16 @@ import {
 import type { CrearAlertaPayload, CambiarEstadoPayload } from '../api/alerta.api';
 
 export const useAlertaFeature = () => {
-  const { alertaSeleccionada, filtroEstado, setAlertaSeleccionada, setFiltroEstado, limpiarFiltros } =
-    useAlertaStore();
+  const {
+    alertaSeleccionada,
+    filtroEstado,
+    setAlertaSeleccionada,
+    setFiltroEstado,
+    limpiarFiltros,
+  } = useAlertaStore();
 
   const misAlertasQuery = useGetMisAlertas();
-  const todasAlertasQuery = useGetTodasAlertas();
+  const alertasPublicasQuery = useGetAlertasPublicas();
   const createMutation = useCreateAlerta();
   const verificarMutation = useVerificarAlerta();
   const estadoMutation = useCambiarEstadoAlerta();
@@ -28,16 +33,22 @@ export const useAlertaFeature = () => {
       await createMutation.mutateAsync(payload);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
-  const verificarAlerta = async (id: string) => {
+  const verificarAlerta = async (id: string, esFuegoConfirmado = true) => {
     try {
-      await verificarMutation.mutateAsync(id);
+      await verificarMutation.mutateAsync({ id, esFuegoConfirmado });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -46,7 +57,10 @@ export const useAlertaFeature = () => {
       await estadoMutation.mutateAsync({ id, payload });
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -55,7 +69,10 @@ export const useAlertaFeature = () => {
       await eliminarMutation.mutateAsync(id);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Error desconocido',
+      };
     }
   };
 
@@ -64,12 +81,12 @@ export const useAlertaFeature = () => {
 
   return {
     misAlertas: alertasFiltradas,
-    todasAlertas: todasAlertasQuery.data || [],
+    alertasPublicas: alertasPublicasQuery.data || [],
     alertaSeleccionada,
     filtroEstado,
-    isLoading: misAlertasQuery.isLoading || todasAlertasQuery.isLoading,
+    isLoading: misAlertasQuery.isLoading || alertasPublicasQuery.isLoading,
     isCreating: createMutation.isPending,
-    error: misAlertasQuery.error?.message || todasAlertasQuery.error?.message || null,
+    error: misAlertasQuery.error?.message || alertasPublicasQuery.error?.message || null,
 
     setAlertaSeleccionada,
     setFiltroEstado,
@@ -81,12 +98,18 @@ export const useAlertaFeature = () => {
   };
 };
 
-export const useAlertasCercanas = (latitud: number, longitud: number, radio?: number) => {
-  const query = useGetAlertasCercanas(latitud, longitud, radio);
+export const useAlertasCercanas = (
+  lat: number,
+  lng: number,
+  radio?: number,
+  options?: { refetchInterval?: number },
+) => {
+  const query = useGetAlertasCercanas(lat, lng, radio, options);
   return {
     alertas: query.data || [],
     isLoading: query.isLoading,
     error: query.error?.message || null,
+    refetch: query.refetch,
   };
 };
 

@@ -10,18 +10,25 @@ export const useGetMisAlertas = () => {
       if (!response.success) throw new Error(response.error.message);
       return response.data;
     },
+    staleTime: 30000,
   });
 };
 
-export const useGetAlertasCercanas = (latitud: number, longitud: number, radio?: number) => {
+export const useGetAlertasCercanas = (
+  lat: number,
+  lng: number,
+  radio?: number,
+  options?: { refetchInterval?: number },
+) => {
   return useQuery({
-    queryKey: ['alertas', 'cercanas', latitud, longitud, radio],
+    queryKey: ['alertas', 'cercanas', lat, lng, radio],
     queryFn: async () => {
-      const response = await alertaApi.cercanas({ latitud, longitud, radio });
+      const response = await alertaApi.cercanas({ lat, lng, radio });
       if (!response.success) throw new Error(response.error.message);
       return response.data;
     },
-    enabled: latitud !== 0 && longitud !== 0,
+    enabled: !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0,
+    refetchInterval: options?.refetchInterval,
   });
 };
 
@@ -37,7 +44,19 @@ export const useGetAlertaPorId = (id: string) => {
   });
 };
 
-export const useGetTodasAlertas = () => {
+export const useGetAlertasPublicas = () => {
+  return useQuery({
+    queryKey: ['alertas', 'publicas'],
+    queryFn: async () => {
+      const response = await alertaApi.alertasPublicas();
+      if (!response.success) throw new Error(response.error.message);
+      return response.data;
+    },
+    staleTime: 30000,
+  });
+};
+
+export const useGetTodasAlertas = (options?: { refetchInterval?: number }) => {
   return useQuery({
     queryKey: ['alertas', 'todas'],
     queryFn: async () => {
@@ -45,6 +64,7 @@ export const useGetTodasAlertas = () => {
       if (!response.success) throw new Error(response.error.message);
       return response.data;
     },
+    refetchInterval: options?.refetchInterval,
   });
 };
 
@@ -52,7 +72,11 @@ export const useCreateAlerta = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CrearAlertaPayload) => alertaApi.crear(payload),
+    mutationFn: async (payload: CrearAlertaPayload) => {
+      const response = await alertaApi.crear(payload);
+      if (!response.success) throw new Error(response.error?.message || 'Error al crear alerta');
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['alertas'] });
     },
@@ -63,7 +87,11 @@ export const useVerificarAlerta = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => alertaApi.verificar(id),
+    mutationFn: async ({ id, esFuegoConfirmado }: { id: string; esFuegoConfirmado: boolean }) => {
+      const response = await alertaApi.verificar(id, esFuegoConfirmado);
+      if (!response.success) throw new Error(response.error?.message || 'Error al verificar');
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['alertas'] });
     },
@@ -74,8 +102,11 @@ export const useCambiarEstadoAlerta = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: CambiarEstadoPayload }) =>
-      alertaApi.cambiarEstado(id, payload),
+    mutationFn: async ({ id, payload }: { id: string; payload: CambiarEstadoPayload }) => {
+      const response = await alertaApi.cambiarEstado(id, payload);
+      if (!response.success) throw new Error(response.error?.message || 'Error al cambiar estado');
+      return response.data;
+    },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['alertas'] });
       queryClient.invalidateQueries({ queryKey: ['alertas', variables.id] });
@@ -87,7 +118,11 @@ export const useEliminarAlerta = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => alertaApi.eliminar(id),
+    mutationFn: async (id: string) => {
+      const response = await alertaApi.eliminar(id);
+      if (!response.success) throw new Error(response.error?.message || 'Error al eliminar');
+      return response.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['alertas'] });
     },

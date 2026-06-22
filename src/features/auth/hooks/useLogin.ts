@@ -33,7 +33,7 @@ export const useLogin = () => {
       const response = await authApi.registerGuest(data);
 
       if (response.success) {
-        setAuthData(response.data);
+        setAuthData(response.data.usuario, response.data.firebaseToken);
         setStatus('success');
         return true;
       }

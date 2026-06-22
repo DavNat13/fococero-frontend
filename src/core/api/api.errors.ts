@@ -88,15 +88,38 @@ export class ApiError extends Error {
 
     // C. El backend respondió, pero con un código de error HTTP (4xx, 5xx)
     const status = error.response.status;
-
-    // Si el backend siguió nuestro contrato (ApiErrorResponse), extraemos su payload
     const backendData = error.response.data as any;
-    const backendCode = backendData?.error?.code;
-    const backendMessage = backendData?.error?.message;
-    const validationErrors = backendData?.error?.validationErrors;
 
-    const message = backendMessage || ApiError.getDefaultMessage(status);
-    const code = backendCode || ApiError.mapStatusToCode(status);
+    let message: string;
+    let code: AppErrorCode;
+    let validationErrors: Record<string, string[]> | undefined;
+
+    if (backendData?.error) {
+      if (typeof backendData.error === 'string') {
+        message = backendData.error;
+        code = ApiError.mapStatusToCode(status);
+      } else if (typeof backendData.error === 'object') {
+        message =
+          backendData.error.message ||
+          backendData.error.mensaje ||
+          ApiError.getDefaultMessage(status);
+        code =
+          backendData.error.code || backendData.error.codigo || ApiError.mapStatusToCode(status);
+        validationErrors = backendData.error.validationErrors;
+      } else {
+        message = backendData.msg || ApiError.getDefaultMessage(status);
+        code = ApiError.mapStatusToCode(status);
+      }
+    } else if (backendData?.exito === false && backendData?.error) {
+      message =
+        backendData.error.mensaje ||
+        backendData.error.message ||
+        ApiError.getDefaultMessage(status);
+      code = ApiError.mapStatusToCode(status);
+    } else {
+      message = backendData?.msg || ApiError.getDefaultMessage(status);
+      code = ApiError.mapStatusToCode(status);
+    }
 
     return new ApiError(code, message, status, validationErrors);
   }

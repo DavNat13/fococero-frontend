@@ -39,9 +39,4 @@ export type {
   // Contratos de Errores
   AppErrorCode,
   ApiErrorDetail,
-
-  // Branded Types (Identificadores Nominales)
-  UsuarioId,
-  FocoIncendioId,
-  ReporteId,
 } from './api.types';

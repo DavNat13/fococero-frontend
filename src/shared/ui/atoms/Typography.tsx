@@ -31,14 +31,14 @@ export const Typography = ({
 
   // Mapeo de Colores Semánticos (Basado en FocoCero Dark Mode)
   const colorStyles: Record<ColorTheme, string> = {
-    primary: 'text-slate-100', // Blanco humo
-    secondary: 'text-slate-400', // Gris ceniza
-    tertiary: 'text-slate-500', // Gris oscuro
-    brand: 'text-[#EA580C]', // Naranja FocoCero
-    danger: 'text-red-500', // Alertas
-    success: 'text-emerald-500', // Confirmaciones
-    warning: 'text-amber-500', // Modo Invitado
-    surface: 'text-slate-900', // Texto oscuro para fondos claros (si hay)
+    primary: 'text-content-primary',
+    secondary: 'text-content-secondary',
+    tertiary: 'text-content-tertiary',
+    brand: 'text-brand-primary',
+    danger: 'text-feedback-danger',
+    success: 'text-feedback-success',
+    warning: 'text-feedback-warning',
+    surface: 'text-slate-900',
     background: 'text-slate-950',
   };
 

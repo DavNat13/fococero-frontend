@@ -2,46 +2,91 @@
 
 import { apiClient } from '@core/api';
 import type { ApiResponse } from '@core/api';
-import type { RegisterGuestPayload, RegisterFullPayload } from '../model/auth.types';
+import type { RegisterGuestPayload } from '../model/auth.types';
+import type { PerfilBrigadista } from '@entities/usuario';
 import { Usuario } from '@entities/usuario';
-import { AuthResponseDTOSchema, mapUsuarioDtoToDomain } from './auth.dto';
 
-const processAuthResponse = (rawData: unknown): ApiResponse<Usuario> => {
-  const parseResult = AuthResponseDTOSchema.safeParse(rawData);
+export interface LoginCredentials {
+  rut: string;
+  password: string;
+}
 
-  if (!parseResult.success) {
-    console.error(
-      '[API_CONTRACT_BREACH] El backend envió datos malformados:',
-      parseResult.error.format(),
-    );
+/** Respuesta del backend en /api/auth/login */
+export interface LoginResponse {
+  usuario: Usuario;
+  firebaseToken: string;
+}
 
-    return {
-      success: false,
-      error: {
-        code: 'CONTRACT_BREACH',
-        message: 'Respuesta inválida del servidor. Contacte a soporte.',
-      },
-    };
-  }
+/** Respuesta del backend en /api/auth/register-guest */
+export interface RegisterResponse {
+  usuario: Usuario;
+  firebaseToken: string;
+}
 
-  return {
-    success: true,
-    data: mapUsuarioDtoToDomain(parseResult.data.usuario),
-  };
-};
+/** Respuesta del backend en /api/auth/google */
+export interface GoogleAuthResponse {
+  usuario: Usuario;
+  firebaseToken?: string;
+}
+
+export interface SetPasswordPayload {
+  password: string;
+}
 
 export const authApi = {
-  registerGuest: async (payload: RegisterGuestPayload): Promise<ApiResponse<Usuario>> => {
-    const response = await apiClient.post<unknown>('/auth/register-guest', payload);
-
-    if (!response.success) return response;
-    return processAuthResponse(response.data);
+  login: async (credentials: LoginCredentials): Promise<ApiResponse<LoginResponse>> => {
+    return apiClient.postPublic<LoginResponse>(
+      '/api/auth/login',
+      credentials,
+      undefined,
+      // Passthrough: devolvemos el objecto completo { usuario, firebaseToken }
+      (data) => data as LoginResponse,
+    );
   },
 
-  registerFull: async (payload: RegisterFullPayload): Promise<ApiResponse<Usuario>> => {
-    const response = await apiClient.post<unknown>('/auth/register-full', payload);
+  registerGuest: async (payload: RegisterGuestPayload): Promise<ApiResponse<RegisterResponse>> => {
+    return apiClient.postPublic<RegisterResponse>(
+      '/api/auth/register-guest',
+      payload,
+      undefined,
+      (data) => data as RegisterResponse,
+    );
+  },
 
-    if (!response.success) return response;
-    return processAuthResponse(response.data);
+  registerFull: async (_payload: RegisterGuestPayload): Promise<ApiResponse<RegisterResponse>> => {
+    throw new Error('registerFull no está habilitado en el frontend');
+  },
+
+  registerGoogle: async (payload: {
+    googleToken: string;
+  }): Promise<ApiResponse<GoogleAuthResponse>> => {
+    return apiClient.postPublic<GoogleAuthResponse>(
+      '/api/auth/google',
+      { token: payload.googleToken },
+      undefined,
+      (data) => data as GoogleAuthResponse,
+    );
+  },
+
+  setPassword: async (payload: SetPasswordPayload): Promise<ApiResponse<Usuario>> => {
+    return apiClient.post<Usuario>('/api/auth/upgrade-account', { password: payload.password });
+  },
+
+  convertirCuenta: async (payload?: { password?: string }): Promise<ApiResponse<Usuario>> => {
+    return apiClient.patch<Usuario>('/api/auth/me/convertir', payload);
+  },
+
+  getPerfilBrigadista: async (): Promise<
+    ApiResponse<{ usuario: Usuario & { perfil_brigadista?: PerfilBrigadista | null } }>
+  > => {
+    return apiClient.get('/api/auth/me/perfil-brigadista');
+  },
+
+  updatePerfilBrigadista: async (
+    payload: Partial<PerfilBrigadista>,
+  ): Promise<
+    ApiResponse<{ usuario: Usuario & { perfil_brigadista?: PerfilBrigadista | null } }>
+  > => {
+    return apiClient.patch('/api/auth/me/perfil-brigadista', payload);
   },
 };

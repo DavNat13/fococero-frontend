@@ -1,6 +1,7 @@
 // src/core/offline/offline.queue.ts
 
 import { outboxStorage } from './storage.client';
+import { generateUUID } from '@shared/utils/uuid';
 
 export interface OutboxTask {
   id: string;
@@ -49,7 +50,7 @@ class OfflineQueueManager {
 
     const newTask: OutboxTask = {
       ...task,
-      id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
+      id: generateUUID(),
       timestamp: Date.now(),
       retries: 0,
     };

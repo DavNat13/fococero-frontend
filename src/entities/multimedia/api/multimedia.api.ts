@@ -38,7 +38,10 @@ export const multimediaApi = {
     });
   },
 
-  vincularArchivo: async (id: string, payload: VincularArchivoPayload): Promise<ApiResponse<ArchivoMultimedia>> => {
+  vincularArchivo: async (
+    id: string,
+    payload: VincularArchivoPayload,
+  ): Promise<ApiResponse<ArchivoMultimedia>> => {
     return apiClient.patch<ArchivoMultimedia>(`/api/multimedia/${id}/vincular`, payload);
   },
 

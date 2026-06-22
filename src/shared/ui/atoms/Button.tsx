@@ -74,12 +74,15 @@ export const Button = ({
       ) : (
         <View className="flex-row items-center justify-center gap-3">
           {leftIcon}
-          <Typography
-            variant={size === 'sm' || size === 'xs' ? 'label' : 'h3'}
-            color={currentColors.text as any}
-          >
-            {label}
-          </Typography>
+          <View className="flex-shrink">
+            <Typography
+              variant={size === 'sm' || size === 'xs' ? 'label' : 'h3'}
+              color={currentColors.text as any}
+              numberOfLines={1}
+            >
+              {label}
+            </Typography>
+          </View>
           {rightIcon}
         </View>
       )}

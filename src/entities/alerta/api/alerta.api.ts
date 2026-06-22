@@ -1,31 +1,34 @@
-// src/entities/alerta/api/alerta.api.ts
-
 import { apiClient } from '@core/api';
 import type { ApiResponse } from '@core/api';
 
-export interface Alerta {
-  id: string;
-  tipo: string;
-  estado: AlertaEstado;
-  latitud: number;
-  longitud: number;
-  direccion?: string;
-  descripcion?: string;
-  evidenciaUrl?: string;
-  usuarioId: string;
-  createdAt: string;
-  updatedAt?: string;
+export type AlertaEstado = 'REPORTADA' | 'EN_REVISION' | 'DERIVADA' | 'RESUELTA' | 'DESCARTADA';
+
+export interface GeoPoint {
+  type: 'Point';
+  coordinates: [number, number];
 }
 
-export type AlertaEstado = 'PENDIENTE' | 'EN_PROCESO' | 'VERIFICADA' | 'RESUELTA' | 'DESCARTADA';
+export interface Alerta {
+  id?: string;
+  foco_id?: string | null;
+  usuario_id: string;
+  tipo: string;
+  gravedad?: string;
+  estado?: AlertaEstado;
+  descripcion: string;
+  imagenes?: string[];
+  ubicacion: GeoPoint;
+  metadata?: any;
+  fecha_creacion?: string;
+}
 
 export interface CrearAlertaPayload {
+  foco_id?: string | null;
   tipo: string;
-  latitud: number;
-  longitud: number;
-  direccion?: string;
-  descripcion?: string;
-  evidenciaUrl?: string;
+  gravedad: string;
+  descripcion: string;
+  ubicacion: GeoPoint;
+  imagenes?: string[];
 }
 
 export interface CambiarEstadoPayload {
@@ -33,8 +36,8 @@ export interface CambiarEstadoPayload {
 }
 
 export interface AlertasCercanasParams {
-  latitud: number;
-  longitud: number;
+  lng: number;
+  lat: number;
   radio?: number;
 }
 
@@ -55,15 +58,22 @@ export const alertaApi = {
     return apiClient.get<Alerta>(`/api/alertas/${id}`);
   },
 
+  alertasPublicas: async (): Promise<ApiResponse<Alerta[]>> => {
+    return apiClient.get<Alerta[]>('/api/alertas/publicas');
+  },
+
   obtenerTodas: async (): Promise<ApiResponse<Alerta[]>> => {
     return apiClient.get<Alerta[]>('/api/alertas');
   },
 
-  verificar: async (id: string): Promise<ApiResponse<Alerta>> => {
-    return apiClient.post<Alerta>(`/api/alertas/${id}/verificar`);
+  verificar: async (id: string, esFuegoConfirmado?: boolean): Promise<ApiResponse<Alerta>> => {
+    return apiClient.post<Alerta>(`/api/alertas/${id}/verificar`, { esFuegoConfirmado });
   },
 
-  cambiarEstado: async (id: string, payload: CambiarEstadoPayload): Promise<ApiResponse<Alerta>> => {
+  cambiarEstado: async (
+    id: string,
+    payload: CambiarEstadoPayload,
+  ): Promise<ApiResponse<Alerta>> => {
     return apiClient.patch<Alerta>(`/api/alertas/${id}/estado`, payload);
   },
 

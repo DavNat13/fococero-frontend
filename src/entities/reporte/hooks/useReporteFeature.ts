@@ -1,7 +1,7 @@
 // src/entities/reporte/hooks/useReporteFeature.ts
+import { useMemo } from 'react';
 import { useReporteStore } from '../model/store';
 import {
-  useGetCategorias,
   useGetTodosReportes,
   useGetMisReportes,
   useGetReportePorId,
@@ -11,7 +11,11 @@ import {
   useDeleteReporte,
   useCambiarEstadoReporte,
 } from '../api/queries';
-import type { CrearReportePayload, ActualizarReportePayload, CambiarEstadoPayload } from '../api/reporte.api';
+import type {
+  CrearReportePayload,
+  ActualizarReportePayload,
+  CambiarEstadoPayload,
+} from '../api/reporte.api';
 
 export const useReporteFeature = () => {
   const {
@@ -24,81 +28,109 @@ export const useReporteFeature = () => {
     limpiarFiltros,
   } = useReporteStore();
 
-  const categoriasQuery = useGetCategorias();
-  const todosReportesQuery = useGetTodosReportes();
   const misReportesQuery = useGetMisReportes();
   const createMutation = useCreateReporte();
   const updateMutation = useUpdateReporte();
   const deleteMutation = useDeleteReporte();
   const estadoMutation = useCambiarEstadoReporte();
 
-  const crearReporte = async (payload: CrearReportePayload) => {
-    try {
-      await createMutation.mutateAsync(payload);
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
-    }
-  };
+  return useMemo(
+    () => ({
+      misReportes: (misReportesQuery.data || []).filter((r) => {
+        const coincideEstado = !filtroEstado || r.estado === filtroEstado;
+        const coincideCategoria = !filtroCategoria || r.categoria_id === filtroCategoria;
+        return coincideEstado && coincideCategoria;
+      }),
+      reporteSeleccionado,
+      filtroEstado,
+      filtroCategoria,
+      isLoading: misReportesQuery.isLoading,
+      error: misReportesQuery.error?.message || null,
 
-  const actualizarReporte = async (id: string, payload: ActualizarReportePayload) => {
-    try {
-      await updateMutation.mutateAsync({ id, payload });
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
-    }
-  };
+      setReporteSeleccionado,
+      setFiltroEstado,
+      setFiltroCategoria,
+      limpiarFiltros,
 
-  const eliminarReporte = async (id: string) => {
-    try {
-      await deleteMutation.mutateAsync(id);
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
-    }
-  };
+      crearReporte: async (payload: CrearReportePayload) => {
+        try {
+          await createMutation.mutateAsync(payload);
+          return { success: true };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Error desconocido',
+          };
+        }
+      },
 
-  const cambiarEstadoReporte = async (id: string, payload: CambiarEstadoPayload) => {
-    try {
-      await estadoMutation.mutateAsync({ id, payload });
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
-    }
-  };
+      actualizarReporte: async (id: string, payload: ActualizarReportePayload) => {
+        try {
+          await updateMutation.mutateAsync({ id, payload });
+          return { success: true };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Error desconocido',
+          };
+        }
+      },
 
-  const aplicarFiltros = (reportes: any[]) => {
-    return reportes.filter((r) => {
-      const coincideEstado = !filtroEstado || r.estado === filtroEstado;
-      const coincideCategoria = !filtroCategoria || r.categoriaId === filtroCategoria;
-      return coincideEstado && coincideCategoria;
-    });
-  };
+      eliminarReporte: async (id: string) => {
+        try {
+          await deleteMutation.mutateAsync(id);
+          return { success: true };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Error desconocido',
+          };
+        }
+      },
 
+      cambiarEstadoReporte: async (id: string, payload: CambiarEstadoPayload) => {
+        try {
+          await estadoMutation.mutateAsync({ id, payload });
+          return { success: true };
+        } catch (error) {
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : 'Error desconocido',
+          };
+        }
+      },
+    }),
+    [
+      misReportesQuery.data,
+      misReportesQuery.isLoading,
+      misReportesQuery.error,
+      reporteSeleccionado,
+      filtroEstado,
+      filtroCategoria,
+      setReporteSeleccionado,
+      setFiltroEstado,
+      setFiltroCategoria,
+      limpiarFiltros,
+      createMutation,
+      updateMutation,
+      deleteMutation,
+      estadoMutation,
+    ],
+  );
+};
+
+/**
+ * Standalone hook for ADMIN/BRIGADISTA to fetch ALL reportes.
+ * Separated from useReporteFeature to avoid FORBIDDEN errors for citizens.
+ */
+export const useTodosReportes = (options?: { refetchInterval?: number }) => {
+  const query = useGetTodosReportes(options);
+  const todosReportes = useMemo(() => query.data ?? [], [query.data]);
   return {
-    categorias: categoriasQuery.data || [],
-    todosReportes: aplicarFiltros(todosReportesQuery.data || []),
-    misReportes: aplicarFiltros(misReportesQuery.data || []),
-    reporteSeleccionado,
-    filtroEstado,
-    filtroCategoria,
-    isLoading:
-      categoriasQuery.isLoading || todosReportesQuery.isLoading || misReportesQuery.isLoading,
-    error:
-      categoriasQuery.error?.message ||
-      todosReportesQuery.error?.message ||
-      misReportesQuery.error?.message ||
-      null,
-
-    setReporteSeleccionado,
-    setFiltroEstado,
-    setFiltroCategoria,
-    limpiarFiltros,
-    crearReporte,
-    actualizarReporte,
-    eliminarReporte,
-    cambiarEstadoReporte,
+    todosReportes,
+    isLoading: query.isLoading,
+    error: query.error?.message || null,
+    refetch: query.refetch,
   };
 };
 

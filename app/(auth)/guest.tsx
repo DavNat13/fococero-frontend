@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { GuestAccessWidget } from '@/widgets/auth';
+import { useAuthStore } from '@/features/auth';
+import type { RegisterGuestPayload } from '@/features/auth/model/auth.types';
 
 export default function GuestScreen() {
-  const handleGuestSubmit = (rut: string, phone: string) => {
-    console.log('Acceso de emergencia:', rut, phone);
-  };
+  const { register, isLoading } = useAuthStore();
 
-  return <GuestAccessWidget onGuestSubmit={handleGuestSubmit} />;
+  const handleGuestSubmit = useCallback(
+    async (rut: string, phone: string) => {
+      const payload: RegisterGuestPayload = {
+        rut,
+        nombre: 'Invitado',
+        apellido: 'Invitado',
+        telefono: phone,
+      };
+      await register(payload);
+    },
+    [register],
+  );
+
+  return <GuestAccessWidget onGuestSubmit={handleGuestSubmit} isLoading={isLoading} />;
 }

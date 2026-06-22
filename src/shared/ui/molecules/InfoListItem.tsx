@@ -1,5 +1,8 @@
 // src/shared/ui/molecules/InfoListItem.tsx
-import { Icon, Icons, ScalePress, Typography } from '@shared/ui';
+import { Icon } from '@shared/ui/icons/Icon';
+import { Icons } from '@shared/ui/icons';
+import { ScalePress } from '@shared/ui/animations/ScalePress';
+import { Typography } from '@shared/ui/atoms/Typography';
 import React from 'react';
 import { View } from 'react-native';
 

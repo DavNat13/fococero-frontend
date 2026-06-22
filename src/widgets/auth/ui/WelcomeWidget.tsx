@@ -1,19 +1,46 @@
-// src/widgets/auth/ui/WelcomeWidget.tsx
 import React, { useState } from 'react';
-import { Modal, ScrollView, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { router } from 'expo-router';
 
-import { Button, Icon, Icons, SafeAreaLayout, Typography } from '@shared/ui';
+import { Button, GoogleIcon, Icon, Icons, SafeAreaLayout, Typography } from '@shared/ui';
+import { useGoogleAuth } from '@/features/auth/hooks/useGoogleAuth';
+import { useAuthStore } from '@/features/auth';
+import { UserRole } from '@entities/usuario';
 import { AUTH_TEXTS } from '../constants';
 import { WELCOME_CHOREOGRAPHY } from '../lib';
+import { LegalModal } from './LegalModal';
 
-interface WelcomeWidgetProps {
-  onCreateAccountPress: () => void;
-  onHaveAccountPress: () => void;
+function getRouteByRole(rol: UserRole): string {
+  switch (rol) {
+    case UserRole.ADMIN:
+      return '/(admin)';
+    case UserRole.BRIGADISTA:
+      return '/(brigadista)';
+    case UserRole.INVITADO:
+      return '/(invitado)';
+    case UserRole.USUARIO:
+      return '/(ciudadano)';
+    default:
+      return '/(ciudadano)';
+  }
 }
 
-export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: WelcomeWidgetProps) => {
+export const WelcomeWidget = () => {
   const [isLegalModalVisible, setLegalModalVisible] = useState(false);
+  const {
+    signIn: signInWithGoogle,
+    isLoading: isGoogleLoading,
+    error: googleError,
+  } = useGoogleAuth();
+
+  const handleGoogleSignIn = async () => {
+    await signInWithGoogle();
+    const { user } = useAuthStore.getState();
+    if (user) {
+      router.replace(getRouteByRole(user.rol) as any);
+    }
+  };
 
   return (
     <SafeAreaLayout className="flex-1 justify-between bg-surface-background">
@@ -25,7 +52,6 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
             <Icon icon={Icons.Flame} size={48} colorTheme="brand" />
           </View>
         </Animated.View>
-
         <Animated.View
           entering={FadeInUp.delay(WELCOME_CHOREOGRAPHY.TITLE).springify()}
           className="items-center"
@@ -37,7 +63,6 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
             {AUTH_TEXTS.WELCOME.TITLE}
           </Typography>
         </Animated.View>
-
         <Animated.View entering={FadeInUp.delay(WELCOME_CHOREOGRAPHY.SUBTITLE).springify()}>
           <Typography
             variant="body"
@@ -53,17 +78,36 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
           entering={FadeInUp.delay(WELCOME_CHOREOGRAPHY.BUTTONS).springify().damping(15)}
           className="gap-4"
         >
+          <Button label="Crear cuenta" variant="solid" onPress={() => router.push('/register')} />
+          <Button label="Iniciar Sesión" variant="outline" onPress={() => router.push('/login')} />
           <Button
-            label={AUTH_TEXTS.WELCOME.CREATE_ACCOUNT_BTN}
-            variant="solid"
-            onPress={onCreateAccountPress}
+            label="Acceso como Invitado"
+            variant="ghost"
+            onPress={() => router.push('/(auth)/guest')}
           />
 
+          <View className="flex-row items-center gap-3">
+            <View className="h-px flex-1 bg-surface-elevated" />
+            <Typography variant="caption" color="secondary">
+              o
+            </Typography>
+            <View className="h-px flex-1 bg-surface-elevated" />
+          </View>
+
           <Button
-            label={AUTH_TEXTS.WELCOME.HAVE_ACCOUNT_BTN}
+            label="Continuar con Google"
             variant="outline"
-            onPress={onHaveAccountPress}
+            onPress={handleGoogleSignIn}
+            isLoading={isGoogleLoading}
+            className="border-surface-elevated bg-surface-card"
+            leftIcon={<GoogleIcon size={20} />}
           />
+
+          {googleError && (
+            <Typography variant="caption" color="danger" className="text-center">
+              {googleError}
+            </Typography>
+          )}
         </Animated.View>
 
         <Animated.View
@@ -78,7 +122,6 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
               {AUTH_TEXTS.WELCOME.LEGAL_LINK}
             </Typography>
           </TouchableOpacity>
-
           <Typography
             variant="caption"
             className="text-center text-xs text-content-tertiary opacity-50"
@@ -88,37 +131,7 @@ export const WelcomeWidget = ({ onCreateAccountPress, onHaveAccountPress }: Welc
         </Animated.View>
       </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isLegalModalVisible}
-        onRequestClose={() => setLegalModalVisible(false)}
-      >
-        <View className="flex-1 justify-end bg-black/60">
-          <View className="h-2/3 w-full rounded-t-3xl bg-surface-card p-6 shadow-xl">
-            <View className="mb-6 flex-row items-center justify-between border-b border-surface-elevated pb-4">
-              <Typography variant="h3" className="text-xl font-bold text-content-primary">
-                {AUTH_TEXTS.WELCOME.MODAL_TITLE}
-              </Typography>
-              <TouchableOpacity onPress={() => setLegalModalVisible(false)} className="p-2">
-                <Icon icon={Icons.X} size="sm" colorTheme="surface" />
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView className="mb-6 flex-1" showsVerticalScrollIndicator={false}>
-              <Typography variant="body" className="leading-relaxed text-content-secondary">
-                {AUTH_TEXTS.WELCOME.MODAL_CONTENT}
-              </Typography>
-            </ScrollView>
-
-            <Button
-              label={AUTH_TEXTS.WELCOME.MODAL_CLOSE_BTN}
-              variant="solid"
-              onPress={() => setLegalModalVisible(false)}
-            />
-          </View>
-        </View>
-      </Modal>
+      <LegalModal visible={isLegalModalVisible} onClose={() => setLegalModalVisible(false)} />
     </SafeAreaLayout>
   );
 };

@@ -2,62 +2,35 @@
 
 import { InternalAxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance } from 'axios';
 import { ApiError } from './api.errors';
-
-// ============================================================================
-// TIPOS Y ESTADO DEL MUTEX
-// ============================================================================
+import { generateUUID } from '@shared/utils/uuid';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const getAuthStore = () => require('@features/auth/model/auth.store').useAuthStore;
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const getFirebaseAuth = () => require('@core/config/firebase.config').getFirebaseAuth();
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-  _retry?: boolean;
   _requestStartTime?: number;
 }
-
-interface RetryQueueItem {
-  resolve: (token: string) => void;
-  reject: (error: ApiError) => void;
-}
-
-let isRefreshing = false;
-let failedQueue: RetryQueueItem[] = [];
-
-const processQueue = (error: ApiError | null, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) prom.reject(error);
-    else prom.resolve(token as string);
-  });
-  failedQueue = [];
-};
 
 // ============================================================================
 // 1. ESCUDO DE SALIDA (REQUEST)
 // ============================================================================
 
 export const requestInterceptor = (config: CustomAxiosRequestConfig) => {
-  // A. Telemetría: Registro del momento exacto de salida
   config._requestStartTime = Date.now();
 
-  // B. Observabilidad: Trazabilidad distribuida
   if (!config.headers['X-Request-ID']) {
-    config.headers['X-Request-ID'] = crypto.randomUUID
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    config.headers['X-Request-ID'] = generateUUID();
   }
 
-  // C. Prevención de Duplicados (Idempotencia para mutaciones)
-  const isMutation = ['post', 'put', 'patch', 'delete'].includes(
-    config.method?.toLowerCase() || '',
-  );
-  if (isMutation && !config.headers['Idempotency-Key']) {
-    config.headers['Idempotency-Key'] = config.headers['X-Request-ID'];
+  const firebaseToken = getAuthStore().getState().firebaseToken;
+  if (firebaseToken) {
+    config.headers.Authorization = `Bearer ${firebaseToken}`;
   }
 
-  // D. Inyección de Seguridad
-  // TODO: Conectar a Zustand / MMKV en Fase 2
-  const token = null;
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  // 🛡️ NOTA: El token interno (x-internal-token) NO debe enviarse desde el cliente.
+  // Es un mecanismo de confianza entre el API Gateway y los microservicios.
+  // Enviarlo desde el frontend expondría el secreto y vulneraría el modelo Zero-Trust.
 
   config.headers.Accept = 'application/json';
   if (!config.headers['Content-Type']) {
@@ -75,14 +48,37 @@ export const requestErrorInterceptor = (error: unknown) => {
 // 2. ESCUDO DE ENTRADA (RESPONSE EXITOSO)
 // ============================================================================
 
+const MAX_DEPTH = 5;
+const MAX_ARRAY_ITEMS = 200;
+
+const normalizeCoordinates = (data: unknown, depth = 0): void => {
+  if (depth > MAX_DEPTH) return;
+  if (Array.isArray(data)) {
+    const len = Math.min(data.length, MAX_ARRAY_ITEMS);
+    for (let i = 0; i < len; i++) {
+      normalizeCoordinates(data[i], depth + 1);
+    }
+  } else if (data !== null && typeof data === 'object') {
+    for (const key in data as Record<string, unknown>) {
+      const val = (data as Record<string, unknown>)[key];
+      if ((key === 'latitud' || key === 'longitud') && typeof val === 'string') {
+        (data as Record<string, unknown>)[key] = Number(val);
+      } else {
+        normalizeCoordinates(val, depth + 1);
+      }
+    }
+  }
+};
+
 export const responseInterceptor = (response: AxiosResponse) => {
   const config = response.config as CustomAxiosRequestConfig;
 
+  normalizeCoordinates(response.data);
+
   if (config._requestStartTime) {
     const executionTimeMs = Date.now() - config._requestStartTime;
-    // Opcional: Console log en modo debug o envío a Sentry de métricas lentas
     if (executionTimeMs > 2000) {
-      console.warn(`[API] Latencia alta en ${config.url}: ${executionTimeMs}ms`);
+      if (__DEV__) console.warn(`[API] Latencia alta en ${config.url}: ${executionTimeMs}ms`);
     }
   }
 
@@ -90,64 +86,46 @@ export const responseInterceptor = (response: AxiosResponse) => {
 };
 
 // ============================================================================
-// 3. ESCUDO DE ENTRADA (MUTE DE ERRORES Y REFRESH TOKEN)
+// 3. ESCUDO DE ENTRADA (MANEJO DE ERRORES)
 // ============================================================================
 
 export const responseErrorInterceptor = async (
   error: AxiosError,
   axiosInstance: AxiosInstance,
-): Promise<never> => {
+): Promise<any> => {
   const appError = ApiError.from(error);
-  const originalRequest = error.config as CustomAxiosRequestConfig;
 
-  // Calculamos latencia incluso si falló
-  if (originalRequest?._requestStartTime) {
-    const executionTimeMs = Date.now() - originalRequest._requestStartTime;
-    console.debug(`[API ERROR] ${originalRequest.url} falló en ${executionTimeMs}ms`);
-  }
+  const isPublic =
+    error.config?.url?.includes('/api/auth/') &&
+    (error.config?.method === 'post' || error.config?.method === 'get');
 
-  // Bypass para errores que no son de sesión o ya fueron reintentados
-  if (!originalRequest || appError.code !== 'UNAUTHORIZED' || originalRequest._retry) {
-    return Promise.reject(appError);
-  }
+  if (appError.code === 'UNAUTHORIZED' && !isPublic && error.config) {
+    const store = getAuthStore().getState();
 
-  // A. Lógica de Encolamiento (Si ya estamos refrescando el token en otro hilo)
-  if (isRefreshing) {
-    try {
-      const newToken = await new Promise<string>((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      });
-      originalRequest.headers.Authorization = `Bearer ${newToken}`;
-      return axiosInstance(originalRequest);
-    } catch (err) {
-      return Promise.reject(err);
+    if (store.status === 'authenticated') {
+      try {
+        const auth = getFirebaseAuth();
+        const newToken = await auth.currentUser?.getIdToken(true);
+        if (newToken) {
+          getAuthStore().getState().setAuthData(store.user!, newToken);
+          error.config.headers.Authorization = `Bearer ${newToken}`;
+          const response = await axiosInstance.request(error.config);
+          return response;
+        }
+      } catch {
+        // No se pudo refrescar el token — cerrar sesión
+      }
+      store.logout();
+    } else if (store.status === 'guest') {
+      try {
+        await store.refreshGuestToken();
+        const retryResponse = await axiosInstance.request(error.config);
+        return retryResponse;
+      } catch {
+        store.logout();
+      }
     }
   }
 
-  // B. Inicio de Mutex (Bloqueamos la puerta)
-  originalRequest._retry = true;
-  isRefreshing = true;
-
-  try {
-    // TODO: Ejecutar fetch real al endpoint de refresh en Fase 2
-    const newAccessToken = 'mock_new_token_for_now';
-
-    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-    // Liberamos peticiones retenidas
-    processQueue(null, newAccessToken);
-
-    return await axiosInstance(originalRequest);
-  } catch (refreshError) {
-    const fatalError = ApiError.from(refreshError);
-
-    // Matamos la cola
-    processQueue(fatalError);
-
-    // TODO: Ejecutar logout estricto (useAuthStore.getState().logout())
-
-    return Promise.reject(fatalError);
-  } finally {
-    isRefreshing = false;
-  }
+  return Promise.reject(appError);
 };

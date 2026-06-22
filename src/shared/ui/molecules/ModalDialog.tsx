@@ -1,6 +1,8 @@
 // src/shared/ui/molecules/ModalDialog.tsx
 import { Z_INDEX } from '@shared/constants';
-import { Button, FadeIn, Typography } from '@shared/ui';
+import { Button } from '@shared/ui/atoms/Button';
+import { FadeIn } from '@shared/ui/animations/FadeIn';
+import { Typography } from '@shared/ui/atoms/Typography';
 import React from 'react';
 import { Modal, View } from 'react-native';
 

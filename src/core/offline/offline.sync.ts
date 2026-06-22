@@ -3,7 +3,33 @@
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
 import { apiClient } from '../api';
 import { offlineQueue, OutboxTask } from './offline.queue';
-import { authSyncHandler, authConflictHandler } from '@features/auth/offline-strategy';
+
+// Lazy accessor to break circular dependency: offline/index → offline.sync → auth/offline-strategy → offline/index
+// import type se borra en tiempo de compilación → no afecta el ciclo
+import type { authSyncHandler, authConflictHandler } from '@features/auth/offline-strategy';
+
+let _authSyncHandler: typeof authSyncHandler | null = null;
+let _authConflictHandler: typeof authConflictHandler | null = null;
+
+/* eslint-disable @typescript-eslint/no-require-imports */
+function getAuthSyncHandler(): typeof authSyncHandler {
+  if (!_authSyncHandler) {
+    _authSyncHandler = (
+      require('@features/auth/offline-strategy') as typeof import('@features/auth/offline-strategy')
+    ).authSyncHandler;
+  }
+  return _authSyncHandler;
+}
+
+function getAuthConflictHandler(): typeof authConflictHandler {
+  if (!_authConflictHandler) {
+    _authConflictHandler = (
+      require('@features/auth/offline-strategy') as typeof import('@features/auth/offline-strategy')
+    ).authConflictHandler;
+  }
+  return _authConflictHandler;
+}
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 const MAX_RETRIES = 3;
 
@@ -46,11 +72,24 @@ class OfflineSyncOrchestrator {
       const state = await NetInfo.fetch();
       if (!state.isConnected) return;
 
-      for (const task of queue) {
-        const result = await this.processTask(task);
+      const CONCURRENCY_LIMIT = 3;
+      const chunks = [];
+      for (let i = 0; i < queue.length; i += CONCURRENCY_LIMIT) {
+        chunks.push(queue.slice(i, i + CONCURRENCY_LIMIT));
+      }
 
-        if (result.success) {
-          this.handleTaskSuccess(task, result.data);
+      const results: PromiseSettledResult<any>[] = [];
+      for (const chunk of chunks) {
+        const chunkResults = await Promise.allSettled(chunk.map((task) => this.processTask(task)));
+        results.push(...chunkResults);
+      }
+
+      for (let i = 0; i < queue.length; i++) {
+        const task = queue[i];
+        const result = results[i];
+
+        if (result.status === 'fulfilled' && result.value?.success) {
+          this.handleTaskSuccess(task, result.value.data);
           await offlineQueue.removeTask(task.id);
         } else {
           await this.handleTaskFailure(task);
@@ -75,12 +114,20 @@ class OfflineSyncOrchestrator {
         },
       };
 
-      if (task.method === 'delete') {
-        return await apiClient.delete(task.url, { ...config, data: task.payload });
+      const methods: Record<
+        string,
+        (url: string, data?: unknown, config?: object) => Promise<unknown>
+      > = {
+        post: (url, data, cfg) => apiClient.post(url, data, cfg),
+        put: (url, data, cfg) => apiClient.put(url, data, cfg),
+        patch: (url, data, cfg) => apiClient.patch(url, data, cfg),
+        delete: (url, data, cfg) => apiClient.delete(url, { ...cfg, data }),
+      };
+      const methodFn = methods[task.method];
+      if (!methodFn) {
+        throw new Error(`OfflineSync: método desconocido ${task.method}`);
       }
-
-      // Casteo dinámico del método para satisfacer TypeScript
-      return await (apiClient as any)[task.method](task.url, task.payload, config);
+      return await methodFn(task.url, task.payload, config);
     } catch {
       return { success: false, error: { code: 'UNKNOWN_ERROR' } };
     }
@@ -88,7 +135,7 @@ class OfflineSyncOrchestrator {
 
   private handleTaskSuccess(task: OutboxTask, data: any) {
     if (task.url === '/auth/register-guest') {
-      authSyncHandler.reconcile(data.usuario);
+      getAuthSyncHandler().reconcile(data.usuario);
     }
   }
 
@@ -97,7 +144,7 @@ class OfflineSyncOrchestrator {
       await offlineQueue.updateTask({ ...task, retries: task.retries + 1 });
     } else {
       if (task.url === '/auth/register-guest') {
-        authConflictHandler.handleRegistrationFailure();
+        getAuthConflictHandler().handleRegistrationFailure();
       }
       await offlineQueue.removeTask(task.id);
     }

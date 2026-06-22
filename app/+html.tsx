@@ -1,5 +1,3 @@
-// c:/Users/David/Desktop/FocoCero/fococero-frontend/app/+html.tsx
-
 import { ScrollViewStyleReset } from 'expo-router/html';
 
 export default function Root({ children }: { children: React.ReactNode }) {

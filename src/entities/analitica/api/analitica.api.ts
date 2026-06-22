@@ -12,6 +12,14 @@ export interface KPIs {
   dispatchEnviados: number;
 }
 
+export interface KpisCiudadano {
+  total_reportadas: number;
+  activas: number;
+  resueltas: number;
+  focos_cercanos: number;
+  alertas_cercanas: number;
+}
+
 export interface Tendencia {
   periodo: string;
   cantidad: number;
@@ -75,6 +83,18 @@ export const analiticaApi = {
     return apiClient.get<KPIs>('/api/analitica/core/kpis');
   },
 
+  getKpisCiudadano: async (): Promise<ApiResponse<KpisCiudadano>> => {
+    return apiClient.get<KpisCiudadano>('/api/analitica/core/kpis-ciudadano');
+  },
+
+  getKpisBrigadista: async (): Promise<ApiResponse<KPIs>> => {
+    return apiClient.get<KPIs>('/api/analitica/core/kpis-brigadista');
+  },
+
+  getKpisAdmin: async (): Promise<ApiResponse<KPIs>> => {
+    return apiClient.get<KPIs>('/api/analitica/core/kpis-admin');
+  },
+
   getTendencias: async (filtros?: FiltrosAnalitica): Promise<ApiResponse<Tendencia[]>> => {
     return apiClient.get<Tendencia[]>('/api/analitica/core/tendencias', { params: filtros });
   },
@@ -92,21 +112,32 @@ export const analiticaApi = {
     return apiClient.get<HeatmapCell[]>('/api/analitica/espacial/heatmap', { params: filtros });
   },
 
-  getDetalleCuadrante: async (cuadranteId: string): Promise<ApiResponse<CuadranteDetalle>> => {
-    return apiClient.get<CuadranteDetalle>(`/api/analitica/espacial/detalle?cuadranteId=${cuadranteId}`);
+  getDetalleCuadrante: async (geohash: string): Promise<ApiResponse<CuadranteDetalle>> => {
+    return apiClient.get<CuadranteDetalle>('/api/analitica/espacial/detalle', {
+      params: { geohash },
+    });
   },
 
-  getPorRadio: async (lat: number, lng: number, radio: number): Promise<ApiResponse<HeatmapCell[]>> => {
-    return apiClient.get<HeatmapCell[]>('/api/analitica/espacial/radio', { params: { lat, lng, radio } });
+  getPorRadio: async (
+    lat: number,
+    lng: number,
+    radioMetros: number,
+  ): Promise<ApiResponse<HeatmapCell[]>> => {
+    return apiClient.get<HeatmapCell[]>('/api/analitica/espacial/radio', {
+      params: { lat, lng, radioMetros },
+    });
   },
 
   // Predictiva - Predicciones
   getPredicciones: async (): Promise<ApiResponse<Prediction[]>> => {
-    return apiClient.get<Prediction[]>('/api/analitica/predictiva');
+    return apiClient.get<Prediction[]>('/api/analitica/predictiva/forecast');
   },
 
   // Exportar
-  exportarReporte: async (formato: 'pdf' | 'csv' | 'excel', filtros?: FiltrosAnalitica): Promise<ApiResponse<Blob>> => {
-    return apiClient.post<Blob>('/api/analitica/exportar', { formato, filtros });
+  exportarReporte: async (
+    formato: 'csv' | 'pdf',
+    filtros?: FiltrosAnalitica,
+  ): Promise<ApiResponse<Blob>> => {
+    return apiClient.get<Blob>(`/api/analitica/exportar/${formato}`, { params: filtros });
   },
 };

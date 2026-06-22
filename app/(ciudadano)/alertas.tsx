@@ -1,162 +1,135 @@
-// app/(ciudadano)/alertas.tsx - Lista de alertas
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useCallback, useMemo } from 'react';
+import { View, FlatList, RefreshControl, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaLayout } from '@/shared/ui/layouts/SafeAreaLayout';
 import { Typography } from '@/shared/ui/atoms/Typography';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AlertaCard } from '@/entities/alerta/ui/AlertaCard';
+import { LoadingSkeleton } from '@/shared/ui/molecules/LoadingSkeleton';
+import { ErrorBanner } from '@/shared/ui/molecules/ErrorBanner';
+import { useQueryClient } from '@tanstack/react-query';
+import { useGetMisAlertas } from '@/entities/alerta/api/queries';
+import type { Alerta, AlertaEstado } from '@/entities/alerta/api/alerta.api';
 
-interface Alerta {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  nivel: 'bajo' | 'medio' | 'alto';
-  distancia: string;
-  hora: string;
-}
+type TabKey = 'todas' | 'pendientes' | 'resueltas';
 
-const alertasMock: Alerta[] = [];
+const TABS: { key: TabKey; label: string }[] = [
+  { key: 'todas', label: 'Todas' },
+  { key: 'pendientes', label: 'Pendientes' },
+  { key: 'resueltas', label: 'Resueltas' },
+];
 
-export default function Alertas() {
-  const getNivelColor = (nivel: string) => {
-    switch (nivel) {
-      case 'alto':
-        return '#EF4444';
-      case 'medio':
-        return '#F97316';
-      default:
-        return '#22C55E';
-    }
-  };
+const FILTER_MAP: Record<TabKey, AlertaEstado[] | null> = {
+  todas: null,
+  pendientes: ['REPORTADA', 'EN_REVISION', 'DERIVADA'],
+  resueltas: ['RESUELTA', 'DESCARTADA'],
+};
 
-  const getNivelIcon = (nivel: string) => {
-    switch (nivel) {
-      case 'alto':
-        return 'alert-circle';
-      case 'medio':
-        return 'alert';
-      default:
-        return 'information';
-    }
+export default function AlertasScreen() {
+  const [activeTab, setActiveTab] = useState<TabKey>('todas');
+  const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
+  const { data: alertas, isLoading, error, refetch } = useGetMisAlertas();
+
+  const filtered = useMemo(() => {
+    const estados = FILTER_MAP[activeTab];
+    if (!estados || !alertas) return alertas || [];
+    return alertas.filter((a) => a.estado && estados.includes(a.estado));
+  }, [alertas, activeTab]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await queryClient.invalidateQueries({ queryKey: ['alertas'] });
+    setRefreshing(false);
+  }, [queryClient]);
+
+  const renderItem = useCallback(
+    ({ item }: { item: Alerta }) => <AlertaCard key={item.id} alerta={item} />,
+    [],
+  );
+
+  const renderEmpty = () => (
+    <View className="items-center justify-center py-24">
+      <View className="mb-5 h-20 w-20 items-center justify-center rounded-full bg-slate-800">
+        <MaterialCommunityIcons name="bell-off-outline" size={40} color="#6B7280" />
+      </View>
+      <Typography variant="body" className="text-center text-gray-400">
+        No hay alertas
+      </Typography>
+      <Typography variant="caption" className="mt-2 text-center text-gray-500">
+        {activeTab === 'todas' && 'Tu zona está segura'}
+        {activeTab === 'pendientes' && 'No tienes alertas pendientes'}
+        {activeTab === 'resueltas' && 'No hay alertas resueltas'}
+      </Typography>
+    </View>
+  );
+
+  const renderContent = () => {
+    if (isLoading) return <LoadingSkeleton lines={4} />;
+    if (error) return <ErrorBanner message={(error as Error).message} onRetry={() => refetch()} />;
+    return (
+      <FlatList
+        data={filtered}
+        keyExtractor={(item) => item.id || Math.random().toString()}
+        renderItem={renderItem}
+        ListEmptyComponent={renderEmpty}
+        showsVerticalScrollIndicator={false}
+        contentContainerClassName="pb-8"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#8B5CF6"
+            colors={['#8B5CF6']}
+            progressBackgroundColor="#1F2937"
+          />
+        }
+      />
+    );
   };
 
   return (
     <SafeAreaLayout variant="background">
-      <ScrollView
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.header}>
+      <View className="flex-1 px-4">
+        <View className="mb-6 mt-2">
           <Typography variant="h1" className="text-white">
             Alertas
           </Typography>
-          <Typography variant="body" className="text-gray-400 mt-2">
+          <Typography variant="body" className="mt-2 text-gray-400">
             Mantente informado sobre tu zona
           </Typography>
         </View>
-
-        {alertasMock.length === 0 ? (
-          <View style={styles.emptyState}>
-            <MaterialCommunityIcons
-              name="bell-off-outline"
-              size={64}
-              color="#4B5563"
-            />
-            <Typography variant="body" className="text-gray-400 mt-4">
-              No hay alertas activas
-            </Typography>
-            <Typography variant="caption" className="text-gray-500 mt-2">
-              Tu zona está segura por el momento
-            </Typography>
-          </View>
-        ) : (
-          <View style={styles.alertasList}>
-            {alertasMock.map((alerta) => (
-              <View key={alerta.id} style={styles.alertaCard}>
-                <View style={styles.alertaHeader}>
-                  <View
-                    style={[
-                      styles.nivelBadge,
-                      { backgroundColor: getNivelColor(alerta.nivel) },
-                    ]}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="mb-5 flex-shrink-0"
+        >
+          <View className="flex-row gap-2">
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab.key;
+              return (
+                <TouchableOpacity
+                  key={tab.key}
+                  onPress={() => setActiveTab(tab.key)}
+                  className={`rounded-xl px-5 py-2.5 ${
+                    isActive ? 'bg-purple-600' : 'bg-slate-800'
+                  }`}
+                  accessibilityLabel={tab.label}
+                  accessibilityRole="tab"
+                  accessibilityState={{ selected: isActive }}
+                >
+                  <Typography
+                    variant="label"
+                    className={`font-semibold ${isActive ? 'text-white' : 'text-gray-400'}`}
                   >
-                    <MaterialCommunityIcons
-                      name={getNivelIcon(alerta.nivel)}
-                      size={16}
-                      color="#FFFFFF"
-                    />
-                    <Typography variant="caption" className="text-white ml-1">
-                      {alerta.nivel.toUpperCase()}
-                    </Typography>
-                  </View>
-                  <Typography variant="caption" className="text-gray-500">
-                    {alerta.hora}
+                    {tab.label}
                   </Typography>
-                </View>
-                <Typography variant="h3" className="text-white mt-3">
-                  {alerta.titulo}
-                </Typography>
-                <Typography variant="body" className="text-gray-400 mt-2">
-                  {alerta.descripcion}
-                </Typography>
-                <View style={styles.alertaFooter}>
-                  <MaterialCommunityIcons
-                    name="map-marker"
-                    size={16}
-                    color="#9CA3AF"
-                  />
-                  <Typography variant="caption" className="text-gray-400 ml-1">
-                    {alerta.distancia}
-                  </Typography>
-                </View>
-              </View>
-            ))}
+                </TouchableOpacity>
+              );
+            })}
           </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+        <View className="flex-1">{renderContent()}</View>
+      </View>
     </SafeAreaLayout>
   );
 }
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    padding: 16,
-    paddingBottom: 32,
-  },
-  header: {
-    marginBottom: 24,
-  },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 64,
-  },
-  alertasList: {
-    gap: 16,
-  },
-  alertaCard: {
-    backgroundColor: '#1F2937',
-    borderRadius: 16,
-    padding: 20,
-  },
-  alertaHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  nivelBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  alertaFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#374151',
-  },
-});

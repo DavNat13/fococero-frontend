@@ -11,13 +11,8 @@ import {
 import type { FiltrosAnalitica } from '../api/analitica.api';
 
 export const useAnaliticaFeature = () => {
-  const {
-    filtrosActivos,
-    periodoSeleccionado,
-    setFiltros,
-    setPeriodo,
-    limpiarFiltros,
-  } = useAnaliticaStore();
+  const { filtrosActivos, periodoSeleccionado, setFiltros, setPeriodo, limpiarFiltros } =
+    useAnaliticaStore();
 
   const kpisQuery = useGetKPIs();
   const tendenciasQuery = useGetTendencias(filtrosActivos);
@@ -34,7 +29,7 @@ export const useAnaliticaFeature = () => {
     setPeriodo(periodo);
     const now = new Date();
     let fechaInicio: string;
-    
+
     switch (periodo) {
       case '24h':
         fechaInicio = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
@@ -49,25 +44,25 @@ export const useAnaliticaFeature = () => {
         fechaInicio = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString();
         break;
     }
-    
+
     setFiltros({ ...filtrosActivos, fechaInicio });
   };
 
-  const isLoading = 
-    kpisQuery.isLoading || 
-    tendenciasQuery.isLoading || 
-    distribucionQuery.isLoading || 
-    anomaliasQuery.isLoading || 
-    heatmapQuery.isLoading || 
+  const isLoading =
+    kpisQuery.isLoading ||
+    tendenciasQuery.isLoading ||
+    distribucionQuery.isLoading ||
+    anomaliasQuery.isLoading ||
+    heatmapQuery.isLoading ||
     prediccionesQuery.isLoading;
 
-  const error = 
-    kpisQuery.error?.message || 
-    tendenciasQuery.error?.message || 
-    distribucionQuery.error?.message || 
-    anomaliasQuery.error?.message || 
-    heatmapQuery.error?.message || 
-    prediccionesQuery.error?.message || 
+  const error =
+    kpisQuery.error?.message ||
+    tendenciasQuery.error?.message ||
+    distribucionQuery.error?.message ||
+    anomaliasQuery.error?.message ||
+    heatmapQuery.error?.message ||
+    prediccionesQuery.error?.message ||
     null;
 
   return {

@@ -19,7 +19,9 @@ export const useMultimediaFeature = () => {
   const vincularMutation = useVincularArchivo();
   const eliminarMutation = useEliminarArchivo();
 
-  const subirArchivo = async (file: File | Blob): Promise<{ success: boolean; url?: string; error?: string }> => {
+  const subirArchivo = async (
+    file: File | Blob,
+  ): Promise<{ success: boolean; url?: string; error?: string }> => {
     try {
       setArchivosSubiendo(archivosSubiendo + 1);
       setError(null);
