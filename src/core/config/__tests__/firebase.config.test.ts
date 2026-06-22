@@ -63,7 +63,7 @@ describe('firebase.config', () => {
       const { initializeApp, getApps } = require('firebase/app');
       (getApps as jest.Mock).mockReturnValue([{ name: '[DEFAULT]' }]);
 
-      const app = getFirebaseApp();
+      getFirebaseApp();
       expect(initializeApp).not.toHaveBeenCalled();
     });
   });
@@ -72,7 +72,7 @@ describe('firebase.config', () => {
     it('inicializa Firebase Auth con persistencia nativa', () => {
       const { initializeAuth } = require('firebase/auth');
 
-      const auth = getFirebaseAuth();
+      getFirebaseAuth();
 
       expect(initializeAuth).toHaveBeenCalledWith(expect.any(Object), {
         persistence: 'mockPersistence',

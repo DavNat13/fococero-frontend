@@ -4,7 +4,7 @@ import { Card } from '../Card';
 
 describe('Card (componente de tarjeta)', () => {
   it('renderiza children correctamente', () => {
-    const { getByText } = render(
+    render(
       <Card>
         <></>
       </Card>,
@@ -12,7 +12,11 @@ describe('Card (componente de tarjeta)', () => {
   });
 
   it('renderiza contenido dentro de la tarjeta', () => {
-    const { getByText } = render(<Card></Card>);
+    render(
+      <Card>
+        <></>
+      </Card>,
+    );
   });
 
   it('acepta className adicional', () => {
@@ -25,6 +29,10 @@ describe('Card (componente de tarjeta)', () => {
   });
 
   it('renderiza múltiples hijos', () => {
-    const { getByText } = render(<Card></Card>);
+    render(
+      <Card>
+        <></>
+      </Card>,
+    );
   });
 });

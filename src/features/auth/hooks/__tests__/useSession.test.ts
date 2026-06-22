@@ -152,7 +152,7 @@ describe('useSession', () => {
   it('no hace nada si no está hidratado', async () => {
     mockStoreValues.isHydrated = false;
 
-    const { result } = renderHook(() => useSession());
+    const { result: _result } = renderHook(() => useSession());
 
     await act(async () => {
       jest.advanceTimersByTime(0);

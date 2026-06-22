@@ -1,6 +1,6 @@
 // src/shared/ui/layouts/__tests__/ScreenHeader.test.tsx
 
-import React from 'react';
+import React, { ComponentType } from 'react';
 import { render } from '@testing-library/react-native';
 import { ScreenHeader } from '../ScreenHeader';
 
@@ -37,11 +37,11 @@ describe('ScreenHeader', () => {
 
   it('renderiza botón de retroceso por defecto', () => {
     const { UNSAFE_getByType } = render(<ScreenHeader title="Perfil" />);
-    expect(UNSAFE_getByType('IconButton')).toBeDefined();
+    expect(UNSAFE_getByType('IconButton' as unknown as ComponentType)).toBeDefined();
   });
 
   it('no renderiza botón de retroceso cuando showBackButton es false', () => {
-    const { queryByType } = render(<ScreenHeader title="Perfil" showBackButton={false} />);
+    render(<ScreenHeader title="Perfil" showBackButton={false} />);
     expect(true).toBe(true);
   });
 

@@ -1,6 +1,5 @@
 describe('getEnv (configuración de entorno)', () => {
   let getEnv: typeof import('../env.config').getEnv;
-  let ENV: typeof import('../env.config').ENV;
   const OLD_ENV = { ...process.env };
 
   beforeEach(() => {
@@ -18,7 +17,6 @@ describe('getEnv (configuración de entorno)', () => {
 
     const envModule = require('../env.config');
     getEnv = envModule.getEnv;
-    ENV = envModule.ENV;
   });
 
   afterAll(() => {
@@ -54,9 +52,9 @@ describe('getEnv (configuración de entorno)', () => {
   });
 
   it('no lanza error cuando faltan variables requeridas', () => {
-    delete process.env.EXPO_PUBLIC_API_GATEWAY_URL;
-    delete process.env.EXPO_PUBLIC_FIREBASE_API_KEY;
-    delete process.env.EXPO_PUBLIC_ENVIRONMENT;
+    (process.env as any).EXPO_PUBLIC_API_GATEWAY_URL = undefined;
+    (process.env as any).EXPO_PUBLIC_FIREBASE_API_KEY = undefined;
+    (process.env as any).EXPO_PUBLIC_ENVIRONMENT = undefined;
     jest.resetModules();
     const { getEnv: getEnv2 } = require('../env.config');
     const env = getEnv2();
