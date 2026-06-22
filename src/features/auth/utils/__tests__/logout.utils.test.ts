@@ -1,3 +1,8 @@
+import { performLogout } from '../logout.utils';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { signOut as firebaseSignOut } from 'firebase/auth';
+import { useAuthStore } from '../../model/auth.store';
+
 jest.mock('@react-native-google-signin/google-signin', () => ({
   GoogleSignin: {
     signOut: jest.fn(),
@@ -19,11 +24,6 @@ jest.mock('../../model/auth.store', () => ({
     setState: jest.fn(),
   },
 }));
-
-import { performLogout } from '../logout.utils';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { signOut as firebaseSignOut } from 'firebase/auth';
-import { useAuthStore } from '../../model/auth.store';
 
 describe('performLogout (cierre de sesión)', () => {
   const mockLogout = jest.fn();

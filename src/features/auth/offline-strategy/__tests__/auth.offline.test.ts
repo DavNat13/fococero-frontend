@@ -1,5 +1,7 @@
 // src/features/auth/offline-strategy/__tests__/auth.offline.test.ts
 
+import { authOfflineStrategy } from '../auth.offline';
+
 jest.mock('@core/offline', () => ({
   offlineSync: {
     addTask: jest.fn(),
@@ -12,8 +14,6 @@ jest.mock('@entities/usuario', () => ({
   UserStatus: { ACTIVO: 'ACTIVO' },
   Rut: class RutMock {},
 }));
-
-import { authOfflineStrategy } from '../auth.offline';
 
 describe('authOfflineStrategy', () => {
   describe('createOptimisticUser', () => {

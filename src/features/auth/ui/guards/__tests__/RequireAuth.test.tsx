@@ -1,5 +1,10 @@
 // src/features/auth/ui/guards/__tests__/RequireAuth.test.tsx
 
+import React from 'react';
+import { Text, View } from 'react-native';
+import { render } from '@testing-library/react-native';
+import { RequireAuth } from '../RequireAuth';
+
 jest.mock('../../../model/auth.selectors', () => ({
   useIsHydrated: jest.fn(),
   useIsAuthenticated: jest.fn(),
@@ -12,11 +17,6 @@ jest.mock('expo-router', () => ({
     return null;
   },
 }));
-
-import React from 'react';
-import { Text, View } from 'react-native';
-import { render } from '@testing-library/react-native';
-import { RequireAuth } from '../RequireAuth';
 
 describe('RequireAuth', () => {
   it('muestra loading spinner cuando no está hidratado', () => {

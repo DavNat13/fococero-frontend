@@ -1,4 +1,6 @@
 // Mock axios para evitar el error de fetch adapter en Node.js
+import { ApiError } from '../api.errors';
+
 jest.mock('axios', () => {
   const mockAxiosError = (isAxios: boolean) => {
     const err: any = new Error('Axios error');
@@ -15,8 +17,6 @@ jest.mock('axios', () => {
     isAxiosError: (error: any) => error?.isAxiosError === true,
   };
 });
-
-import { ApiError } from '../api.errors';
 
 // Helper para crear errores tipo Axios
 const createAxiosError = (overrides: Record<string, any> = {}) => {

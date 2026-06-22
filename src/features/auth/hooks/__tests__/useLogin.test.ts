@@ -2,6 +2,8 @@
 
 import { renderHook, act, waitFor } from '@testing-library/react-native';
 
+import { useLogin } from '../useLogin';
+
 const mockRegisterGuest = jest.fn();
 jest.mock('../../api/auth.api', () => ({
   authApi: { registerGuest: (...args: any[]) => mockRegisterGuest(...args) },
@@ -20,8 +22,6 @@ jest.mock('../../offline-strategy', () => ({
     queueRegister: (...args: any[]) => mockQueueRegister(...args),
   },
 }));
-
-import { useLogin } from '../useLogin';
 
 const fakeFormData = {
   name: 'Test',
@@ -66,14 +66,21 @@ describe('useLogin', () => {
   it('loginAsGuest retorna false si ya está submitting', async () => {
     // Usamos una promesa que nunca se resuelve para la primera llamada
     let resolvePromise: (value: any) => void = () => {};
-    mockRegisterGuest.mockImplementation(() => new Promise((resolve) => { resolvePromise = resolve; }));
+    mockRegisterGuest.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvePromise = resolve;
+        }),
+    );
 
     const { result } = renderHook(() => useLogin());
 
     // Iniciamos la primera llamada (sin await para que quede colgada)
     let firstResult: boolean | undefined;
     act(() => {
-      result.current.loginAsGuest(fakeFormData).then((r) => { firstResult = r; });
+      result.current.loginAsGuest(fakeFormData).then((r) => {
+        firstResult = r;
+      });
     });
 
     // La segunda llamada debe retornar false inmediatamente (status === 'submitting')
@@ -210,6 +217,8 @@ describe('useLogin', () => {
       await result.current.loginAsGuest(fakeFormData);
     });
 
-    expect(result.current.error).toBe('Inconsistencia de datos con el servidor. Reporte este error.');
+    expect(result.current.error).toBe(
+      'Inconsistencia de datos con el servidor. Reporte este error.',
+    );
   });
 });

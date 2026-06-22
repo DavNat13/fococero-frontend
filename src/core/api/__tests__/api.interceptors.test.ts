@@ -1,3 +1,11 @@
+import {
+  requestInterceptor,
+  responseInterceptor,
+  responseErrorInterceptor,
+} from '../api.interceptors';
+import { ApiError } from '../api.errors';
+import { useAuthStore } from '@features/auth/model/auth.store';
+
 jest.mock('@features/auth/model/auth.store', () => {
   const mockAuthStore = {
     getState: jest.fn(() => ({
@@ -31,14 +39,6 @@ jest.mock('@shared/utils/uuid', () => ({
 jest.mock('axios', () => ({
   isAxiosError: jest.fn((err: any) => err?.isAxiosError === true),
 }));
-
-import {
-  requestInterceptor,
-  responseInterceptor,
-  responseErrorInterceptor,
-} from '../api.interceptors';
-import { ApiError } from '../api.errors';
-import { useAuthStore } from '@features/auth/model/auth.store';
 
 const mockGetState = useAuthStore.getState as jest.Mock;
 
@@ -169,7 +169,9 @@ describe('responseErrorInterceptor (interceptor de errores)', () => {
       response: { status: 401, data: { error: 'No autorizado' } },
       config: { url: '/api/auth/login', method: 'post' },
     });
-    await expect(responseErrorInterceptor(error, mockAxiosInstance)).rejects.toBeInstanceOf(ApiError);
+    await expect(responseErrorInterceptor(error, mockAxiosInstance)).rejects.toBeInstanceOf(
+      ApiError,
+    );
   });
 
   it('rechaza con ApiError para errores que no son 401', async () => {
@@ -177,7 +179,9 @@ describe('responseErrorInterceptor (interceptor de errores)', () => {
       response: { status: 500, data: { error: 'Error interno' } },
       config: { url: '/api/alertas', method: 'get' },
     });
-    await expect(responseErrorInterceptor(error, mockAxiosInstance)).rejects.toBeInstanceOf(ApiError);
+    await expect(responseErrorInterceptor(error, mockAxiosInstance)).rejects.toBeInstanceOf(
+      ApiError,
+    );
   });
 
   it('rechaza con ApiError para error 401 sin config', async () => {
@@ -185,7 +189,9 @@ describe('responseErrorInterceptor (interceptor de errores)', () => {
       response: { status: 401, data: { error: 'No autorizado' } },
     });
     delete error.config;
-    await expect(responseErrorInterceptor(error, mockAxiosInstance)).rejects.toBeInstanceOf(ApiError);
+    await expect(responseErrorInterceptor(error, mockAxiosInstance)).rejects.toBeInstanceOf(
+      ApiError,
+    );
   });
 });
 

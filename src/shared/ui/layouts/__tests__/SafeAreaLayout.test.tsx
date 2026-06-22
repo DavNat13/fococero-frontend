@@ -1,6 +1,11 @@
 // src/shared/ui/layouts/__tests__/SafeAreaLayout.test.tsx
 
 // Use string mocks to avoid CSS interop issues with RN requires inside jest.mock
+import React from 'react';
+import { Text } from 'react-native';
+import { render } from '@testing-library/react-native';
+import { SafeAreaLayout } from '../SafeAreaLayout';
+
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: 'SafeAreaView',
   useSafeAreaInsets: jest.fn(() => ({ top: 0, bottom: 0, left: 0, right: 0 })),
@@ -9,11 +14,6 @@ jest.mock('react-native-safe-area-context', () => ({
 jest.mock('../FocusAwareStatusBar', () => ({
   FocusAwareStatusBar: 'FocusAwareStatusBar',
 }));
-
-import React from 'react';
-import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
-import { SafeAreaLayout } from '../SafeAreaLayout';
 
 describe('SafeAreaLayout', () => {
   it('renderiza children correctamente', () => {

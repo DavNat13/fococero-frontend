@@ -29,9 +29,7 @@ describe('Avatar', () => {
   });
 
   it('renderiza con isOnline true (indicador presente)', () => {
-    const { UNSAFE_getAllByType } = render(
-      <Avatar fallbackInitials="JD" isOnline={true} />,
-    );
+    const { UNSAFE_getAllByType } = render(<Avatar fallbackInitials="JD" isOnline={true} />);
     const { View } = require('react-native');
     expect(UNSAFE_getAllByType(View).length).toBe(3);
   });

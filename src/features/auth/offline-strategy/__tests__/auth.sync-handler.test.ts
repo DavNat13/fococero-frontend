@@ -1,12 +1,12 @@
 // src/features/auth/offline-strategy/__tests__/auth.sync-handler.test.ts
 
+import { authSyncHandler } from '../auth.sync-handler';
+
 jest.mock('../../model/auth.store', () => ({
   useAuthStore: {
     getState: jest.fn(),
   },
 }));
-
-import { authSyncHandler } from '../auth.sync-handler';
 
 describe('authSyncHandler', () => {
   describe('reconcile', () => {

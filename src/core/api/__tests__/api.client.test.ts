@@ -1,6 +1,9 @@
 // src/core/api/__tests__/api.client.test.ts
 
 // Mock instance compartida (se asigna en beforeAll)
+import { apiClient } from '../api.client';
+import { ApiError } from '../api.errors';
+
 let mockAxiosInstance: any;
 
 jest.mock('axios', () => ({
@@ -35,9 +38,6 @@ jest.mock('../api.interceptors', () => ({
   responseInterceptor: (response: any) => response,
   responseErrorInterceptor: (error: any, instance: any) => Promise.reject(error),
 }));
-
-import { apiClient } from '../api.client';
-import { ApiError } from '../api.errors';
 
 describe('apiClient', () => {
   beforeEach(() => {

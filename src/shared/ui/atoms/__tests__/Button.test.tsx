@@ -50,9 +50,7 @@ describe('Button (componente de botón)', () => {
   });
 
   it('no renderiza el label cuando isLoading es true (solo spinner)', () => {
-    const { queryByText } = render(
-      <Button label="Cargando" onPress={() => {}} isLoading />,
-    );
+    const { queryByText } = render(<Button label="Cargando" onPress={() => {}} isLoading />);
     expect(queryByText('Cargando')).toBeNull();
   });
 });
