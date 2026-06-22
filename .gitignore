@@ -31,6 +31,7 @@ expo-env.d.ts
 *.keystore
 google-services.json
 GoogleService-Info.plist
+AGENTS.md
 
 # 4. Compilaciones Nativas y Expo Application Services (EAS)
 /ios
@@ -44,18 +45,15 @@ coverage/
 .nyc_output/
 .scannerwork/
 
-# 7. Documentación con credenciales
-AGENTS.md
-
-# 8. Directorios temporales
+# 6. Directorios temporales y documentación
 tmp-*/
+.specs/
 
-# 6. Sistema Operativo y Editores
+# 7. Sistema Operativo y Editores
 .DS_Store
 Thumbs.db
 nul
 .idea/
 *.swp
 *.swo
-.vscode/tasks.json
-.vscode/launch.json
+.vscode/

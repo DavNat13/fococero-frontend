@@ -183,12 +183,13 @@ EXPO_PUBLIC_API_GATEWAY_URL=http://192.168.1.142:3000
 EXPO_PUBLIC_ENVIRONMENT=development
 # ==========================================
 # FIREBASE WEB SDK (Para Google Auth en Expo Go)
-EXPO_PUBLIC_FIREBASE_API_KEY=AIzaSyBP0PQCqTtKVY-wWJySB5n72rSHkGSkMLU
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=fococero-218bf.firebaseapp.com
-EXPO_PUBLIC_FIREBASE_PROJECT_ID=fococero-218bf
-EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=fococero-218bf.firebasestorage.app
-EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=303096009068
-EXPO_PUBLIC_FIREBASE_APP_ID=1:303096009068:web:6d0cb5efb535c75a6ca349
+# ⚠️ Reemplaza con tus propias credenciales de Firebase Console
+EXPO_PUBLIC_FIREBASE_API_KEY=<tu-firebase-api-key>
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=<tu-proyecto>.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=<tu-project-id>
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=<tu-proyecto>.firebasestorage.app
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=<tu-sender-id>
+EXPO_PUBLIC_FIREBASE_APP_ID=<tu-app-id>
 ```
 
 > **Nota**: La IP `192.168.1.142` es la del equipo donde corre el backend. Ajustar según tu red local.
