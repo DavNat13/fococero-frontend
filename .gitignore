@@ -47,6 +47,9 @@ coverage/
 # 7. Documentación con credenciales
 AGENTS.md
 
+# 8. Directorios temporales
+tmp-*/
+
 # 6. Sistema Operativo y Editores
 .DS_Store
 Thumbs.db
