@@ -1,6 +1,9 @@
 // src/shared/ui/molecules/AlertBanner.tsx
 import { ColorTheme } from '@shared/types';
-import { FadeIn, Icon, Icons, Typography } from '@shared/ui';
+import { FadeIn } from '@shared/ui/animations/FadeIn';
+import { Icon } from '@shared/ui/icons/Icon';
+import { Icons } from '@shared/ui/icons';
+import { Typography } from '@shared/ui/atoms/Typography';
 import React from 'react';
 
 interface AlertBannerProps {

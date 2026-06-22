@@ -1,7 +1,9 @@
 // src/shared/ui/molecules/EmptyState.tsx
 import React from 'react';
 import { View } from 'react-native';
-import { Typography, Button, FadeIn } from '@shared/ui';
+import { Typography } from '@shared/ui/atoms/Typography';
+import { Button } from '@shared/ui/atoms/Button';
+import { FadeIn } from '@shared/ui/animations/FadeIn';
 
 interface EmptyStateProps {
   illustration: React.ReactNode;

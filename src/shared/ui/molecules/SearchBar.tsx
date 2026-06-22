@@ -1,5 +1,8 @@
 // src/shared/ui/molecules/SearchBar.tsx
-import { Icon, IconButton, Icons, Input } from '@shared/ui';
+import { Icon } from '@shared/ui/icons/Icon';
+import { IconButton } from '@shared/ui/atoms/IconButton';
+import { Icons } from '@shared/ui/icons';
+import { Input } from '@shared/ui/atoms/Input';
 import React from 'react';
 import { View } from 'react-native';
 

@@ -47,9 +47,9 @@ coverage/
 # 6. Sistema Operativo y Editores
 .DS_Store
 Thumbs.db
+nul
 .idea/
 *.swp
 *.swo
-
 .vscode/tasks.json
 .vscode/launch.json
