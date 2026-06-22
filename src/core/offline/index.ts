@@ -10,7 +10,7 @@
  */
 
 // 1. MOTORES Y UTILIDADES DE LIMPIEZA
-export { wipeAllStorage } from './storage.client';
+export { wipeAllStorage, globalStorage } from './storage.client';
 
 // 2. ADAPTADORES PARA ZUSTAND
 export {

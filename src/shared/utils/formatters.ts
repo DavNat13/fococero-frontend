@@ -30,3 +30,20 @@ export const formatPhone = (phone: string): string => {
 export const capitalize = (str: string): string => {
   return str.toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase());
 };
+
+/**
+ * Formatea una fecha ISO a formato local chileno
+ */
+export const formatearFecha = (iso: string): string => {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-CL', {
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    return iso;
+  }
+};

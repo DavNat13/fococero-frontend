@@ -6,7 +6,6 @@ declare global {
       EXPO_PUBLIC_API_URL: string;
       EXPO_PUBLIC_SOCKET_URL: string;
       EXPO_PUBLIC_ENVIRONMENT: 'development' | 'staging' | 'production';
-      EXPO_PUBLIC_GOOGLE_MAPS_API_KEY: string;
       EXPO_PUBLIC_JWT_ALGORITHM: string;
       EXPO_PUBLIC_API_TIMEOUT: string;
       EXPO_PUBLIC_MAX_RETRIES: string;

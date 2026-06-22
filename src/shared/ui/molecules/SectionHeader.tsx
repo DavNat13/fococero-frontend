@@ -1,5 +1,7 @@
 // src/shared/ui/molecules/SectionHeader.tsx
-import { Icon, Icons, Typography } from '@shared/ui';
+import { Icon } from '@shared/ui/icons/Icon';
+import { Icons } from '@shared/ui/icons';
+import { Typography } from '@shared/ui/atoms/Typography';
 import React from 'react';
 import { Pressable, View } from 'react-native';
 

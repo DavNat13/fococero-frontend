@@ -1,5 +1,5 @@
 // src/features/auth/model/auth.types.ts
-import { Usuario, Rut } from '@entities/usuario';
+import { Usuario } from '@entities/usuario';
 
 // 1. BRANDED TYPES (Tipos Nominales exclusivos de Auth)
 export type FirebaseUid = string & { readonly __brand: 'FirebaseUid' };
@@ -26,7 +26,7 @@ export interface UnauthenticatedState extends BaseAuthState {
 export interface AuthenticatedState extends BaseAuthState {
   status: 'guest' | 'authenticated';
   user: Usuario; // ✨ Consumiendo la Entidad
-  firebaseToken: string | null; 
+  firebaseToken: string | null;
 }
 
 export type AuthState = UnauthenticatedState | AuthenticatedState;
@@ -34,12 +34,14 @@ export type AuthState = UnauthenticatedState | AuthenticatedState;
 // 3. CONTRATOS DE RED (Payloads para la API)
 
 export interface RegisterGuestPayload {
-  rut: Rut; 
+  rut: string;
   nombre: string;
   apellido: string;
   telefono: string;
+  firebase_uid?: string;
+  fcm_token?: string;
+  password?: string;
 }
 
-export interface RegisterFullPayload extends RegisterGuestPayload {
-  token: string; // El ID Token de Firebase
-}
+// No usamos RegisterFullPayload ya que requiere token real de Firebase
+// que no podemos generar sin estar autenticados

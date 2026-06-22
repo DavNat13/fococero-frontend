@@ -33,11 +33,13 @@ export const tokenUtils = {
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
-      // En React Native / Hermes, a veces atob no está disponible.
-      // Usamos una implementación compatible con Buffer/String nativo.
-      const jsonPayload = decodeURIComponent(
-        escape(Buffer.from(base64, 'base64').toString('binary')),
-      );
+      // En React Native / Hermes, no existe Buffer. Usamos alternativa nativa.
+      const binaryString = atob(base64);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      const jsonPayload = new TextDecoder().decode(bytes);
 
       const parsed = JSON.parse(jsonPayload);
 
