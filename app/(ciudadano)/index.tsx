@@ -88,27 +88,27 @@ export default function CiudadanoHome() {
   const nombre = user?.nombre || 'Ciudadano';
   const kpis_arr = [
     {
-      icon: 'fire',
+      icon: 'fire' as const,
       value: kpis?.total_reportadas ?? misReportes.length,
       label: 'Reportes',
       accent: 'bg-red-500',
       col: '#EF4444',
     },
     {
-      icon: 'bell-ring',
+      icon: 'bell-ring' as const,
       value: kpis?.activas ?? activeAlertas,
       label: 'Alertas',
       accent: 'bg-orange-500',
       col: '#F97316',
     },
     {
-      icon: 'handshake',
+      icon: 'handshake' as const,
       value: kpis?.resueltas ?? 0,
       label: 'Contribuciones',
       accent: 'bg-green-500',
       col: '#22C55E',
     },
-  ];
+  ] as const;
   const actions = [
     {
       icon: 'fire',
@@ -135,7 +135,6 @@ export default function CiudadanoHome() {
       col: '#8B5CF6',
     },
   ] as const;
->>>>>>> c294de6 (fix: corregir 46 errores de TypeScript en tests y componentes de navegacion)
   const [showToast, setShowToast] = useState(false);
   useEffect(() => {
     if (!errorMsg) {

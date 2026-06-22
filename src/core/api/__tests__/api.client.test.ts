@@ -7,7 +7,7 @@ import { ApiError } from '../api.errors';
 let mockAxiosInstance: any;
 
 jest.mock('axios', () => ({
-  isAxiosError: jest.fn(() => false),
+  isAxiosError: jest.fn((error: any) => error?.isAxiosError === true),
   create: jest.fn(() => {
     const instance = {
       get: jest.fn(),
@@ -36,7 +36,7 @@ jest.mock('../api.interceptors', () => ({
   requestInterceptor: (config: any) => config,
   requestErrorInterceptor: (error: any) => Promise.reject(error),
   responseInterceptor: (response: any) => response,
-  responseErrorInterceptor: (error: any, instance: any) => Promise.reject(error),
+  responseErrorInterceptor: (error: any) => Promise.reject(error),
 }));
 
 describe('apiClient', () => {
@@ -168,7 +168,10 @@ describe('apiClient', () => {
   describe('manejo de errores', () => {
     it('retorna ApiFailure cuando el request falla', async () => {
       mockAxiosInstance.get.mockRejectedValue(
-        new ApiError('NOT_FOUND', 'Recurso no encontrado', 404),
+        ApiError.from({
+          isAxiosError: true,
+          response: { status: 404, data: { error: 'Recurso no encontrado' } },
+        }),
       );
 
       const result = await apiClient.get('/api/test/999');
@@ -192,7 +195,10 @@ describe('apiClient', () => {
 
     it('maneja errores en postPublic', async () => {
       mockAxiosInstance.post.mockRejectedValue(
-        new ApiError('VALIDATION_ERROR', 'Datos inválidos', 400),
+        ApiError.from({
+          isAxiosError: true,
+          response: { status: 400, data: { error: 'Datos inválidos' } },
+        }),
       );
 
       const result = await apiClient.postPublic('/api/auth/google', {});
