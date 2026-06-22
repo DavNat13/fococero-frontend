@@ -4,7 +4,8 @@ describe('tokenUtils (utilidades de JWT)', () => {
   describe('decodePayload', () => {
     it('decodifica un JWT válido correctamente', () => {
       // Token JWT simulado con payload: {"exp": 9999999999, "iat": 1000000000, "sub": "abc123", "email": "test@test.com"}
-      const token = 'header.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTAwMDAwMDAwMCwic3ViIjoiYWJjMTIzIiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.signature';
+      const token =
+        'header.eyJleHAiOjk5OTk5OTk5OTksImlhdCI6MTAwMDAwMDAwMCwic3ViIjoiYWJjMTIzIiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0.signature';
       const result = tokenUtils.decodePayload(token);
       expect(result).not.toBeNull();
       expect(result!.sub).toBe('abc123');

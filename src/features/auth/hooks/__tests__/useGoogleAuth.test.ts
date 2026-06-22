@@ -2,6 +2,8 @@
 
 import { renderHook, act } from '@testing-library/react-native';
 
+import { useGoogleAuth } from '../useGoogleAuth';
+
 // --- Mocks (must be before any imports) ---
 // IMPORTANT: jest.mock factories are hoisted above all code.
 // Object properties are evaluated at factory time, so direct variable references
@@ -65,11 +67,14 @@ jest.mock('../../model/auth.store', () => ({
       const full = { firebaseToken: null, setAuthData: mockSetAuthDataHook, ...mockStoreState };
       return selector ? selector(full) : full;
     },
-    { getState: jest.fn(() => mockStoreState), setState: jest.fn((s: any) => { mockStoreState = { ...mockStoreState, ...s }; }) },
+    {
+      getState: jest.fn(() => mockStoreState),
+      setState: jest.fn((s: any) => {
+        mockStoreState = { ...mockStoreState, ...s };
+      }),
+    },
   ),
 }));
-
-import { useGoogleAuth } from '../useGoogleAuth';
 
 describe('useGoogleAuth', () => {
   beforeEach(() => {
@@ -120,11 +125,16 @@ describe('useGoogleAuth', () => {
       offlineAccess: false,
     });
     expect(mockGoogleSigninInstance.signOut).toHaveBeenCalled();
-    expect(mockGoogleSigninInstance.hasPlayServices).toHaveBeenCalledWith({ showPlayServicesUpdateDialog: true });
+    expect(mockGoogleSigninInstance.hasPlayServices).toHaveBeenCalledWith({
+      showPlayServicesUpdateDialog: true,
+    });
     expect(mockGoogleSigninInstance.signIn).toHaveBeenCalled();
     expect(mockSignInWithCredentialFn).toHaveBeenCalled();
     expect(mockRegisterGoogleFn).toHaveBeenCalledWith({ googleToken: 'firebase-token-123' });
-    expect(mockSetAuthDataHook).toHaveBeenCalledWith({ id: 'user-1', rol: 'USUARIO' }, 'refreshed-token-456');
+    expect(mockSetAuthDataHook).toHaveBeenCalledWith(
+      { id: 'user-1', rol: 'USUARIO' },
+      'refreshed-token-456',
+    );
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.error).toBeNull();

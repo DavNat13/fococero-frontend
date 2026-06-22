@@ -1,10 +1,22 @@
 // src/shared/ui/molecules/__tests__/Toast.test.tsx
 
+import React from 'react';
+import { render, act } from '@testing-library/react-native';
+import { Toast } from '../Toast';
+
 jest.mock('react-native-reanimated', () => {
   // Return simple mock without RN dependencies
   return {
     default: { View: 'AnimatedView' },
-    FadeInUp: { springify: function () { return { damping: function () { return {}; } }; } },
+    FadeInUp: {
+      springify: function () {
+        return {
+          damping: function () {
+            return {};
+          },
+        };
+      },
+    },
     FadeOutUp: {},
     View: 'AnimatedView',
   };
@@ -21,10 +33,6 @@ jest.mock('../../icons', () => ({
   },
 }));
 
-import React from 'react';
-import { render, act } from '@testing-library/react-native';
-import { Toast } from '../Toast';
-
 describe('Toast', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -35,9 +43,7 @@ describe('Toast', () => {
   });
 
   it('no renderiza cuando isVisible es false', () => {
-    const { queryByText } = render(
-      <Toast message="Test" isVisible={false} onHide={jest.fn()} />,
-    );
+    const { queryByText } = render(<Toast message="Test" isVisible={false} onHide={jest.fn()} />);
     expect(queryByText('Test')).toBeNull();
   });
 
@@ -61,9 +67,7 @@ describe('Toast', () => {
 
   it('limpia el timer al desmontar', () => {
     const onHide = jest.fn();
-    const { unmount } = render(
-      <Toast message="Test" isVisible={true} onHide={onHide} />,
-    );
+    const { unmount } = render(<Toast message="Test" isVisible={true} onHide={onHide} />);
 
     unmount();
 

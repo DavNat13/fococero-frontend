@@ -1,12 +1,14 @@
 // src/shared/ui/atoms/__tests__/Checkbox.test.tsx
 
-jest.mock('../Typography', () => ({
-  Typography: function Typography() { return null; },
-}));
-
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Checkbox } from '../Checkbox';
+
+jest.mock('../Typography', () => ({
+  Typography: function Typography() {
+    return null;
+  },
+}));
 
 describe('Checkbox', () => {
   it('renderiza sin errores', () => {

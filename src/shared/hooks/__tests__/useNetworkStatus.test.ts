@@ -1,13 +1,13 @@
 // src/shared/hooks/__tests__/useNetworkStatus.test.ts
 
+import { renderHook, act } from '@testing-library/react-native';
+import NetInfo from '@react-native-community/netinfo';
+import { useNetworkStatus } from '../useNetworkStatus';
+
 jest.mock('@react-native-community/netinfo', () => ({
   addEventListener: jest.fn(),
   fetch: jest.fn(),
 }));
-
-import { renderHook, act } from '@testing-library/react-native';
-import NetInfo from '@react-native-community/netinfo';
-import { useNetworkStatus } from '../useNetworkStatus';
 
 describe('useNetworkStatus', () => {
   it('retorna isConnected como true inicialmente', () => {

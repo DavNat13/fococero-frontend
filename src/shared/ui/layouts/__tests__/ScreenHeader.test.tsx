@@ -1,5 +1,9 @@
 // src/shared/ui/layouts/__tests__/ScreenHeader.test.tsx
 
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import { ScreenHeader } from '../ScreenHeader';
+
 jest.mock('expo-router', () => ({
   router: { back: jest.fn() },
 }));
@@ -15,10 +19,6 @@ jest.mock('@shared/ui/icons', () => ({
   Icons: { ChevronLeft: 'ChevronLeft' },
 }));
 
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { ScreenHeader } from '../ScreenHeader';
-
 describe('ScreenHeader', () => {
   it('renderiza el título', () => {
     const { root } = render(<ScreenHeader title="Mi Perfil" />);
@@ -26,9 +26,7 @@ describe('ScreenHeader', () => {
   });
 
   it('renderiza el subtítulo', () => {
-    const { root } = render(
-      <ScreenHeader title="Perfil" subtitle="Información personal" />,
-    );
+    const { root } = render(<ScreenHeader title="Perfil" subtitle="Información personal" />);
     expect(root).toBeDefined();
   });
 
@@ -43,9 +41,7 @@ describe('ScreenHeader', () => {
   });
 
   it('no renderiza botón de retroceso cuando showBackButton es false', () => {
-    const { queryByType } = render(
-      <ScreenHeader title="Perfil" showBackButton={false} />,
-    );
+    const { queryByType } = render(<ScreenHeader title="Perfil" showBackButton={false} />);
     expect(true).toBe(true);
   });
 

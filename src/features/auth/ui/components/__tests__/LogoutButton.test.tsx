@@ -1,12 +1,12 @@
 // src/features/auth/ui/components/__tests__/LogoutButton.test.tsx
 
-jest.mock('../../../model/auth.selectors', () => ({
-  useAuthActions: jest.fn(),
-}));
-
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { LogoutButton } from '../LogoutButton';
+
+jest.mock('../../../model/auth.selectors', () => ({
+  useAuthActions: jest.fn(),
+}));
 
 describe('LogoutButton', () => {
   it('renderiza el botón de cerrar sesión', () => {

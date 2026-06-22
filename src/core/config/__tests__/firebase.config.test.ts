@@ -1,5 +1,7 @@
 // src/core/config/__tests__/firebase.config.test.ts
 
+import { getFirebaseApp, getFirebaseAuth, getGoogleClientId } from '../firebase.config';
+
 jest.mock('firebase/app', () => ({
   initializeApp: jest.fn(),
   getApps: jest.fn(),
@@ -15,8 +17,6 @@ jest.mock('@react-native-async-storage/async-storage', () => ({}));
 jest.mock('../env.config', () => ({
   getEnv: jest.fn(),
 }));
-
-import { getFirebaseApp, getFirebaseAuth, getGoogleClientId } from '../firebase.config';
 
 describe('firebase.config', () => {
   beforeEach(() => {

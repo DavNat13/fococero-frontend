@@ -3,6 +3,8 @@
 import { renderHook, act } from '@testing-library/react-native';
 import { tokenUtils } from '../../utils/token.utils';
 
+import { useSession } from '../useSession';
+
 // --- Mocks ---
 // All mutable test state MUST use `mock` (case-insensitive) prefix
 let mockStoreValues: any = {
@@ -55,8 +57,6 @@ jest.mock('../../utils/token.utils', () => ({
     needsRefresh: jest.fn().mockReturnValue(false),
   },
 }));
-
-import { useSession } from '../useSession';
 
 describe('useSession', () => {
   beforeEach(() => {

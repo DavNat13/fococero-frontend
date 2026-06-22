@@ -1,4 +1,16 @@
 // Mocks de storage deben ir ANTES de cualquier import
+import { renderHook } from '@testing-library/react-native';
+import {
+  useUser,
+  useFirebaseToken,
+  useAuthStatus,
+  useIsHydrated,
+  useIsAuthenticated,
+  useIsGuest,
+  useAuthActions,
+} from '../auth.selectors';
+import { useAuthStore } from '../auth.store';
+
 jest.mock('@react-native-async-storage/async-storage', () => ({
   setItem: jest.fn(() => Promise.resolve()),
   getItem: jest.fn(() => Promise.resolve(null)),
@@ -53,7 +65,12 @@ jest.mock('@entities/usuario', () => {
   const { z } = require('zod');
   return {
     Usuario: class UsuarioMock {},
-    UserRole: { INVITADO: 'invitado', USUARIO: 'usuario', BRIGADISTA: 'brigadista', ADMIN: 'admin' },
+    UserRole: {
+      INVITADO: 'invitado',
+      USUARIO: 'usuario',
+      BRIGADISTA: 'brigadista',
+      ADMIN: 'admin',
+    },
     UserStatus: { ACTIVO: 'activo', BLOQUEADO: 'bloqueado', SUSPENDIDO: 'suspendido' },
     rutSchema: z.string(),
     telefonoSchema: z.string(),
@@ -61,18 +78,6 @@ jest.mock('@entities/usuario', () => {
     usuarioApi: { getProfile: jest.fn(), updateProfile: jest.fn() },
   };
 });
-
-import { renderHook } from '@testing-library/react-native';
-import {
-  useUser,
-  useFirebaseToken,
-  useAuthStatus,
-  useIsHydrated,
-  useIsAuthenticated,
-  useIsGuest,
-  useAuthActions,
-} from '../auth.selectors';
-import { useAuthStore } from '../auth.store';
 
 describe('auth.selectors (selectores de autenticación)', () => {
   beforeEach(() => {

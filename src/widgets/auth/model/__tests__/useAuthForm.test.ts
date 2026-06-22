@@ -1,5 +1,7 @@
 // src/widgets/auth/model/__tests__/useAuthForm.test.ts
 
+import { useAuthForm } from '../useAuthForm';
+
 jest.mock('@features/auth/hooks/useLogin', () => ({
   useLogin: jest.fn(() => ({
     isLoading: false,
@@ -26,8 +28,6 @@ jest.mock('react-hook-form', () => ({
 jest.mock('@hookform/resolvers/zod', () => ({
   zodResolver: jest.fn(() => () => ({ values: {}, errors: {} })),
 }));
-
-import { useAuthForm } from '../useAuthForm';
 
 describe('useAuthForm', () => {
   it('retorna form, onSubmit y isLoggingIn', () => {

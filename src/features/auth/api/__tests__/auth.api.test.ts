@@ -1,3 +1,7 @@
+import { authApi, type LoginCredentials } from '../auth.api';
+import { apiClient } from '@core/api';
+import type { RegisterGuestPayload } from '../../model/auth.types';
+
 jest.mock('@core/api', () => {
   const mockApiClient = {
     postPublic: jest.fn(),
@@ -12,10 +16,6 @@ jest.mock('@core/api', () => {
     ApiResponse: jest.fn(),
   };
 });
-
-import { authApi, type LoginCredentials } from '../auth.api';
-import { apiClient } from '@core/api';
-import type { RegisterGuestPayload } from '../../model/auth.types';
 
 const mockPostPublic = apiClient.postPublic as jest.Mock;
 const mockPost = apiClient.post as jest.Mock;
@@ -45,7 +45,10 @@ describe('authApi (API de autenticación)', () => {
     });
 
     it('propaga errores del backend', async () => {
-      const mockError = { success: false, error: { code: 'UNAUTHORIZED', message: 'Credenciales inválidas' } };
+      const mockError = {
+        success: false,
+        error: { code: 'UNAUTHORIZED', message: 'Credenciales inválidas' },
+      };
       mockPostPublic.mockResolvedValue(mockError);
 
       const result = await authApi.login({ rut: 'bad', password: 'bad' });
@@ -104,10 +107,9 @@ describe('authApi (API de autenticación)', () => {
 
       const result = await authApi.setPassword({ password: 'newpass123' });
 
-      expect(mockPost).toHaveBeenCalledWith(
-        '/api/auth/upgrade-account',
-        { password: 'newpass123' },
-      );
+      expect(mockPost).toHaveBeenCalledWith('/api/auth/upgrade-account', {
+        password: 'newpass123',
+      });
       expect(result).toEqual(mockResponse);
     });
   });
@@ -161,7 +163,9 @@ describe('authApi (API de autenticación)', () => {
 
   describe('registerFull', () => {
     it('lanza error porque no está habilitado', async () => {
-      await expect(authApi.registerFull({} as any)).rejects.toThrow('registerFull no está habilitado en el frontend');
+      await expect(authApi.registerFull({} as any)).rejects.toThrow(
+        'registerFull no está habilitado en el frontend',
+      );
     });
   });
 });

@@ -1,6 +1,10 @@
 // src/shared/ui/molecules/__tests__/StatCard.test.tsx
 
 // Use string mocks to avoid CSS-interop issues
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import { StatCard } from '../StatCard';
+
 jest.mock('../../icons', () => ({
   Icon: 'Icon',
   Icons: { ChevronUp: 'ChevronUp', ChevronDown: 'ChevronDown' },
@@ -14,10 +18,6 @@ jest.mock('../../atoms/Typography', () => ({
   Typography: 'Typography',
 }));
 
-import React from 'react';
-import { render } from '@testing-library/react-native';
-import { StatCard } from '../StatCard';
-
 describe('StatCard', () => {
   const mockIcon = {};
 
@@ -27,9 +27,7 @@ describe('StatCard', () => {
   });
 
   it('renderiza unit cuando se proporciona', () => {
-    const { root } = render(
-      <StatCard label="Temperatura" value="28" unit="°C" icon={mockIcon} />,
-    );
+    const { root } = render(<StatCard label="Temperatura" value="28" unit="°C" icon={mockIcon} />);
     expect(root).toBeDefined();
   });
 
@@ -64,9 +62,7 @@ describe('StatCard', () => {
 
   it('es presionable cuando onPress está definido', () => {
     const onPress = jest.fn();
-    const { root } = render(
-      <StatCard label="Test" value="1" icon={mockIcon} onPress={onPress} />,
-    );
+    const { root } = render(<StatCard label="Test" value="1" icon={mockIcon} onPress={onPress} />);
     expect(root).toBeDefined();
   });
 });

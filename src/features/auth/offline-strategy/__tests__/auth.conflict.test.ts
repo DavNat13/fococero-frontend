@@ -1,12 +1,12 @@
 // src/features/auth/offline-strategy/__tests__/auth.conflict.test.ts
 
+import { authConflictHandler } from '../auth.conflict';
+
 jest.mock('../../model/auth.store', () => ({
   useAuthStore: {
     getState: jest.fn(),
   },
 }));
-
-import { authConflictHandler } from '../auth.conflict';
 
 describe('authConflictHandler', () => {
   describe('handleRegistrationFailure', () => {

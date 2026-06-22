@@ -216,7 +216,7 @@ describe('useAuthStore (almacén de autenticación)', () => {
       });
 
       await expect(useAuthStore.getState().logout()).resolves.not.toThrow();
-      
+
       const state = useAuthStore.getState();
       expect(state.status).toBe('unauthenticated');
     });
