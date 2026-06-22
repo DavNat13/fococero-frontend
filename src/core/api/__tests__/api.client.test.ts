@@ -36,7 +36,7 @@ jest.mock('../api.interceptors', () => ({
   requestInterceptor: (config: any) => config,
   requestErrorInterceptor: (error: any) => Promise.reject(error),
   responseInterceptor: (response: any) => response,
-  responseErrorInterceptor: (error: any, instance: any) => Promise.reject(error),
+  responseErrorInterceptor: (error: any) => Promise.reject(error),
 }));
 
 describe('apiClient', () => {

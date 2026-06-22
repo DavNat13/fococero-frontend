@@ -16,7 +16,7 @@ export class ApiError extends Error {
   public readonly statusCode?: number;
   public readonly isNetworkError: boolean;
 
-  private constructor(
+  public constructor(
     code: AppErrorCode,
     message: string,
     statusCode?: number,

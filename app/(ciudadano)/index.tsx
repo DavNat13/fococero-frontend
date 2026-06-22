@@ -88,21 +88,21 @@ export default function CiudadanoHome() {
   const nombre = user?.nombre || 'Ciudadano';
   const kpis_arr = [
     {
-      icon: 'fire',
+      icon: 'fire' as const,
       value: kpis?.total_reportadas ?? misReportes.length,
       label: 'Reportes',
       accent: 'bg-red-500',
       col: '#EF4444',
     },
     {
-      icon: 'bell-ring',
+      icon: 'bell-ring' as const,
       value: kpis?.activas ?? activeAlertas,
       label: 'Alertas',
       accent: 'bg-orange-500',
       col: '#F97316',
     },
     {
-      icon: 'handshake',
+      icon: 'handshake' as const,
       value: kpis?.resueltas ?? 0,
       label: 'Contribuciones',
       accent: 'bg-green-500',
@@ -111,14 +111,14 @@ export default function CiudadanoHome() {
   ];
   const actions = [
     {
-      icon: 'fire',
+      icon: 'fire' as const,
       label: 'Reportar incendio',
       route: '/(ciudadano)/crear-reporte',
       col: '#EF4444',
     },
-    { icon: 'map', label: 'Ver mapa', route: '/(ciudadano)/mapa', col: '#3B82F6' },
-    { icon: 'bell', label: 'Mis alertas', route: '/(ciudadano)/alertas', col: '#F97316' },
-    { icon: 'account-circle', label: 'Perfil', route: '/(ciudadano)/perfil', col: '#8B5CF6' },
+    { icon: 'map' as const, label: 'Ver mapa', route: '/(ciudadano)/mapa', col: '#3B82F6' },
+    { icon: 'bell' as const, label: 'Mis alertas', route: '/(ciudadano)/alertas', col: '#F97316' },
+    { icon: 'account-circle' as const, label: 'Perfil', route: '/(ciudadano)/perfil', col: '#8B5CF6' },
   ];
   const [showToast, setShowToast] = useState(false);
   useEffect(() => {
