@@ -54,12 +54,21 @@ jest.mock('firebase/auth', () => ({
   signInWithCustomToken: jest.fn(),
 }));
 
+jest.mock('@entities/usuario', () => ({
+  UserRole: {
+    INVITADO: 'invitado',
+    USUARIO: 'usuario',
+    BRIGADISTA: 'brigadista',
+    ADMIN: 'admin',
+  },
+}));
+
 // El store debe importarse DESPUÉS de los mocks
-import { useAuthStore } from '../auth.store';
-import { authApi } from '../../api/auth.api';
-import { signInAnonymously, signInWithCustomToken } from 'firebase/auth';
-import { tokenUtils } from '../../utils/token.utils';
 import { wipeAllStorage } from '@core/offline';
+import { signInAnonymously, signInWithCustomToken } from 'firebase/auth';
+import { authApi } from '../../api/auth.api';
+import { tokenUtils } from '../../utils/token.utils';
+import { useAuthStore } from '../auth.store';
 
 const mockAuthApi = authApi as jest.Mocked<typeof authApi>;
 const mockTokenUtils = tokenUtils as jest.Mocked<typeof tokenUtils>;
