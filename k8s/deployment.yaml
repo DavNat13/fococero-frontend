@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fococero-frontend
+  namespace: fococero
+  labels:
+    app: fococero
+    tier: frontend
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: fococero
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: fococero
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: 711147367899.dkr.ecr.us-east-1.amazonaws.com/fococero-frontend:${IMAGE_TAG}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          env:
+            - name: EXPO_PUBLIC_API_GATEWAY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: fococero-config
+                  key: API_GATEWAY_URL
+            - name: EXPO_PUBLIC_ENVIRONMENT
+              value: 'production'
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 2
+      terminationGracePeriodSeconds: 30

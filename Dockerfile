@@ -1,21 +1,38 @@
 # --- ETAPA 1: Construcción (Build) ---
-# Usamos una imagen de Node.js para compilar la aplicación
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
-# Establecemos el directorio de trabajo
+# Build args para inyectar variables de entorno en tiempo de build
+ARG EXPO_PUBLIC_API_GATEWAY_URL
+ARG EXPO_PUBLIC_ENVIRONMENT=production
+ARG EXPO_PUBLIC_FIREBASE_API_KEY
+ARG EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN
+ARG EXPO_PUBLIC_FIREBASE_PROJECT_ID
+ARG EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET
+ARG EXPO_PUBLIC_FIREBASE_APP_ID
+ARG EXPO_PUBLIC_FIREBASE_CLIENT_ID
+ARG EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID
+ARG EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS
+
+ENV EXPO_PUBLIC_API_GATEWAY_URL=$EXPO_PUBLIC_API_GATEWAY_URL \
+    EXPO_PUBLIC_ENVIRONMENT=$EXPO_PUBLIC_ENVIRONMENT \
+    EXPO_PUBLIC_FIREBASE_API_KEY=$EXPO_PUBLIC_FIREBASE_API_KEY \
+    EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=$EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN \
+    EXPO_PUBLIC_FIREBASE_PROJECT_ID=$EXPO_PUBLIC_FIREBASE_PROJECT_ID \
+    EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=$EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET \
+    EXPO_PUBLIC_FIREBASE_APP_ID=$EXPO_PUBLIC_FIREBASE_APP_ID \
+    EXPO_PUBLIC_FIREBASE_CLIENT_ID=$EXPO_PUBLIC_FIREBASE_CLIENT_ID \
+    EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID=$EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID \
+    EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS=$EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS
+
 WORKDIR /app
 
-# Copiamos los archivos de configuración de dependencias
 COPY package*.json ./
+COPY scripts/ ./scripts/
 
-# Instalamos las dependencias
-RUN npm install
+RUN npm ci
 
-# Copiamos todo el código fuente del proyecto
 COPY . .
 
-# Compilamos la aplicación para web
-# Esto generará los archivos estáticos en la carpeta 'dist' (o 'web-build')
 RUN npx expo export -p web
 
 # --- ETAPA 2: Servidor (Runtime) ---
