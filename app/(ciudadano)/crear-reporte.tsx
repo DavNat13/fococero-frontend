@@ -54,7 +54,10 @@ const CategorySelector = memo(function CategorySelector({
           return (
             <TouchableOpacity
               key={c.id}
-              onPress={() => onChange(c.id)}
+              onPress={() => {
+                console.log('[DEBUG] Categoría seleccionada:', c.id, c.nombre);
+                onChange(c.id);
+              }}
               className={`flex-row items-center gap-2 rounded-full px-4 py-2.5 ${s ? 'bg-brand-primary' : 'border border-surface-elevated bg-surface-card'}`}
             >
               <MaterialCommunityIcons name={icon as any} size={18} color={s ? '#FFF' : '#9CA3AF'} />
@@ -132,6 +135,11 @@ export default function CrearReporte() {
 
   // Seleccionar primera categoría por defecto cuando se cargan
   useEffect(() => {
+    console.log('[DEBUG] useEffect categorias:', {
+      tieneCategorias: !!categorias[0]?.id,
+      catId,
+      cats: categorias.map((c) => ({ id: c.id, nombre: c.nombre })),
+    });
     if (!categorias[0]?.id || catId) return;
     setValue('categoria_id', categorias[0].id);
   }, [categorias, catId, setValue]);

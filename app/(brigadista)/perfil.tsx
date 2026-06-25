@@ -1,6 +1,6 @@
 // app/(brigadista)/perfil.tsx - Perfil Brigadista
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, ScrollView, Alert, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { SafeAreaLayout } from '@/shared/ui/layouts/SafeAreaLayout';
 import { Typography } from '@/shared/ui/atoms/Typography';
 import { useAuthStore } from '@/features/auth';
@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LoadingSkeleton } from '@/shared/ui/molecules/LoadingSkeleton';
+import { useAlert } from '@/shared/ui/molecules/ConfirmAlert';
 import { useReporteFeature } from '@/entities/reporte';
 import { useAlertaFeature } from '@/entities/alerta';
 import { useGetKpisBrigadista } from '@/entities/analitica';
@@ -54,22 +55,23 @@ export default function BrigadistaPerfil() {
     setRefreshing(false);
   }, [queryClient]);
 
+  const { showAlert } = useAlert();
+
   const handleLogout = () => {
-    Alert.alert('Cerrar sesión', '¿Estás seguro de abandonar el terreno?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Cerrar sesión',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await performLogout();
-            router.replace('/');
-          } catch {
-            console.error('Error al cerrar sesión');
-          }
-        },
+    showAlert({
+      title: 'Cerrar sesión',
+      description: '¿Estás seguro de abandonar el terreno?',
+      variant: 'danger',
+      confirmLabel: 'Cerrar sesión',
+      onConfirm: async () => {
+        try {
+          await performLogout();
+          router.replace('/');
+        } catch {
+          console.error('Error al cerrar sesión');
+        }
       },
-    ]);
+    });
   };
 
   const menuItems: {

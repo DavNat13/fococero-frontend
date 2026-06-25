@@ -1,7 +1,22 @@
-import { Stack } from 'expo-router';
-import React from 'react';
+import { Stack, router } from 'expo-router';
+import React, { useEffect, useRef } from 'react';
+import { useAuthStore } from '@/features/auth';
 
 export default function AuthLayout() {
+  const status = useAuthStore((s) => s.status);
+  const user = useAuthStore((s) => s.user);
+  const initial = useRef(true);
+
+  useEffect(() => {
+    if (initial.current) {
+      initial.current = false;
+      return;
+    }
+    if ((status === 'authenticated' || status === 'guest') && user) {
+      router.dismissAll();
+    }
+  }, [status, user]);
+
   return (
     <Stack
       screenOptions={{

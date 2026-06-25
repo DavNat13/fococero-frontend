@@ -47,5 +47,5 @@ export async function performLogout() {
     });
   }
 
-  console.log('[Logout] Completado, navegando a /');
+  console.log('[Logout] Completado, store reseteado');
 }

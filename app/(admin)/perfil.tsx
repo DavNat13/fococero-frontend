@@ -1,6 +1,6 @@
 // app/(admin)/perfil.tsx - Admin Profile
 import React, { useState } from 'react';
-import { View, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaLayout } from '@/shared/ui/layouts/SafeAreaLayout';
 import { Typography } from '@/shared/ui/atoms/Typography';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import { ErrorBanner } from '@/shared/ui/molecules/ErrorBanner';
 import { useAuthStore } from '@/features/auth';
 import { performLogout } from '@/features/auth/utils/logout.utils';
 import { useGetKpisAdmin } from '@/entities/analitica';
+import { useAlert } from '@/shared/ui/molecules/ConfirmAlert';
 import { router } from 'expo-router';
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap;
@@ -20,22 +21,23 @@ export default function AdminPerfil() {
 
   const displayError = localError || kpiError?.message || null;
 
+  const { showAlert } = useAlert();
+
   const handleLogout = () => {
-    Alert.alert('Cerrar sesión', '¿Estás seguro de que deseas cerrar sesión?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Cerrar sesión',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await performLogout();
-            router.replace('/');
-          } catch {
-            setLocalError('Error al cerrar sesión. Intenta nuevamente.');
-          }
-        },
+    showAlert({
+      title: 'Cerrar sesión',
+      description: '¿Estás seguro de que deseas cerrar sesión?',
+      variant: 'danger',
+      confirmLabel: 'Cerrar sesión',
+      onConfirm: async () => {
+        try {
+          await performLogout();
+          router.replace('/');
+        } catch {
+          setLocalError('Error al cerrar sesión. Intenta nuevamente.');
+        }
       },
-    ]);
+    });
   };
 
   const menuItems: { icon: IconName; label: string; onPress: () => void; danger?: boolean }[] = [

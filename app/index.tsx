@@ -29,5 +29,9 @@ export default function IndexPage() {
     return <Redirect href={getRouteByRole(user.rol) as any} />;
   }
 
+  if (status === 'unauthenticated') {
+    console.log('[IndexPage] Status unauthenticated → mostrando WelcomeWidget');
+  }
+
   return <WelcomeWidget />;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, Alert, TouchableOpacity, TextInput } from 'react-native';
+import { View, ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaLayout } from '@/shared/ui/layouts/SafeAreaLayout';
 import { Typography } from '@/shared/ui/atoms/Typography';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,9 +8,11 @@ import { authApi } from '@/features/auth/api/auth.api';
 import { performLogout } from '@/features/auth/utils/logout.utils';
 import { router } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
+import { useAlert } from '@/shared/ui/molecules/ConfirmAlert';
 
 export default function InvitadoPerfil() {
   const { user, setAuthData } = useAuthStore();
+  const { showAlert } = useAlert();
   const queryClient = useQueryClient();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -34,7 +36,14 @@ export default function InvitadoPerfil() {
         throw new Error(response.error.message || 'Error al crear cuenta');
       }
       setAuthData(response.data);
-      Alert.alert('Cuenta creada', 'Ahora eres un ciudadano de FocoCero');
+      showAlert({
+        title: 'Cuenta creada',
+        description: 'Ahora eres un ciudadano de FocoCero',
+        variant: 'success',
+        confirmOnly: true,
+        confirmLabel: 'Aceptar',
+        onConfirm: () => {},
+      });
       await queryClient.invalidateQueries();
       router.replace('/(ciudadano)');
     } catch (err) {
@@ -45,21 +54,20 @@ export default function InvitadoPerfil() {
   };
 
   const handleLogout = () => {
-    Alert.alert('Cerrar sesión', '¿Estás seguro?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Cerrar sesión',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await performLogout();
-            router.replace('/');
-          } catch {
-            console.error('Error al cerrar sesión');
-          }
-        },
+    showAlert({
+      title: 'Cerrar sesión',
+      description: '¿Estás seguro?',
+      variant: 'danger',
+      confirmLabel: 'Cerrar sesión',
+      onConfirm: async () => {
+        try {
+          await performLogout();
+          router.replace('/');
+        } catch {
+          console.error('Error al cerrar sesión');
+        }
       },
-    ]);
+    });
   };
 
   return (

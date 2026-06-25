@@ -1,6 +1,6 @@
 // app/(ciudadano)/perfil.tsx - Perfil de ciudadano
 import React, { useState, useCallback } from 'react';
-import { View, ScrollView, TouchableOpacity, RefreshControl, Alert, TextInput } from 'react-native';
+import { View, ScrollView, TouchableOpacity, RefreshControl, TextInput } from 'react-native';
 import { SafeAreaLayout } from '@/shared/ui/layouts/SafeAreaLayout';
 import { Typography } from '@/shared/ui/atoms/Typography';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import { useReporteFeature } from '@/entities/reporte';
 import { useAlertaFeature } from '@/entities/alerta';
 import { UserRole } from '@/entities/usuario';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useAlert } from '@/shared/ui/molecules/ConfirmAlert';
 
 export default function Perfil() {
   const { user } = useAuthStore();
@@ -25,10 +26,19 @@ export default function Perfil() {
 
   const statsLoading = loadingReportes || loadingAlertas;
 
+  const { showAlert } = useAlert();
+
   const upgradeMutation = useMutation({
     mutationFn: (pwd: string) => authApi.setPassword({ password: pwd }),
     onSuccess: () => {
-      Alert.alert('Cuenta actualizada', 'Tu cuenta ha sido actualizada correctamente.');
+      showAlert({
+        title: 'Cuenta actualizada',
+        description: 'Tu cuenta ha sido actualizada correctamente.',
+        variant: 'success',
+        confirmLabel: 'Aceptar',
+        confirmOnly: true,
+        onConfirm: () => {},
+      });
       setPassword('');
       setConfirmPassword('');
       setUpgradeError(null);
@@ -68,37 +78,51 @@ export default function Perfil() {
   }, [queryClient]);
 
   const handleLogout = () => {
-    Alert.alert('Cerrar sesión', '¿Estás seguro de que deseas cerrar sesión?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Cerrar sesión',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await performLogout();
-          } catch {
-            console.error('Error al cerrar sesión');
-          } finally {
-            router.replace('/');
-          }
-        },
+    showAlert({
+      title: 'Cerrar sesión',
+      description: '¿Estás seguro de que deseas cerrar sesión?',
+      variant: 'danger',
+      confirmLabel: 'Cerrar sesión',
+      onConfirm: async () => {
+        try {
+          await performLogout();
+          router.replace('/');
+        } catch {
+          console.error('Error al cerrar sesión');
+        }
       },
-    ]);
+    });
   };
 
   const handleInfoPress = (item: (typeof infoItems)[0]) => {
-    Alert.alert(item.label, item.value || 'No disponible', [
-      { text: 'Cerrar', style: 'cancel' },
-      {
-        text: 'Editar',
-        onPress: () =>
-          Alert.alert('Próximamente', 'La edición de perfil estará disponible pronto.'),
+    showAlert({
+      title: item.label,
+      description: item.value || 'No disponible',
+      variant: 'info',
+      confirmLabel: 'Editar',
+      cancelLabel: 'Cerrar',
+      onConfirm: () => {
+        showAlert({
+          title: 'Próximamente',
+          description: 'La edición de perfil estará disponible pronto.',
+          variant: 'info',
+          confirmOnly: true,
+          confirmLabel: 'Aceptar',
+          onConfirm: () => {},
+        });
       },
-    ]);
+    });
   };
 
   const handleConfigPress = (item: (typeof configItems)[0]) => {
-    Alert.alert(item.label, 'Esta funcionalidad estará disponible próximamente.');
+    showAlert({
+      title: item.label,
+      description: 'Esta funcionalidad estará disponible próximamente.',
+      variant: 'info',
+      confirmOnly: true,
+      confirmLabel: 'Aceptar',
+      onConfirm: () => {},
+    });
   };
 
   const handleUpgrade = () => {

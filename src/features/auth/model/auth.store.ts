@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { secureZustandAdapter, wipeAllStorage } from '@core/offline';
-import { Usuario } from '@entities/usuario';
+import { Usuario, UserRole } from '@entities/usuario';
 import { authApi, LoginCredentials } from '../api/auth.api';
 import type { RegisterGuestPayload } from '../model/auth.types';
 
@@ -138,15 +138,30 @@ export const useAuthStore = create<AuthStore>()(
           }
 
           // 4. Extraer usuario y firebaseToken de la respuesta
-          const { usuario, firebaseToken } = response.data;
+          let { usuario, firebaseToken } = response.data;
 
           // 5. Si el backend devolvió un firebaseToken, auto-loguear con él
           if (firebaseToken) {
-            const credential = await signInWithCustomToken(auth, firebaseToken);
-            const freshIdToken = await credential.user.getIdToken();
-            get().setAuthData(usuario, freshIdToken, 'guest');
+            const userCredential = await signInWithCustomToken(auth, firebaseToken);
+            let freshIdToken = await userCredential.user.getIdToken();
+
+            // 6. Si se proporcionó password, hacer upgrade de INVITADO a USUARIO
+            if (data.password) {
+              useAuthStore.setState({ firebaseToken: freshIdToken });
+              const convertResponse = await authApi.convertirCuenta({ password: data.password });
+              if (convertResponse.success) {
+                usuario = convertResponse.data;
+                freshIdToken = await userCredential.user.getIdToken(true);
+              }
+            }
+
+            get().setAuthData(
+              usuario,
+              freshIdToken,
+              usuario.rol === UserRole.INVITADO ? 'guest' : 'authenticated',
+            );
           } else {
-            // 6. Sin token del backend, mantener el token anónimo
+            // 7. Sin token del backend, mantener el token anónimo
             get().setAuthData(usuario, anonymousToken, 'guest');
           }
           return true;
