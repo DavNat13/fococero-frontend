@@ -20,14 +20,9 @@ export default function InfrastructureTest() {
   const [results, setResults] = useState<TestResult[]>(INITIAL_RESULTS);
   const [status, setStatus] = useState<TestStatus>('running');
 
-  const updateResult = useCallback(
-    (index: number, update: Partial<TestResult>) => {
-      setResults((prev) =>
-        prev.map((r, i) => (i === index ? { ...r, ...update } : r)),
-      );
-    },
-    [],
-  );
+  const updateResult = useCallback((index: number, update: Partial<TestResult>) => {
+    setResults((prev) => prev.map((r, i) => (i === index ? { ...r, ...update } : r)));
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -69,8 +64,7 @@ export default function InfrastructureTest() {
 
         const existingApps = getApps();
         const app =
-          existingApps.find((a) => a.name === '[DEFAULT]') ??
-          initializeApp(firebaseConfig);
+          existingApps.find((a) => a.name === '[DEFAULT]') ?? initializeApp(firebaseConfig);
 
         console.log('[InfrastructureTest] ✅ Firebase initialized:', app.name);
         if (!cancelled)
@@ -79,11 +73,9 @@ export default function InfrastructureTest() {
             message: `App: ${app.name}`,
           });
       } catch (error) {
-        const msg =
-          error instanceof Error ? error.message : 'Error desconocido';
+        const msg = error instanceof Error ? error.message : 'Error desconocido';
         console.error('[InfrastructureTest] ❌ Firebase init failed:', msg);
-        if (!cancelled)
-          updateResult(1, { status: 'failed', message: msg });
+        if (!cancelled) updateResult(1, { status: 'failed', message: msg });
       }
 
       // ── Test 3: Conectividad al Backend ──
@@ -98,14 +90,12 @@ export default function InfrastructureTest() {
       } catch (error) {
         let msg = 'Error de conexión';
         if (error instanceof TypeError) {
-          msg =
-            'Error de red — posible bloqueo ATS/Cleartext Traffic en iOS/Android';
+          msg = 'Error de red — posible bloqueo ATS/Cleartext Traffic en iOS/Android';
         } else if (error instanceof Error) {
           msg = error.message;
         }
         console.error('[InfrastructureTest] ❌ Backend unreachable:', msg);
-        if (!cancelled)
-          updateResult(2, { status: 'failed', message: msg });
+        if (!cancelled) updateResult(2, { status: 'failed', message: msg });
       }
 
       if (!cancelled) setStatus('completed');
@@ -162,12 +152,8 @@ export default function InfrastructureTest() {
       >
         {/* Header */}
         <View className="mb-10 items-center">
-          <Text className="text-3xl font-bold tracking-wider text-white">
-            IronHealth
-          </Text>
-          <Text className="mt-1 text-sm tracking-widest text-[#FF6B35] uppercase">
-            Diagnostics
-          </Text>
+          <Text className="text-3xl font-bold tracking-wider text-white">IronHealth</Text>
+          <Text className="mt-1 text-sm uppercase tracking-widest text-[#FF6B35]">Diagnostics</Text>
           <View className="mt-4 h-px w-16 bg-[#FF6B35]" />
         </View>
 
@@ -189,22 +175,13 @@ export default function InfrastructureTest() {
               className={`rounded-xl border bg-[#1A1F2E] p-4 ${statusBorder(test.status)}`}
             >
               <View className="flex-row items-center justify-between">
-                <View className="flex-row items-center flex-1 mr-2">
-                  <Text className="mr-2 text-base">
-                    {statusIcon(test.status)}
-                  </Text>
-                  <Text className="text-base font-semibold text-white">
-                    {test.name}
-                  </Text>
+                <View className="mr-2 flex-1 flex-row items-center">
+                  <Text className="mr-2 text-base">{statusIcon(test.status)}</Text>
+                  <Text className="text-base font-semibold text-white">{test.name}</Text>
                 </View>
-                {test.status === 'pending' && (
-                  <ActivityIndicator size="small" color="#9CA3AF" />
-                )}
+                {test.status === 'pending' && <ActivityIndicator size="small" color="#9CA3AF" />}
               </View>
-              <Text
-                className={`mt-1 ml-8 text-sm ${statusText(test.status)}`}
-                numberOfLines={2}
-              >
+              <Text className={`ml-8 mt-1 text-sm ${statusText(test.status)}`} numberOfLines={2}>
                 {test.message}
               </Text>
             </View>
@@ -216,13 +193,13 @@ export default function InfrastructureTest() {
           <View className="mt-8 items-center">
             <View className="flex-row items-center gap-2">
               <Text className="text-lg font-bold text-white">
-                {passed === total ? '✅ Todas las pruebas pasaron' : `⚠️ ${passed}/${total} pruebas pasaron`}
+                {passed === total
+                  ? '✅ Todas las pruebas pasaron'
+                  : `⚠️ ${passed}/${total} pruebas pasaron`}
               </Text>
             </View>
             <Text className="mt-1 text-sm text-[#6B7280]">
-              {passed === total
-                ? 'Entorno listo para desarrollo'
-                : 'Revisa los errores en consola'}
+              {passed === total ? 'Entorno listo para desarrollo' : 'Revisa los errores en consola'}
             </Text>
           </View>
         )}
