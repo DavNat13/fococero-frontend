@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: fococero-frontend
@@ -11,7 +15,46 @@ env:
   K8S_DEPLOYMENT: fococero-frontend
 
 jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['22']
+    steps:
+      - name: Checkout del código fuente
+        uses: actions/checkout@v5
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx --max-wa  rnings 0
+
+      - name: Auditoría de Tipos (TypeScript Estricto)
+        run: npx tsc --noEmit
+
+      - name: Ejecutar Pruebas y Cobertura de Código (Mínimo 60%)
+        run: npx jest --coverage --passWithNoTests
+
+      - name: Build web con variables de entorno de producción
+        run: npx expo export --platform web --output-dir dist
+        env:
+          EXPO_PUBLIC_API_GATEWAY_URL: ${{ secrets.EXPO_PUBLIC_API_GATEWAY_URL }}
+
+      - name: Subir reporte de cobertura
+        uses: actions/upload-artifact@v5
+        with:
+          name: coverage-report-${{ matrix.node-version }}
+          path: coverage/
+
   deploy:
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del código fuente
@@ -29,37 +72,54 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build y Push de imagen Docker
+      - name: Build y Push de imagen Docker (multi-stage para web)
+        id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build \
-            --build-arg EXPO_PUBLIC_API_GATEWAY_URL="http://api-gateway" \
+            --build-arg EXPO_PUBLIC_API_GATEWAY_URL="${{ secrets.EXPO_PUBLIC_API_GATEWAY_URL }}" \
             --build-arg EXPO_PUBLIC_ENVIRONMENT="production" \
+            --build-arg EXPO_PUBLIC_FIREBASE_API_KEY="${{ secrets.EXPO_PUBLIC_FIREBASE_API_KEY }}" \
+            --build-arg EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN="${{ secrets.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN }}" \
+            --build-arg EXPO_PUBLIC_FIREBASE_PROJECT_ID="${{ secrets.EXPO_PUBLIC_FIREBASE_PROJECT_ID }}" \
+            --build-arg EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET="${{ secrets.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET }}" \
+            --build-arg EXPO_PUBLIC_FIREBASE_APP_ID="${{ secrets.EXPO_PUBLIC_FIREBASE_APP_ID }}" \
+            --build-arg EXPO_PUBLIC_FIREBASE_CLIENT_ID="${{ secrets.EXPO_PUBLIC_FIREBASE_CLIENT_ID }}" \
+            --build-arg EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID="${{ secrets.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID }}" \
+            --build-arg EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS="${{ secrets.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS }}" \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
             .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Update Kubeconfig
         run: |
           aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
-      - name: Desplegar en EKS
+      - name: Actualizar tag de imagen en deployment.yaml
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Sustituir el tag de la imagen
           sed -i "s|\${IMAGE_TAG}|$IMAGE_TAG|g" k8s/deployment.yaml
 
-          # Aplicar manifiestos
+      - name: Apply namespace
+        run: |
+          kubectl create namespace $K8S_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Desplegar en EKS
+        run: |
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
           kubectl apply -f k8s/hpa.yaml
 
       - name: Verify rollout
         run: |
-          # Tiempo de espera ajustado para asegurar estabilidad
-          kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE --timeout=300s
+          kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE --timeout=180s
+
+      - name: Obtener DNS del balanceador
+        run: |
+          kubectl get svc fococero-frontend-lb -n $K8S_NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
