@@ -25,17 +25,14 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 711147367899.dkr.ecr.us-east-1.amazonaws.com/fococero-frontend:${IMAGE_TAG}
+          image: 486507079259.dkr.ecr.us-east-1.amazonaws.com/fococero-frontend:${IMAGE_TAG}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-              protocol: TCP
           env:
+            # Apuntamos al servicio interno de K8s: http://nombre-servicio-k8s
             - name: EXPO_PUBLIC_API_GATEWAY_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: fococero-config
-                  key: API_GATEWAY_URL
+              value: 'http://api-gateway'
             - name: EXPO_PUBLIC_ENVIRONMENT
               value: 'production'
           resources:
@@ -46,19 +43,8 @@ spec:
               cpu: 500m
               memory: 256Mi
           livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 10
-            periodSeconds: 15
-            timeoutSeconds: 5
-            failureThreshold: 3
+            httpGet: { path: /, port: 80 }
+            initialDelaySeconds: 15
           readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 3
-            failureThreshold: 2
-      terminationGracePeriodSeconds: 30
+            httpGet: { path: /, port: 80 }
+            initialDelaySeconds: 10
