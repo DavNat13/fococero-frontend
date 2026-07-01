@@ -116,9 +116,16 @@ jobs:
           kubectl apply -f k8s/service.yaml
           kubectl apply -f k8s/hpa.yaml
 
-      - name: Verify rollout
+      - name: Verify rollout con diagnóstico
         run: |
-          kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE --timeout=180s
+          # Aumentamos el tiempo a 300s para evitar timeouts prematuros
+          kubectl rollout status deployment/$K8S_DEPLOYMENT -n $K8S_NAMESPACE --timeout=300s || (
+            echo "--- Rollout falló. Diagnosticando pods ---"
+            kubectl describe deployment $K8S_DEPLOYMENT -n $K8S_NAMESPACE
+            kubectl get pods -n $K8S_NAMESPACE -l app=fococero,tier=frontend
+            kubectl describe pods -n $K8S_NAMESPACE -l app=fococero,tier=frontend
+            exit 1
+          )
 
       - name: Obtener DNS del balanceador
         run: |
