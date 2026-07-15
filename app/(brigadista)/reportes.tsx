@@ -9,6 +9,7 @@ import { useTodosReportes, useCambiarEstadoReporte } from '@/entities/reporte';
 import type { Reporte, ReporteEstado } from '@/entities/reporte';
 import { LoadingSkeleton } from '@/shared/ui/molecules/LoadingSkeleton';
 import { ErrorBanner } from '@/shared/ui/molecules/ErrorBanner';
+import { OfflineBanner } from '@/shared/ui/molecules/OfflineBanner';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatearFecha } from '@/shared/utils/formatters';
 
@@ -128,16 +129,22 @@ export default function Reportes() {
         });
       }
 
+      buttons.unshift({
+        text: 'Ver detalle',
+        onPress: () =>
+          router.push({ pathname: '/(brigadista)/reporte/[id]', params: { id: reporte.id } }),
+      });
+
       buttons.push({ text: 'Cancelar', style: 'cancel' });
 
       Alert.alert(reporte.titulo, '¿Qué acción deseas realizar?', buttons);
     },
-    [handleEstadoAction],
+    [handleEstadoAction, router],
   );
 
   // -- Helpers ---------------------------------------------------------------
   const getCategoriaLabel = useCallback((reporte: Reporte): string => {
-    return reporte.categoria_nombre || reporte.categoria_id || 'General';
+    return reporte.categoria_id || 'General';
   }, []);
 
   const truncateId = useCallback((id: string): string => {
@@ -189,7 +196,7 @@ export default function Reportes() {
           <View className="flex-row items-center">
             <MaterialCommunityIcons name="account" size={14} color="#6B7280" />
             <Typography variant="caption" className="ml-1 text-gray-500">
-              {truncateId(item.usuario_id)}
+              {truncateId(item.id_ciudadano)}
             </Typography>
           </View>
         </View>
@@ -201,6 +208,7 @@ export default function Reportes() {
   const ListHeader = useMemo(
     () => (
       <View>
+        <OfflineBanner />
         <View className="mb-6">
           <Typography variant="h1" className="text-white">
             Reportes
@@ -281,7 +289,7 @@ export default function Reportes() {
         )}
 
         <TouchableOpacity
-          onPress={() => router.push('/crear-reporte')}
+          onPress={() => router.push('/(brigadista)/crear-reporte')}
           className="absolute bottom-6 right-6 h-14 w-14 items-center justify-center rounded-full bg-red-500 shadow-lg shadow-black/25"
           accessibilityLabel="Crear nuevo reporte"
           accessibilityRole="button"

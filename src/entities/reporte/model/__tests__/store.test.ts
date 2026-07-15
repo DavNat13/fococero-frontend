@@ -1,4 +1,5 @@
 import { useReporteStore } from '../store';
+import type { Reporte, Categoria } from '../../api/reporte.api';
 
 describe('useReporteStore (almacén de reportes)', () => {
   beforeEach(() => {
@@ -30,7 +31,7 @@ describe('useReporteStore (almacén de reportes)', () => {
 
   describe('setReportes', () => {
     it('establece la lista de reportes', () => {
-      const reportes = [{ id: '1', titulo: 'Test' } as any];
+      const reportes = [{ id: '1', titulo: 'Test' }] as unknown as Reporte[];
       useReporteStore.getState().setReportes(reportes);
       expect(useReporteStore.getState().reportes).toEqual(reportes);
     });
@@ -38,7 +39,7 @@ describe('useReporteStore (almacén de reportes)', () => {
 
   describe('setMisReportes', () => {
     it('establece la lista de mis reportes', () => {
-      const misReportes = [{ id: '2', titulo: 'Mi reporte' } as any];
+      const misReportes = [{ id: '2', titulo: 'Mi reporte' }] as unknown as Reporte[];
       useReporteStore.getState().setMisReportes(misReportes);
       expect(useReporteStore.getState().misReportes).toEqual(misReportes);
     });
@@ -46,13 +47,13 @@ describe('useReporteStore (almacén de reportes)', () => {
 
   describe('setReporteSeleccionado', () => {
     it('establece el reporte seleccionado', () => {
-      const reporte = { id: '3', titulo: 'Seleccionado' } as any;
+      const reporte = { id: '3', titulo: 'Seleccionado' } as unknown as Reporte;
       useReporteStore.getState().setReporteSeleccionado(reporte);
       expect(useReporteStore.getState().reporteSeleccionado).toEqual(reporte);
     });
 
     it('acepta null para limpiar selección', () => {
-      useReporteStore.setState({ reporteSeleccionado: { id: '1' } as any });
+      useReporteStore.setState({ reporteSeleccionado: { id: '1' } as unknown as Reporte });
       useReporteStore.getState().setReporteSeleccionado(null);
       expect(useReporteStore.getState().reporteSeleccionado).toBeNull();
     });
@@ -60,7 +61,7 @@ describe('useReporteStore (almacén de reportes)', () => {
 
   describe('setCategorias', () => {
     it('establece las categorías', () => {
-      const categorias = [{ id: 'cat1', nombre: 'Incendio' } as any];
+      const categorias = [{ id: 'cat1', nombre: 'Incendio' }] as unknown as Categoria[];
       useReporteStore.getState().setCategorias(categorias);
       expect(useReporteStore.getState().categorias).toEqual(categorias);
     });
@@ -81,7 +82,7 @@ describe('useReporteStore (almacén de reportes)', () => {
       useReporteStore.setState({
         filtroEstado: 'PENDIENTE',
         filtroCategoria: 'cat1',
-        reporteSeleccionado: { id: '1' } as any,
+        reporteSeleccionado: { id: '1' } as unknown as Reporte,
         error: 'Error',
       });
 

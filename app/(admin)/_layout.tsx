@@ -31,9 +31,9 @@ export default function AdminLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: 'Dashboard',
+          tabBarLabel: 'Inicio',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="view-dashboard" size={size} color={color} />
+            <MaterialCommunityIcons name="home" size={size} color={color} />
           ),
         }}
       />
@@ -42,25 +42,25 @@ export default function AdminLayout() {
         options={{
           tabBarLabel: 'Mapa',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="map-marker" size={size} color={color} />
+            <MaterialCommunityIcons name="map" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="usuarios"
+        name="alertas"
         options={{
-          tabBarLabel: 'Usuarios',
+          tabBarLabel: 'Alertas',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-group" size={size} color={color} />
+            <MaterialCommunityIcons name="bell" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="config"
+        name="crear-reporte"
         options={{
-          tabBarLabel: 'Config',
+          tabBarLabel: 'Crear',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cog" size={size} color={color} />
+            <MaterialCommunityIcons name="plus-circle-outline" size={size} color={color} />
           ),
         }}
       />
@@ -73,6 +73,10 @@ export default function AdminLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="config" options={{ href: null }} />
+      <Tabs.Screen name="reporte" options={{ href: null }} />
+      <Tabs.Screen name="reporte/[id]" options={{ href: null }} />
+      <Tabs.Screen name="usuarios" options={{ href: null }} />
     </Tabs>
   );
 }

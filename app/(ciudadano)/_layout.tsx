@@ -1,6 +1,6 @@
-import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleSheet, Platform } from 'react-native';
+import { Tabs } from 'expo-router';
+import { Platform, StyleSheet } from 'react-native';
 
 export default function CiudadanoLayout() {
   return (
@@ -33,20 +33,20 @@ export default function CiudadanoLayout() {
         }}
       />
       <Tabs.Screen
-        name="crear-reporte"
-        options={{
-          tabBarLabel: 'Reportar',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="plus-circle" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="alertas"
         options={{
           tabBarLabel: 'Alertas',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="crear-reporte"
+        options={{
+          tabBarLabel: 'Reportes',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="plus-circle-outline" size={size} color={color} />
           ),
         }}
       />
@@ -59,6 +59,9 @@ export default function CiudadanoLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="seleccionar-ubicacion" options={{ href: null }} />
+      <Tabs.Screen name="reporte" options={{ href: null }} />
+      <Tabs.Screen name="reporte/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

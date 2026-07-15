@@ -4,18 +4,10 @@ import { Typography } from '@/shared/ui/atoms/Typography';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getEstadoColor, getEstadoLabel } from '@/shared/utils/emergencia.utils';
 import { formatearFecha } from '@/shared/utils/formatters';
+import type { Reporte } from '../api/reporte.api';
 
 interface ReporteCardProps {
-  reporte: {
-    id: string;
-    titulo: string;
-    descripcion: string;
-    estado: string;
-    direccion?: string;
-    latitud: number;
-    longitud: number;
-    created_at: string;
-  };
+  reporte: Reporte;
   onPress?: () => void;
 }
 
@@ -44,7 +36,7 @@ export function ReporteCard({ reporte, onPress }: ReporteCardProps) {
       <View className="mt-4 flex-row items-center border-t border-gray-700 pt-4">
         <MaterialCommunityIcons name="map-marker" size={16} color="#9CA3AF" />
         <Typography variant="caption" className="ml-1 flex-1 text-gray-400">
-          {reporte.direccion || `${reporte.latitud.toFixed(4)}, ${reporte.longitud.toFixed(4)}`}
+          {reporte.latitud.toFixed(4)}, {reporte.longitud.toFixed(4)}
         </Typography>
         <TouchableOpacity
           className="min-h-11 min-w-11 flex-row items-center justify-center p-2"

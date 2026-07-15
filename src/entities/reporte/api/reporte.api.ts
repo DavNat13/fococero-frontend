@@ -5,18 +5,20 @@ import type { ApiResponse } from '@core/api';
 
 export interface Reporte {
   id: string;
+  categoria_id: string;
   titulo: string;
   descripcion: string;
-  categoria_id: string;
-  categoria_nombre?: string;
-  estado: ReporteEstado;
   latitud: number;
   longitud: number;
-  direccion?: string;
-  usuario_id: string;
-  evidencia_urls?: string[];
+  ubicacion?: {
+    type: 'Point';
+    coordinates: [number, number];
+  };
+  estado: ReporteEstado;
+  id_ciudadano: string;
+  metadata?: Record<string, unknown>;
   created_at: string;
-  updated_at?: string;
+  updated_at: string;
 }
 
 export type ReporteEstado = 'PENDIENTE' | 'EN_PROCESO' | 'RESUELTO' | 'FALSA_ALARMA';
@@ -35,16 +37,14 @@ export interface CrearReportePayload {
   categoria_id: string;
   latitud: number;
   longitud: number;
-  direccion?: string;
+  metadata?: Record<string, unknown>;
+  id_multimedia?: string;
 }
 
 export interface ActualizarReportePayload {
   titulo?: string;
   descripcion?: string;
-  categoria_id?: string;
-  latitud?: number;
-  longitud?: number;
-  direccion?: string;
+  metadata?: Record<string, unknown>;
 }
 
 export interface CambiarEstadoPayload {
@@ -52,15 +52,21 @@ export interface CambiarEstadoPayload {
   comentarios?: string;
 }
 
+export interface ReporteQueryParams {
+  limit?: number;
+  offset?: number;
+  estado?: ReporteEstado;
+  categoria_id?: string;
+}
+
 export interface HistorialEntry {
   id: string;
   reporte_id: string;
-  estado_anterior: ReporteEstado;
+  estado_anterior: ReporteEstado | null;
   estado_nuevo: ReporteEstado;
-  comentario?: string;
-  usuario_id: string;
-  usuario_nombre?: string;
-  timestamp: string;
+  id_usuario_modificador: string;
+  comentarios?: string;
+  created_at: string;
 }
 
 export const reporteApi = {
@@ -74,12 +80,12 @@ export const reporteApi = {
     return apiClient.post<Reporte>('/api/reportes', payload);
   },
 
-  obtenerTodos: async (): Promise<ApiResponse<Reporte[]>> => {
-    return apiClient.get<Reporte[]>('/api/reportes');
+  obtenerTodos: async (params?: ReporteQueryParams): Promise<ApiResponse<Reporte[]>> => {
+    return apiClient.get<Reporte[]>('/api/reportes', { params });
   },
 
-  obtenerMisReportes: async (): Promise<ApiResponse<Reporte[]>> => {
-    return apiClient.get<Reporte[]>('/api/reportes/me');
+  obtenerMisReportes: async (params?: ReporteQueryParams): Promise<ApiResponse<Reporte[]>> => {
+    return apiClient.get<Reporte[]>('/api/reportes/me', { params });
   },
 
   obtenerPorId: async (id: string): Promise<ApiResponse<Reporte>> => {

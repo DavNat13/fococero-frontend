@@ -239,7 +239,13 @@ export default function CiudadanoHome() {
               Mis reportes recientes
             </Typography>
             {misReportes.slice(0, 3).map((r) => (
-              <View key={r.id} className="mb-3 rounded-xl bg-slate-800 p-4">
+              <TouchableOpacity
+                key={r.id}
+                onPress={() =>
+                  router.push({ pathname: '/(ciudadano)/reporte/[id]', params: { id: r.id } })
+                }
+                className="mb-3 rounded-xl bg-slate-800 p-4 active:opacity-80"
+              >
                 <Typography variant="body" className="font-medium text-white">
                   {r.titulo}
                 </Typography>
@@ -258,7 +264,7 @@ export default function CiudadanoHome() {
                     })}
                   </Typography>
                 </View>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         )}

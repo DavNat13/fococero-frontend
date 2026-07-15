@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Toast } from '@/shared/ui/molecules/Toast';
 import { FormularioAlerta } from '@/widgets/formulario-alerta';
 
-export default function CiudadanoCrearReporte() {
+export default function BrigadistaCrearReporte() {
   const { tipo } = useLocalSearchParams<{ tipo?: string }>();
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [toastType, setToastType] = useState<'success' | 'danger'>('success');
@@ -21,7 +21,7 @@ export default function CiudadanoCrearReporte() {
 
   const handleSuccess = useCallback(() => {
     showToast('Reporte creado exitosamente', 'success');
-    setTimeout(() => router.replace('/(ciudadano)'), 1200);
+    setTimeout(() => router.replace('/(brigadista)/reportes'), 1200);
   }, [showToast]);
 
   const handleError = useCallback(

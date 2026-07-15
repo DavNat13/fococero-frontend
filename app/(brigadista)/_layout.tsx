@@ -31,9 +31,9 @@ export default function BrigadistaLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: 'Dashboard',
+          tabBarLabel: 'Inicio',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="view-dashboard" size={size} color={color} />
+            <MaterialCommunityIcons name="home" size={size} color={color} />
           ),
         }}
       />
@@ -42,25 +42,25 @@ export default function BrigadistaLayout() {
         options={{
           tabBarLabel: 'Mapa',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="map-marker" size={size} color={color} />
+            <MaterialCommunityIcons name="map" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="reportes"
+        name="alertas"
         options={{
-          tabBarLabel: 'Reportes',
+          tabBarLabel: 'Alertas',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="file-document" size={size} color={color} />
+            <MaterialCommunityIcons name="bell" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="emergencias"
+        name="crear-reporte"
         options={{
-          tabBarLabel: 'Emerg.',
+          tabBarLabel: 'Crear',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="alert" size={size} color={color} />
+            <MaterialCommunityIcons name="plus-circle-outline" size={size} color={color} />
           ),
         }}
       />
@@ -73,6 +73,11 @@ export default function BrigadistaLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="editar-perfil-brigadista" options={{ href: null }} />
+      <Tabs.Screen name="emergencias" options={{ href: null }} />
+      <Tabs.Screen name="reporte" options={{ href: null }} />
+      <Tabs.Screen name="reporte/[id]" options={{ href: null }} />
+      <Tabs.Screen name="reportes" options={{ href: null }} />
     </Tabs>
   );
 }

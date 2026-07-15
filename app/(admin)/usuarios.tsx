@@ -60,7 +60,7 @@ export default function GestionUsuarios() {
   } = useQuery({
     queryKey: ['usuarios'],
     queryFn: async () => {
-      const response = await apiClient.get<UsuarioItem[]>('/api/auth/usuarios');
+      const response = await apiClient.get<UsuarioItem[]>('/api/auth/users');
       if (!response.success) throw new Error(response.error.message);
       return response.data;
     },

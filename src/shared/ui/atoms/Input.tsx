@@ -17,11 +17,15 @@ export const Input = forwardRef<TextInput, InputProps>(
     const [isFocused, setIsFocused] = useState(false);
     const [isHidden, setIsHidden] = useState(isPassword);
 
+    const isMultiline = props.multiline;
     const borderColor = error
       ? 'border-red-500 bg-red-500/5'
       : isFocused
-        ? 'border-[#EA580C] bg-[#020617]' // Surface background puro
-        : 'border-slate-800 bg-slate-900/50'; // Surface card
+        ? 'border-[#EA580C] bg-[#020617]'
+        : 'border-slate-800 bg-slate-900/50';
+
+    const heightClass = isMultiline ? 'min-h-[130px] h-auto py-3' : 'h-14';
+    const alignClass = isMultiline ? 'items-start' : 'items-center';
 
     return (
       <View className={`w-full ${className}`}>
@@ -33,9 +37,9 @@ export const Input = forwardRef<TextInput, InputProps>(
 
         <ShakeError trigger={!!error}>
           <View
-            className={`h-14 w-full flex-row items-center rounded-2xl border-2 px-4 transition-colors ${borderColor}`}
+            className={`w-full flex-row rounded-2xl border-2 px-4 transition-colors ${heightClass} ${alignClass} ${borderColor}`}
           >
-            {leftIcon && <View className="mr-3 opacity-70">{leftIcon}</View>}
+            {leftIcon && <View className="mr-3 mt-3 opacity-70">{leftIcon}</View>}
 
             <TextInput
               ref={ref}
@@ -49,7 +53,11 @@ export const Input = forwardRef<TextInput, InputProps>(
                 setIsFocused(false);
                 props.onBlur?.(e);
               }}
-              className="h-full flex-1 font-inter text-base text-slate-100"
+              className="min-h-full flex-1 font-inter text-base text-slate-100"
+              multiline={isMultiline}
+              textAlignVertical={isMultiline ? 'top' : 'center'}
+              numberOfLines={isMultiline ? 4 : undefined}
+              style={isMultiline ? { lineHeight: 22 } : undefined}
               {...props}
             />
 
