@@ -1,4 +1,4 @@
-// src/core/api/api.client.ts
+// src/core/api/api.client.tss
 
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
 import { getEnv } from '../config/env.config';
@@ -21,7 +21,7 @@ const axiosInstance = axios.create({
   },
 });
 
-// 2. CONEXIÓN DE LOS ESCUDOS (INTERCEPTORES)
+// 2. CONEXIÓN DE LOS ESCUDOS (INTERCEPTORES))))
 axiosInstance.interceptors.request.use(requestInterceptor, requestErrorInterceptor);
 
 axiosInstance.interceptors.response.use(responseInterceptor, (error) =>
