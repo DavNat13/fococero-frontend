@@ -110,6 +110,13 @@ jobs:
         run: |
           kubectl create namespace $K8S_NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Crear ConfigMap
+        run: |
+          kubectl create configmap fococero-config \
+            --from-literal=API_GATEWAY_URL="${{ secrets.EXPO_PUBLIC_API_GATEWAY_URL }}" \
+            -n "${{ env.K8S_NAMESPACE }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Desplegar en EKS
         run: |
           kubectl apply -f k8s/deployment.yaml
